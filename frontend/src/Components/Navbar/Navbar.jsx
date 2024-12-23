@@ -3,7 +3,14 @@ import styles from './Navbar.module.scss'
 
 const Navbar = () => {
   return (
-    <div className={styles.main}>Navbar</div>
+    <div className={styles.main}>
+      <div className={styles.pfp}>
+        <div></div>
+      </div>
+      <div className={styles.setting}>
+        <div></div>
+      </div>
+    </div>
   )
 }
 

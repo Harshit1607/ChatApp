@@ -1,0 +1,43 @@
+.main{
+  width: 100%;
+  height: 10%;
+  @include flexbox;
+  justify-content: center;
+  background-color: $secondaryColor;
+}
+
+.pfp{
+  width: 6%;
+  @include flexbox;
+  justify-content: start;
+
+  >div{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: $primaryColor;
+  }
+}
+
+.info{
+  @include flexbox(column, space-between, start);
+  width: 74%;
+}
+.callBox{
+  width: 10%;
+  @include flexbox;
+  justify-content: end;
+  gap: 1px;
+  >div{
+    width: 45px;
+    height: 40px;
+    background-color: $primaryColor;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+  >div:last-child{
+    border-radius: 0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+}

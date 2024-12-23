@@ -1,5 +1,49 @@
 .main{
-  background-color: $secondaryColor;
-  width: 28%;
+  background-color: $tertiaryColor;
+  width: 25%;
   height: 100%;
+  @include flexbox(column, start, center);
+  > div{
+    width: 90%;
+  }
+}
+
+.heading{
+  height: 8%;
+  @include flexbox;
+  justify-content: start;
+  > span{
+    color: $primaryColor;
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
+}
+
+.searchBar{
+  height: 8%;
+  @include flexbox;
+  align-items: start;
+  > input{
+    width: 100%;
+    height: 70%;
+    border: none;
+    border-radius: 10px;
+    padding:  0 10px;
+    font-size: 1.2rem;
+    background-color: $secondaryColor;
+    &:focus{
+      outline: none;
+    }
+  }
+}
+
+.covoContainer{
+  height: 84%;
+  @include flexbox(column, start);
+  gap:10px;
+
+  > span:first-child{
+    width: 100%;
+    text-align: start;
+  }
 }
