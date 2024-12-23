@@ -1,0 +1,105 @@
+.main{
+  width: 100vw;
+  height: 100vh;
+  background-color: $primaryColor;
+  @include flexbox;
+}
+
+.authContainer{
+  width: 80%;
+  height: 80%;
+  @include flexbox(row);
+  box-shadow: 
+    inset 0 0 15px 3px rgba(217,217,217,0.1) ,
+    0 0 15px 5px rgba(217,217,217,0.1),
+    0 0 30px 5px rgba(217,217,217,0.075),  
+    0 0 45px 5px rgba(217,217,217,0.05) ;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.left, .right{
+  height: 100%;
+  @include flexbox(column);
+  background-color: rgba(217,217,217,0.2);
+  color: $secondaryColor;
+}
+
+.left {
+  width: 60%;
+  span{
+    font-size: 5rem;
+    opacity: 1;
+  }
+  span:last-child{
+    font-size: 1rem;
+    max-width: 60%;
+    text-align: center;
+  }
+}
+
+.right{
+  width: 40%;
+  gap: 10%;
+  div{
+    width: 100%;
+    @include flexbox(column);
+  }
+  .heading{
+    font-size: 4rem;
+
+    span:last-child{
+      font-size: 0.9rem;
+      span{
+        text-decoration: underline;
+        cursor: pointer;
+         &:hover {
+          transform: scale(1.2);
+          transition: transform 0.3s ease;
+        }
+      }
+    }
+  }
+
+  .infoContainer{
+    width: 80%;
+    height: 20%;
+    @include flexbox(column, space-between);
+
+    input{
+      max-width: 100%;
+      min-width: 100%;
+      border: none;
+      background-color: $secondaryColor;
+      color: $primaryColor;
+      height: 42%;
+      border-radius: 10px;
+      padding-left: 5%;
+      font-size: 1rem;
+    }
+    input:focus{
+      outline: none;
+    }
+  }
+
+  .submit{
+    width: 50%;
+
+    button{
+      width: 100%;
+      font-size: 1rem;
+      padding: 6% 0;
+      border: none;
+      background-color: $secondaryColor;
+      color: $primaryColor;
+      border-radius: 10px;
+    }
+    button:hover{
+      background-color: $primaryColor;
+      color: $secondaryColor;
+    }
+  }
+
+}
+
+

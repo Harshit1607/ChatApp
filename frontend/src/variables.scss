@@ -1,4 +1,11 @@
-$primaryColor: #2A2A2A;
-$secondaryColor: #D9D9D9;
+$primaryColor: #2a2a2a;
+$secondaryColor: #d9d9d9;
 $tertiaryColor: #A0A0A0;
 $textColor: #333333;
+
+@mixin flexbox($direction: row, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}

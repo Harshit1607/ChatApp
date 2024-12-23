@@ -1,9 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDb } from './Database/db.js';
 import { corsMiddleware } from './Middlewares/CorsMiddlewares.js'
+import userRoutes from './Routes/userRoutes.js'
 
 dotenv.config();
 
@@ -19,6 +19,8 @@ app.use(corsMiddleware); // Use the CORS middleware
 app.options('*', corsMiddleware); // Handle preflight requests for all routes
 
 connectDb();
+
+app.use('/user', userRoutes)
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}`);

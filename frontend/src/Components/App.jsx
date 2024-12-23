@@ -1,14 +1,27 @@
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import {useSelector} from 'react-redux'
 import styles from './App.module.scss';
-import ChatHome from './Chat/ChatHome/ChatHome';
-import ConversationHome from './Conversation/ConversationHome/ConversationHome';
-import Navbar from './Navbar/Navbar';
+import Home from './Home/Home';
+import Signup from './Auth/Signup/Signup';
+import Login from './Auth/Login/Login';
+import { useEffect } from 'react';
 
 function App() {
+  const {user} = useSelector(state=>state.userReducer);
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(user){
+      navigate('/');
+    }
+  },[user])
+
   return (
     <div className={styles.App}>
-      <Navbar />
-      <ConversationHome />
-      <ChatHome />
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/signup' element={<Signup />}/>
+        <Route path='/login' element={<Login />}/>
+      </Routes>
     </div>
   );
 }
