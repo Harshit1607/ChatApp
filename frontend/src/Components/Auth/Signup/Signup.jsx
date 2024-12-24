@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {useDispatch} from 'react-redux'
 import styles from './Signup.module.scss'
-import { signup } from '../../../Redux/userActions'
+import { signup } from '../../../Redux/User/userActions'
 import { useNavigate } from 'react-router-dom'
 
 const Signup = () => {

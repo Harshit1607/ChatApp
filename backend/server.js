@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { connectDb } from './Database/db.js';
 import { corsMiddleware } from './Middlewares/CorsMiddlewares.js'
 import userRoutes from './Routes/userRoutes.js'
+import homeRoutes from './Routes/homeRoutes.js'
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.options('*', corsMiddleware); // Handle preflight requests for all routes
 
 connectDb();
 
+app.use('/', homeRoutes)
 app.use('/user', userRoutes)
 
 app.listen(port, '0.0.0.0', () => {

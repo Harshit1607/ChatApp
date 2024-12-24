@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { User_Login_Failure, User_Login_Request, User_Login_Success, User_Signup_Failure, User_Signup_Request, User_Signup_Success } from './actionTypes';
+import { User_Login_Failure, User_Login_Request, User_Login_Success, User_Signup_Failure, User_Signup_Request, User_Signup_Success } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
