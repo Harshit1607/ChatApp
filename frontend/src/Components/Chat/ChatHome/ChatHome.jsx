@@ -13,8 +13,6 @@ const ChatHome = () => {
     setIsOpen(groupChat !== null); // Update isOpen based on groupChat
   }, [groupChat]);
 
-  console.log(isOpen);
-
   return (
     <div className={styles.main}>
       {isOpen ? (

@@ -6,6 +6,7 @@ import { corsMiddleware } from './Middlewares/CorsMiddlewares.js'
 import userRoutes from './Routes/userRoutes.js'
 import homeRoutes from './Routes/homeRoutes.js'
 import groupRoutes from './Routes/groupRoutes.js'
+import chatRoutes from './Routes/chatRoutes.js'
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ connectDb();
 app.use('/', homeRoutes)
 app.use('/user', userRoutes)
 app.use('/group', groupRoutes)
+app.use('/chat', chatRoutes)
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}`);

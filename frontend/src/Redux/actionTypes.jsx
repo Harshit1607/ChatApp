@@ -18,3 +18,10 @@ export const All_Friends_Request = 'All_Friends_Request'
 export const All_Friends_Success = 'All_Friends_Success'
 export const All_Friends_Failure = 'All_Friends_Failure'
 
+export const Load_Chat_Request = 'Load_Chat_Request'
+export const Load_Chat_Success = 'Load_Chat_Success'
+export const Load_Chat_Failure = 'Load_Chat_Failure'
+
+export const New_Chat_Request = 'New_Chat_Request'
+export const New_Chat_Success = 'New_Chat_Success'
+export const New_Chat_Failure = 'New_Chat_Failure'

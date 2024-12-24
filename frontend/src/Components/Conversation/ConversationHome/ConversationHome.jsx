@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { openGroup } from '../../../Redux/Group/groupActions'
 
 const ConversationHome = () => {
-  const {allFriends} = useSelector(state=>state.homeReducer);
+  const {allFriends, allUsers} = useSelector(state=>state.homeReducer);
   
   return (
     <div className={styles.main}>

@@ -1,0 +1,26 @@
+.main{
+  width: 100%;
+  @include flexbox;
+  justify-content: start;;
+}
+.userMain{
+  width: 100%;
+  @include flexbox;
+  justify-content: end;;
+}
+.chat{
+  padding: 5px 10px;
+  background-color: $secondaryColor;
+  color: $primaryColor;
+  @include flexbox;
+  justify-content:start;
+  border-radius: 10px;
+}
+.userChat{
+  padding: 5px 10px;
+  background-color: $secondaryColor;
+  color: $primaryColor;
+  @include flexbox;
+  justify-content: end;
+  border-radius: 10px;
+}

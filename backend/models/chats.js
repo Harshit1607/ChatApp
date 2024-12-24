@@ -7,9 +7,9 @@ const messageSchema = new mongoose.Schema({
 })
 
 const chatSchema = new mongoose.Schema({
-  message: {messageSchema},
+  message: { type: messageSchema, required: true },
   Users: {type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: []},
-  Groups: {type: [mongoose.Schema.Types.ObjectId], ref: 'Group'}
+  Group: {type: [mongoose.Schema.Types.ObjectId], ref: 'Group'}
 }, { timestamps: true })
 
 export default  mongoose.model('Chat', chatSchema);

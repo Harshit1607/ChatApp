@@ -2,4 +2,5 @@
   background-color: $primaryColor;
   width: 70%;
   height: 100%;
+  @include flexbox(column)
 }

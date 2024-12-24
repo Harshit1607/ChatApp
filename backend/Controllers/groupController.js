@@ -1,5 +1,6 @@
 import Group from '../models/groups.js'
-import chat from '../models/chats.js'
+import Chat from '../models/chats.js'
+import User from'../models/user.js'
 
 export const openGroup = async(req,res)=>{
   
@@ -11,8 +12,14 @@ export const openGroup = async(req,res)=>{
       return res.status(200).json({groupChat});
     }
     const userArray = [];
-    userArray.push(user._id); userArray.push(other._id)
-    const groupChat = new Group({name: other.name, Users: userArray});
+    const userIds = [];
+    let userelem = await User.findById(user._id);
+    userArray.push(userelem);
+    userIds.push(user._id);
+    userIds.push(other._id);
+    userelem = await User.findById(other._id);
+    userArray.push(userelem);
+    const groupChat = new Group({UserDetails: userArray, Users: userIds});
     groupChat.save();
     res.status(200).json({groupChat});
   } catch (error) {
