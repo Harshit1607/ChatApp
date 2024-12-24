@@ -1,16 +1,22 @@
 import React from 'react'
 import styles from './SingleConvo.module.scss'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { openGroup } from '../../../Redux/Group/groupActions'
 
 const SngleConvo = ({single}) => {
   const {user} = useSelector(state=>state.userReducer);
+  const dispatch = useDispatch();
+  const handleClick = () =>{
+    
+    dispatch(openGroup(user, null, single));
+  }
   return (
-    <div className={styles.main}>
+    <div className={styles.main} onClick={handleClick}>
       <div className={styles.pfp}>
         <div></div>
       </div>
       <div className={styles.info}>
-        <span>{single.name} {user._id === single._id ? "(You)" : ""}</span>
+        <span>{single.name}</span>
         <span>Message....</span>
       </div>
       <div className={styles.others}>

@@ -10,6 +10,7 @@
 
 .heading{
   height: 8%;
+  min-height: 50px;
   @include flexbox;
   justify-content: start;
   > span{
@@ -21,6 +22,7 @@
 
 .searchBar{
   height: 8%;
+  min-height: 50px;
   @include flexbox;
   align-items: start;
   > input{

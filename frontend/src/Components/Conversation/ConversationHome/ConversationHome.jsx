@@ -1,10 +1,12 @@
 import React from 'react'
 import SingleConvo from '../SingleConvo/SngleConvo'
 import styles from './ConversationHome.module.scss'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { openGroup } from '../../../Redux/Group/groupActions'
 
 const ConversationHome = () => {
-  const {allUsers} = useSelector(state=>state.homeReducer);
+  const {allFriends} = useSelector(state=>state.homeReducer);
+  
   return (
     <div className={styles.main}>
       <div className={styles.heading}>
@@ -15,7 +17,7 @@ const ConversationHome = () => {
       </div>
       <div className={styles.covoContainer}>
         <span>Recent Chats</span>
-        {allUsers ? allUsers.map((single, index) => (
+        {allFriends ? allFriends.map((single, index) => (
             <SingleConvo single={single} key={index}/>
         )): null}
       </div>

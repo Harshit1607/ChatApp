@@ -9,3 +9,12 @@ export const User_Login_Failure = 'User_Login_Failure'
 export const All_Users_Request = 'All_Users_Request'
 export const All_Users_Success = 'All_Users_Success'
 export const All_Users_Failure = 'All_Users_Failure'
+
+export const Open_Group_Request = 'Open_Group_Request'
+export const Open_Group_Success = 'Open_Group_Success'
+export const Open_Group_Failure = 'Open_Group_Failure'
+
+export const All_Friends_Request = 'All_Friends_Request'
+export const All_Friends_Success = 'All_Friends_Success'
+export const All_Friends_Failure = 'All_Friends_Failure'
+

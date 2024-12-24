@@ -1,8 +1,9 @@
 import express from 'express';
-import { sendAll } from '../Controllers/homeController.js';
+import { sendAll, sendFriends } from '../Controllers/homeController.js';
 
 const router = express.Router();
 
 router.get('/', sendAll);
+router.post('/f', sendFriends);
 
 export default router

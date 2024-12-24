@@ -5,13 +5,13 @@ import styles from './Home.module.scss'
 import ChatHome from '../Chat/ChatHome/ChatHome'
 import ConversationHome from '../Conversation/ConversationHome/ConversationHome'
 import Navbar from '../Navbar/Navbar'
-import { getAllUsers } from '../../Redux/Home/homeActions'
+import { getAllFriends, getAllUsers } from '../../Redux/Home/homeActions'
 
 const Home = () => {
   const { user } = useSelector(state => state.userReducer)
   const dispatch = useDispatch()
   useEffect(()=>{
-    dispatch(getAllUsers());
+    dispatch(getAllFriends(user));
   },[user])
   // Directly check if the user exists in Redux or localStorage
   const isAuth = user || localStorage.getItem('user')

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { All_Users_Failure, All_Users_Request, All_Users_Success } from '../actionTypes';
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -10,5 +10,15 @@ export const getAllUsers = () => async (dispatch)=>{
     dispatch({type:All_Users_Success, payload: result.data})
   } catch (error) {
     dispatch({type:All_Users_Failure, error: error.message})
+  }
+}
+
+export const getAllFriends = (user) => async (dispatch)=>{
+  dispatch({type:All_Friends_Request})
+  try {
+    const result = await axios.post(`${API_URL}f`, {user});
+    dispatch({type:All_Friends_Success, payload: result.data})
+  } catch (error) {
+    dispatch({type:All_Friends_Failure, error: error.message})
   }
 }
