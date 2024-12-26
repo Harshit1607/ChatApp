@@ -21,7 +21,7 @@ const ChatInput = () => {
     <div className={styles.main}>
       <input type="text" value={text} onChange={(e)=>handleInput(e)}/>
       <div onClick={handleClick}>
-        {/* <img src={send} /> */}
+        <img src={send} />
       </div>
     </div>
   )

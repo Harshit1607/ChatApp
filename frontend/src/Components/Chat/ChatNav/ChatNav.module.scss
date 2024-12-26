@@ -28,17 +28,10 @@
   width: 10%;
   @include flexbox;
   justify-content: end;
-  gap: 2px;
+  gap: 4px;
   >div{
     width: 45px;
     height: 40px;
-    background-color: $spiderRed;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
-  >div:last-child{
-    border-radius: 0;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
+    @include flexbox;
   }
 }

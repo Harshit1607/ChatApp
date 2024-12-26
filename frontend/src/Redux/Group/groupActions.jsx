@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Make_Group, Open_Group_Failure, Open_Group_Request, Open_Group_Success } from '../actionTypes';
+import { Close_Chat, Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Make_Group, Open_Group_Failure, Open_Group_Request, Open_Group_Success } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -32,3 +32,7 @@ export const createGroup = (name, user, others) => async (dispatch) =>{
     dispatch({type: Create_Group_Failure, error: error.message})
   }
 }
+
+export const closeChat = ()=>(
+  {type: Close_Chat}
+)

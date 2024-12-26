@@ -1,10 +1,15 @@
 import React from 'react'
 import styles from './ChatNav.module.scss'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import call from '../../../Assets/call.svg'
+import video from '../../../Assets/video.svg'
+import cross from '../../../Assets/cross.svg'
+import { closeChat } from '../../../Redux/Group/groupActions';
 
 const ChatNav = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {user} = useSelector(state=>state.userReducer);
+  const dispatch = useDispatch();
   const findName = () => {
     let name;
     groupChat.UserDetails.forEach(each => {
@@ -27,8 +32,15 @@ const ChatNav = () => {
         <span>Last seen 11:11 am</span>
       </div>
       <div className={styles.callBox}>
-        <div></div>
-        <div></div>
+        <div>
+          <img src={call} alt="" />
+        </div>
+        <div>
+          <img src={video} alt="" />
+        </div>
+        <div onClick={()=>{dispatch(closeChat())}}>
+          <img src={cross} alt="" />
+        </div>
       </div>
     </div>
   )

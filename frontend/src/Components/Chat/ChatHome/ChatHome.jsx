@@ -15,7 +15,7 @@ const ChatHome = () => {
 
   return (
     <div className={styles.main}>
-      {isOpen ? (
+      {isOpen && groupChat ? (
         <>
           <ChatNav />
           <ChatBox />

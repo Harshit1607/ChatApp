@@ -49,8 +49,16 @@ const Group = () => {
             <input type="text" onChange={(e)=>handleText(e)}/>
           </div>
         <div  className={styles.Users}>
-          {allUsers.map((single, index) => (
-            <div key={index} className={othersUsers.includes(single)? styles.include : styles.single} onClick={()=>handleClick(single)}>
+        {allUsers.map((single, index) => {
+          if (single._id === user._id) {
+            return null; // Skip rendering for this user
+          }
+          return (
+            <div
+              key={index}
+              className={othersUsers.includes(single) ? styles.include : styles.single}
+              onClick={() => handleClick(single)}
+            >
               <div className={styles.pfp}>
                 <div></div>
               </div>
@@ -59,7 +67,9 @@ const Group = () => {
                 <span>{single.email}</span>
               </div>
             </div>
-          ))}
+          );
+        })}
+
         </div>
         <div className={styles.make}>
           <button onClick={handleSubmit}>Make</button>

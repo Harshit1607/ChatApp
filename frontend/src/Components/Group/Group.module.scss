@@ -3,7 +3,13 @@
   height: 70%;
   background:
     url('../../Assets/chatWeb.svg') no-repeat center,
-    linear-gradient(to bottom left, #D1110C, #084078);
+    radial-gradient(
+      at center, /* Set ellipse shape and center position */
+      #9D1F13,          /* Starting color */
+      #090909           /* Ending color */
+    );
+  background-size: 150%, cover;
+  background-position: right, center;
   @include flexbox(column, space-evenly);
   position: fixed;
   top: 15%;

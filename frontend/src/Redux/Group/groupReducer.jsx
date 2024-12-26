@@ -1,4 +1,4 @@
-import { Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Make_Group, Open_Group_Failure, Open_Group_Request, Open_Group_Success } from "../actionTypes";
+import { Close_Chat, Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Make_Group, Open_Group_Failure, Open_Group_Request, Open_Group_Success } from "../actionTypes";
 import { makeGroup } from "./groupActions";
 
 
@@ -43,6 +43,12 @@ function groupReducer(state=initialState,action){
       return{
         ...state,
         makeGroup: false,
+      }
+    case Close_Chat:
+      sessionStorage.removeItem('groupChat');
+      return{
+        ...state,
+        groupChat: null,
       }
     case Open_Group_Failure:
     case Create_Group_Failure:
