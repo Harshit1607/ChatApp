@@ -7,10 +7,12 @@ import ConversationHome from '../Conversation/ConversationHome/ConversationHome'
 import Navbar from '../Navbar/Navbar'
 import { getAllFriends, getAllUsers } from '../../Redux/Home/homeActions'
 import Search from '../Search/Search'
+import Group from '../Group/Group'
 
 const Home = () => {
   const { user } = useSelector(state => state.userReducer)
   const { searchUsers } = useSelector((state) => state.homeReducer);
+  const { makeGroup } = useSelector((state) => state.groupReducer);
   const dispatch = useDispatch()
   useEffect(()=>{
     dispatch(getAllFriends(user));
@@ -25,6 +27,7 @@ const Home = () => {
         <ConversationHome />
         <ChatHome />
       {searchUsers && searchUsers.length > 0 ? <Search /> : null}
+      {makeGroup ? <Group/> : null}
       </div>
     ) : (
       <Navigate to="/login" />

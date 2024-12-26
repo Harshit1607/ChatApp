@@ -3,10 +3,15 @@
   width: 70%;
   height: 100%;
   @include flexbox(column);
+
+  /* Diamond Gradient Effect */
   background:
     url('../../../Assets/chatWeb.svg') no-repeat center,
-    linear-gradient(to bottom left, #D1110C, #084078);
-  background-size: 150%; /* Zoomed-in background */
-  background-position: right; /* Ensure alignment */
-  /* Gradient */
+    radial-gradient(
+      at center, /* Set ellipse shape and center position */
+      #9D1F13,          /* Starting color */
+      #090909           /* Ending color */
+    );
+  background-size: 150%, cover; /* Ensures all layers fit the container */
+  background-position: right, center; /* Aligns everything centrally */
 }

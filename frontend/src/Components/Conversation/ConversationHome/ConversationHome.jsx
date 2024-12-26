@@ -2,9 +2,10 @@ import React, {useCallback} from 'react'
 import SingleConvo from '../SingleConvo/SngleConvo'
 import styles from './ConversationHome.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { openGroup } from '../../../Redux/Group/groupActions'
 import {Debouncing} from '../../../Utils/Debouncing'
-import { searchUsers } from '../../../Redux/Home/homeActions'
+import { getAllUsers, searchUsers } from '../../../Redux/Home/homeActions'
+import spiderGroupBig from '../../../Assets/spiderGroupBig.svg'
+import { makeGroup } from '../../../Redux/Group/groupActions'
 
 const ConversationHome = () => {
   const {allFriends, allUsers} = useSelector(state=>state.homeReducer);
@@ -20,7 +21,10 @@ const ConversationHome = () => {
     }
     debouncedSearch(text);
   }
-  
+  const handleGroup = () =>{
+    dispatch(makeGroup());
+    dispatch(getAllUsers());
+  }
   return (
     <div className={styles.main}>
       <div className={styles.heading}>
@@ -28,6 +32,9 @@ const ConversationHome = () => {
       </div>
       <div className={styles.searchBar}>
         <input onChange={handleChange}/>
+        <div onClick={handleGroup}>
+          <img src={spiderGroupBig} alt="Grp" />
+        </div>
       </div>
       <div className={styles.covoContainer}>
         <span>Recent Chats</span>

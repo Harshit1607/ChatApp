@@ -31,3 +31,10 @@ export const Search_Users_Success = 'Search_Users_Success'
 export const Search_Users_Failure = 'Search_Users_Failure'
 
 export const Close_Search = 'Close_Search'
+
+export const Make_Group = 'Make_Group'
+export const Close_Group = 'Close_Group'
+
+export const Create_Group_Request = 'Create_Group_Request'
+export const Create_Group_Success = 'Create_Group_Success'
+export const Create_Group_Failure = 'Create_Group_Failure'
