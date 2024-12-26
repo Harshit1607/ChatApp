@@ -1,4 +1,5 @@
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Search_Users_Failure, Search_Users_Request, Search_Users_Success } from "../actionTypes";
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, Search_Users_Failure, Search_Users_Request, Search_Users_Success } from "../actionTypes";
+import { searchUsers } from "./homeActions";
 
 
 const initialState = {
@@ -42,6 +43,12 @@ function homeReducer(state=initialState,action){
         searchUsers:action.payload.searchUsers,
         loading:false,
         error: null,
+      }
+    case Close_Search:
+      localStorage.removeItem('searchUsers');
+      return{
+        ...state,
+        searchUsers: [],
       }
     case All_Users_Failure:
     case All_Friends_Failure:

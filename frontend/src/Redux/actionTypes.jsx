@@ -29,3 +29,5 @@ export const New_Chat_Failure = 'New_Chat_Failure'
 export const Search_Users_Request = 'Search_Users_Request'
 export const Search_Users_Success = 'Search_Users_Success'
 export const Search_Users_Failure = 'Search_Users_Failure'
+
+export const Close_Search = 'Close_Search'

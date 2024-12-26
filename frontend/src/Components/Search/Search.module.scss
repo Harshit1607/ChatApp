@@ -1,0 +1,46 @@
+.main{
+  width: 60%;
+  height: 70%;
+  background:
+    url('../../Assets/chatWeb.svg') no-repeat center,
+    linear-gradient(to bottom left, #D1110C, #084078);
+  display: flex;
+  flex-wrap: wrap; /* Enables wrapping to the next row */
+  gap: 10px; /* Optional: Adds spacing between items */
+  position: fixed;
+  top: 15%;
+  left: 20%;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px white;
+}
+
+.single{
+  border-radius: 15px;
+  flex: 1 1 calc(33.333% - 10px); /* 3 columns layout */
+  min-width: calc(33.333% - 10px); /* Ensures proper column size */
+  max-width: calc(33.333% - 10px); /* Avoids expanding too much */
+  height: 70px;
+  box-sizing: border-box;
+  background-color: $primaryColor;
+  color: $textColor;
+  @include flexbox
+  
+}
+.pfp{
+  width: 25%;
+  height: 100%;
+  @include flexbox;
+  >div{
+    width: 40px;
+    height: 40px;
+    background-color: $textColor;
+    border-radius: 50%;
+  }
+  
+}
+.info{
+  width: 75%;
+  height: 100%;
+  @include flexbox(column, space-evenly, start);
+}

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Search_Users_Failure, Search_Users_Request, Search_Users_Success } from '../actionTypes';
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, Search_Users_Failure, Search_Users_Request, Search_Users_Success } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -32,3 +32,7 @@ export const searchUsers = (text) => async (dispatch) =>{
     dispatch({type:Search_Users_Failure, error: error.message})
   }
 }
+
+export const closeSearch = ()=>(
+  {type: Close_Search}
+)

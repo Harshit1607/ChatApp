@@ -15,7 +15,9 @@ const ConversationHome = () => {
 
   function handleChange(e) {
     const text = e.target.value;
-
+    if(!text){
+      return;
+    }
     debouncedSearch(text);
   }
   
