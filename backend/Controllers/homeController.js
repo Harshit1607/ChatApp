@@ -1,7 +1,6 @@
 import User from '../models/user.js'
 import Group from '../models/groups.js'
-import chat from '../models/chats.js'
-
+import Chat from '../models/chats.js'
 
 export const sendAll = async (req, res)=>{
   try {
@@ -19,5 +18,16 @@ export const sendFriends = async (req, res) => {
     res.status(200).json({allFriends});
   } catch (error) {
     res.status(500).json({error: error});
+  }
+}
+
+export const sendBySearch = async (req, res) => {
+  const {text} = req.body;
+  try {
+    const searchUsers = await User.find({name: {$regex: text, $options: 'i'}});
+    res.status(200).json({searchUsers});
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Failed to get users' });
   }
 }

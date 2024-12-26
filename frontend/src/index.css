@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  cursor: url('E:\Vs Code\WebDev\ChatApp\frontend\src\Assets\spider.svg'), auto;
 }
 
 code {

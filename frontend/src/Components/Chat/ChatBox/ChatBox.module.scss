@@ -1,7 +1,8 @@
 .main{
-  width: 88%;
-  height: 80%;
-  max-height: calc(100% - 160px);
+  width: 90%;
+  height: 82%;
+  max-height: calc(100% - 140px);
   @include flexbox(column, end);
   gap: 15px;
+  padding: 2% 0;
 }

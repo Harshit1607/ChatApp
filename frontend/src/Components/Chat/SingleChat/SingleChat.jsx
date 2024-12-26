@@ -9,6 +9,7 @@ const SingleChat = ({chat}) => {
       <div className={user._id  === chat.message.sentBy[0] ? styles.userChat :  styles.chat}>
         <span>{chat.message.message}</span>
       </div>
+      <div className={user._id  === chat.message.sentBy[0] ? styles.usertriangle :  styles.triangle}></div>
     </div>
   )
 }

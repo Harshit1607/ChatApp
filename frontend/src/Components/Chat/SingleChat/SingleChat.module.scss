@@ -1,26 +1,50 @@
 .main{
   width: 100%;
-  @include flexbox;
-  justify-content: start;;
+  @include flexbox(row-reverse);
+  justify-content: start;
+  align-items: end;
 }
 .userMain{
   width: 100%;
   @include flexbox;
-  justify-content: end;;
+  justify-content: end;
+  align-items: start;
 }
 .chat{
   padding: 5px 10px;
-  background-color: $secondaryColor;
-  color: $primaryColor;
+  background-color: $primaryColor;
+  color: $textColor;
   @include flexbox;
   justify-content:start;
   border-radius: 10px;
+  border-bottom-left-radius: 0px;
+  >span{
+    padding: 5px;
+  }
 }
 .userChat{
   padding: 5px 10px;
   background-color: $secondaryColor;
-  color: $primaryColor;
+  color: $textColor;
   @include flexbox;
   justify-content: end;
   border-radius: 10px;
+  border-top-right-radius: 0px;
+  >span{
+    padding: 5px;
+  }
+}
+
+.triangle{
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-bottom: 10px solid $primaryColor;
+}
+
+.usertriangle{
+  width: 0;
+  height: 0;
+  border-right: 10px solid transparent;
+  border-top: 10px solid $secondaryColor;
 }

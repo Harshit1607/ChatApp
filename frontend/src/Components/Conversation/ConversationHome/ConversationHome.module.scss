@@ -3,24 +3,23 @@
   width: 25%;
   height: 100%;
   @include flexbox(column, start, center);
-  > div{
-    width: 90%;
-  }
 }
 
 .heading{
+  width: 90%;
   height: 8%;
   min-height: 50px;
   @include flexbox;
   justify-content: start;
   > span{
-    color: $primaryColor;
+    
     font-size: 1.4rem;
     font-weight: 500;
   }
 }
 
 .searchBar{
+  width: 90%;
   height: 8%;
   min-height: 50px;
   @include flexbox;
@@ -32,7 +31,8 @@
     border-radius: 10px;
     padding:  0 10px;
     font-size: 1.2rem;
-    background-color: $secondaryColor;
+    background-color: $textColor;
+    color: $primaryColor;
     &:focus{
       outline: none;
     }
@@ -42,10 +42,10 @@
 .covoContainer{
   height: 84%;
   @include flexbox(column, start);
-  gap:10px;
-
+  width: 100%;
   > span:first-child{
-    width: 100%;
+    width: 90%;
     text-align: start;
+    margin-bottom: 10px;
   }
 }

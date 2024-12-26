@@ -1,6 +1,12 @@
-.main{
+.main {
   background-color: $primaryColor;
   width: 70%;
   height: 100%;
-  @include flexbox(column)
+  @include flexbox(column);
+  background:
+    url('../../../Assets/chatWeb.svg') no-repeat center,
+    linear-gradient(to bottom left, #D1110C, #084078);
+  background-size: 150%; /* Zoomed-in background */
+  background-position: right; /* Ensure alignment */
+  /* Gradient */
 }

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './ChatInput.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { newChat } from '../../../Redux/Chat/chatActions'
+import send from '../../../Assets/send.svg'
 
 const ChatInput = () => {
   const {user} = useSelector(state=>state.userReducer);
@@ -19,7 +20,9 @@ const ChatInput = () => {
   return (
     <div className={styles.main}>
       <input type="text" value={text} onChange={(e)=>handleInput(e)}/>
-      <div onClick={handleClick}>&gt;&gt;</div>
+      <div onClick={handleClick}>
+        {/* <img src={send} /> */}
+      </div>
     </div>
   )
 }

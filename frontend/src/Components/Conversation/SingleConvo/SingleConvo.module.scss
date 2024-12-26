@@ -2,11 +2,11 @@
   width: 100%;
   height: 12%;
   min-height: 75px;
-  border-radius: 10px;
   @include flexbox;
   justify-content: space-evenly;
-  color: $primaryColor;
-  background-color: $secondaryColor;
+  background-color: $tertiaryColor;
+  border-bottom: 2px solid rgba($textColor, 0.5);
+
   > div{
     height: 70%;
   }
@@ -19,11 +19,11 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: $primaryColor;
+    background-color: $textColor;
   }
 }
 .info{
-  width: 55%;
+  width: 65%;
   @include flexbox(column, space-between, start);
   font-size: 0.8rem;
   > span:first-child{
@@ -32,7 +32,7 @@
 }
 .others{
   width: 15%;
-  @include flexbox(column, space-between, end);
+  @include flexbox(column, space-between);
   font-size: 0.8rem;
   > div{
     width: 15px;
