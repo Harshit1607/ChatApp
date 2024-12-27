@@ -1,82 +1,94 @@
-import React, {useRef, useEffect, useState} from 'react';
-import { useDispatch, useSelector } from 'react-redux'; // Ensure this import is present
-import { closeSearch } from '../../Redux/Home/homeActions';
-import { closeGroup, createGroup, openGroup } from '../../Redux/Group/groupActions';
-import styles from './Group.module.scss'
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeGroup, createGroup } from '../../Redux/Group/groupActions';
+import styles from './Group.module.scss';
 
 const Group = () => {
-  const {user} = useSelector(state=>state.userReducer);
-  const {makeGroup} = useSelector(state=>state.groupReducer);
-  const {allUsers} = useSelector(state=>state.homeReducer);
+  const { user } = useSelector((state) => state.userReducer);
+  const { makeGroup } = useSelector((state) => state.groupReducer);
+  const { allUsers } = useSelector((state) => state.homeReducer);
+
   const [text, setText] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState([]);
+
   const dispatch = useDispatch();
   const boxRef = useRef(null);
-  const handleOutsideClick = (event) => {
-    // Check if the click target is not inside the box
-    if (boxRef.current && !boxRef.current.contains(event.target)) {
-      dispatch(closeGroup());
-    }
-  };
 
-  const othersUsers = [];
+  const handleOutsideClick = useCallback(
+    (event) => {
+      if (boxRef.current && !boxRef.current.contains(event.target)) {
+        dispatch(closeGroup());
+      }
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    // Add event listener to the document
     document.addEventListener('mousedown', handleOutsideClick);
-
     return () => {
-      // Cleanup the event listener on component unmount
       document.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, []);
+  }, [handleOutsideClick]);
 
-  const handleClick =(single)=>{
-    othersUsers.push(single);
-  }
-  const handleText =(e)=>{
-    const value = e.target.value;
-    setText(value);
-  }
-  const handleSubmit = () =>{
-    const others = [...new Set(othersUsers)];
-    dispatch(createGroup(text, user, others));
+  const handleUserClick = (single) => {
+    setSelectedUsers((prev) =>
+      prev.find((user) => user._id === single._id)
+        ? prev.filter((user) => user._id !== single._id) // Deselect if already selected
+        : [...prev, single] // Add to selection
+    );
+  };
+
+  const handleSubmit = () => {
+    if (text.trim() === "") {
+      alert("Group name cannot be empty!");
+      return;
+    }
+    dispatch(createGroup(text, user, selectedUsers));
     dispatch(closeGroup());
-  }
+  };
+
   return (
     <>
-        {makeGroup ? <div className={styles.main} ref={boxRef}>
+      {makeGroup && (
+        <div className={styles.main} ref={boxRef}>
           <div className={styles.name}>
-            <input type="text" onChange={(e)=>handleText(e)}/>
+            <input
+              type="text"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Name Your Group..."
+            />
           </div>
-        <div  className={styles.Users}>
-        {allUsers.map((single, index) => {
-          if (single._id === user._id) {
-            return null; // Skip rendering for this user
-          }
-          return (
-            <div
-              key={index}
-              className={othersUsers.includes(single) ? styles.include : styles.single}
-              onClick={() => handleClick(single)}
-            >
-              <div className={styles.pfp}>
-                <div></div>
-              </div>
-              <div className={styles.info}>
-                <span>{single.name}</span>
-                <span>{single.email}</span>
-              </div>
-            </div>
-          );
-        })}
-
+          <div className={styles.Users}>
+            {allUsers
+              .filter((single) => single._id !== user._id) // Exclude current user
+              .map((single) => (
+                <div
+                  key={single._id}
+                  className={
+                    selectedUsers.some((u) => u._id === single._id)
+                      ? styles.include
+                      : styles.single
+                  }
+                  onClick={() => handleUserClick(single)}
+                >
+                  <div className={styles.pfp}>
+                    <div></div>
+                  </div>
+                  <div className={styles.info}>
+                    <span>{single.name}</span>
+                    <span>{single.email}</span>
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div className={styles.make}>
+            <button onClick={handleSubmit}>Create</button>
+          </div>
         </div>
-        <div className={styles.make}>
-          <button onClick={handleSubmit}>Make</button>
-        </div>
-        </div>: null}
+      )}
     </>
   );
-}
+};
 
-export default Group
+export default Group;

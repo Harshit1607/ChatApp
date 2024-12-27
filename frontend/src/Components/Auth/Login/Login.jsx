@@ -3,6 +3,8 @@ import {useDispatch} from 'react-redux'
 import styles from './Login.module.scss'
 import { login } from '../../../Redux/User/userActions'
 import { useNavigate } from 'react-router-dom'
+import spider from '../../../Assets/spiderMan1.png'
+import spiderSmall from '../../../Assets/spiderCursor.png'
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -34,9 +36,7 @@ const Login = () => {
     <div className={styles.main}>
       <div className={styles.authContainer} >
         <div className={styles.left}>
-          <span>Welcome</span>
-          <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mauris diam, suscipit sed erat in, luctus eleifend dolor. Aenean eu purus
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mauris diam, suscipit sed erat in, luctus eleifend dolor. Aenean eu purus</span>
+          <img src={spiderSmall} />
         </div>
         <div className={styles.right}>
           <div className={styles.heading}>
@@ -52,6 +52,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <img className={styles.backimg} src={spider} />
     </div>
   )
 }

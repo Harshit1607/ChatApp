@@ -30,7 +30,7 @@ const Home = () => {
       {makeGroup ? <Group/> : null}
       </div>
     ) : (
-      <Navigate to="/login" />
+      <Navigate to="/" />
     )
   )
 }

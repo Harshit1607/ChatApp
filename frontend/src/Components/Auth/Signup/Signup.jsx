@@ -3,6 +3,8 @@ import {useDispatch} from 'react-redux'
 import styles from './Signup.module.scss'
 import { signup } from '../../../Redux/User/userActions'
 import { useNavigate } from 'react-router-dom'
+import spider from '../../../Assets/spiderMan1.png'
+import spiderSmall from '../../../Assets/spiderCursor.png'
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -46,9 +48,7 @@ const Signup = () => {
     <div className={styles.main}>
       <div className={styles.authContainer} >
         <div className={styles.left}>
-          <span>Welcome</span>
-          <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mauris diam, suscipit sed erat in, luctus eleifend dolor. Aenean eu purus
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mauris diam, suscipit sed erat in, luctus eleifend dolor. Aenean eu purus</span>
+          <img src={spiderSmall} />
         </div>
         <div className={styles.right}>
           <div className={styles.heading}>
@@ -56,16 +56,19 @@ const Signup = () => {
             <span>Already a user? <span onClick={()=>navigate('/login')}>Login instead</span></span>
           </div>
           <div className={styles.infoContainer}> 
+            <div>
             <input type="text" placeholder='Enter your name...' onChange={handleName} value={name}/>
-            <input type="email" placeholder='Enter your email...' onChange={handleEmail} value={email}/>
             <input type="text" pattern="^\d{10}$" placeholder='Enter your phone no...' onChange={handlePhone} value={phone}/>
+            </div>
+            <input type="email" placeholder='Enter your email...' onChange={handleEmail} value={email}/>
             <input type="text" placeholder='Enter your password...' onChange={handlePass} value={pass}/>
           </div>
           <div className={styles.submit}>
-            <button onClick={handleContinue}>Signup</button>
+            <button onClick={handleContinue}>Swing in</button>
           </div>
         </div>
       </div>
+      <img className={styles.backimg} src={spider} />
     </div>
   )
 }

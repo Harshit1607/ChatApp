@@ -3,54 +3,61 @@
   height: 100vh;
   background-color: $primaryColor;
   @include flexbox;
+  overflow:hidden;
+  
+}
+.backimg{
+  width: 65%;
+  height: 90%;
+  position: fixed;
+  top:5%;
+  left:-10%;
 }
 
 .authContainer{
-  width: 80%;
-  height: 80%;
-  @include flexbox(row);
-  box-shadow: 
-    inset 0 0 15px 3px rgba(217,217,217,0.1) ,
-    0 0 15px 5px rgba(217,217,217,0.1),
-    0 0 30px 5px rgba(217,217,217,0.075),  
-    0 0 45px 5px rgba(217,217,217,0.05) ;
-    border-radius: 20px;
-    overflow: hidden;
+  
+  width: 98%;
+  height: 95%;
+  @include flexbox();
+  // box-shadow: 
+  //   inset 0 0 15px 3px rgba(217,217,217,0.1) ,
+  //   0 0 15px 5px rgba(217,217,217,0.1),
+  //   0 0 30px 5px rgba(217,217,217,0.075),  
+  //   0 0 45px 5px rgba(217,217,217,0.05) ;
+  border-radius: 20px;
+  overflow:hidden;
 }
 
 .left, .right{
   height: 100%;
-  @include flexbox(column);
-  background-color: rgba(217,217,217,0.2);
-  color: $secondaryColor;
+  color: $textColor;
 }
 
 .left {
-  width: 60%;
-  span{
-    font-size: 5rem;
-    opacity: 1;
-  }
-  span:last-child{
-    font-size: 1rem;
-    max-width: 60%;
-    text-align: center;
+  background-color: $spiderRed;
+  position: relative;
+  width: 34%;
+  border-radius: 20px;
+  @include flexbox(row, start, start);
+  >img{
+    margin: 10px;
+    width: 50px;
+    height: 50px;
   }
 }
 
 .right{
-  width: 40%;
-  gap: 10%;
-  div{
-    width: 100%;
-    @include flexbox(column);
-  }
+  @include flexbox(column);
+  width: 64%;
+  gap: 7.5px;
   .heading{
+    width: 40%;
     font-size: 4rem;
-
-    span:last-child{
+    @include flexbox(column);
+    align-items: start;
+    >span:last-child{
       font-size: 0.9rem;
-      span{
+      >span{
         text-decoration: underline;
         cursor: pointer;
         &:hover {
@@ -62,20 +69,40 @@
   }
 
   .infoContainer{
-    width: 80%;
-    height: 40%;
-    @include flexbox(column, space-between);
+    width: 40%;
+    height: 20%;
+    @include flexbox(column, start);
+    gap: 3%;
+    >div{
+      @include flexbox;
+      height: 30%;
+      width: 100%;
+      background-color: $primaryColor;
+      >input{
+        background-color: $primaryColor;
+        color: $textColor;
+        height: 100%;
+        width:505%;
+        border-radius: 10px;
+        padding-left: 5%;
+        font-size: 1rem;
+        box-sizing: border-box;
+        border: 0.5px solid $textColor;
+      }
+    }
 
-    input{
+    >input{
       max-width: 100%;
       min-width: 100%;
-      border: none;
-      background-color: $secondaryColor;
+      border: 0.5px solid $textColor;
+      background-color: $primaryColor;
       color: $textColor;
-      height: 20%;
+      height: 30%;
       border-radius: 10px;
       padding-left: 5%;
       font-size: 1rem;
+      box-sizing: border-box;
+
     }
     input:focus{
       outline: none;
@@ -83,20 +110,21 @@
   }
 
   .submit{
-    width: 50%;
-
+    width: 40%;
+    @include flexbox;
+    
     button{
       width: 100%;
-      font-size: 1rem;
-      padding: 6% 0;
+      font-size: 1.1rem;
+      padding: 4% 0;
       border: none;
-      background-color: $secondaryColor;
-      color: $primaryColor;
+      background-color: $spiderRed;
+      color: $textColor;
       border-radius: 10px;
     }
     button:hover{
-      background-color: $primaryColor;
-      color: $secondaryColor;
+      background-color: $textColor;
+      color: $spiderRed;
     }
   }
 

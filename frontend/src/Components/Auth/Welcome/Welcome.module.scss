@@ -1,0 +1,83 @@
+.main{
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(
+      at center, /* Set ellipse shape and center position */
+      #70170F,          /* Starting color */
+      #090909           /* Ending color */
+    );
+  background-size: 100%;
+  background-position: center;
+  @include flexbox;
+  position: relative;
+}
+.backimg{
+  width: 40%;
+  height: 70%;
+  position: fixed;
+  top:15%;
+  left:30%;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.authContainer{
+  z-index: 2;
+  width: 95%;
+  height: 90%;
+  @include flexbox();
+  box-shadow: 
+    inset 0 0 15px 3px rgba(217,217,217,0.1) ,
+    0 0 15px 5px rgba(217,217,217,0.1),
+    0 0 30px 5px rgba(217,217,217,0.075),  
+    0 0 45px 5px rgba(217,217,217,0.05) ;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+
+
+.left {
+  height: 60%;
+  width: 80%;
+  @include flexbox(column, start, start);
+  color: $textColor;
+  gap: 11%;
+  .heading{
+    font-size: 8rem;
+    margin-bottom: -15px;
+  }
+  >span{
+    font-size: 1.2rem;
+    text-align:start;
+    max-width: 90%;
+  }
+  .submit{
+    width: 65%;
+    @include flexbox(row, start);
+    gap: 05%;
+    >button{
+      box-shadow: 0 0 5px $primaryColor;
+      width: 40%;
+      font-size: 1.5rem;
+      padding: 20px 0;
+      border: none;
+      background-color: $spiderRed;
+      color: $textColor;
+      border-radius: 10px;
+      &:last-child{
+        background-color: $textColor;
+        color: $primaryColor;
+      }
+      &:hover{
+        background-color: $primaryColor;
+      color: $textColor;
+      }
+    } 
+  }
+}
+
+
+
+
