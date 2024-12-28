@@ -2,34 +2,38 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import { connectDb } from './Database/db.js';
-import { corsMiddleware } from './Middlewares/CorsMiddlewares.js'
-import userRoutes from './Routes/userRoutes.js'
-import homeRoutes from './Routes/homeRoutes.js'
-import groupRoutes from './Routes/groupRoutes.js'
-import chatRoutes from './Routes/chatRoutes.js'
+import { corsMiddleware, corsOptions } from './Middlewares/CorsMiddlewares.js';
+import userRoutes from './Routes/userRoutes.js';
+import homeRoutes from './Routes/homeRoutes.js';
+import groupRoutes from './Routes/groupRoutes.js';
+import chatRoutes from './Routes/chatRoutes.js';
+import { initSocketServer } from './Socket/socket.js';  // Import the function to initialize socket server
+import { chatSocket } from './Socket/chatSocket.js';
+import { groupSocket } from './Socket/groupSocket.js';
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+// const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-app.use(corsMiddleware); // Use the CORS middleware
-
-app.options('*', corsMiddleware); // Handle preflight requests for all routes
+app.use(corsMiddleware);  // Apply CORS middleware
+app.options('*', corsMiddleware);  // Handle preflight requests for all routes
 
 connectDb();
 
-app.use('/', homeRoutes)
-app.use('/user', userRoutes)
-app.use('/group', groupRoutes)
-app.use('/chat', chatRoutes)
+app.use('/', homeRoutes);
+app.use('/user', userRoutes);
+app.use('/group', groupRoutes);
+app.use('/chat', chatRoutes);
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
-});
+// Initialize the socket server by passing the Express app and CORS options
+const { server, io } = initSocketServer(app, corsOptions);
 
-export default app;
+groupSocket(io);
+chatSocket(io);
+
+// Export the server for listening later
+export { server, io };

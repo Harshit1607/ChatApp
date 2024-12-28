@@ -5,4 +5,5 @@
   @include flexbox(column, end);
   gap: 15px;
   padding: 2% 0;
+  overflow-y: hidden;
 }

@@ -17,6 +17,9 @@ const Home = () => {
   useEffect(()=>{
     dispatch(getAllFriends(user));
   },[user])
+  useEffect(()=>{
+    
+  },[dispatch])
   // Directly check if the user exists in Redux or localStorage
   const isAuth = user || localStorage.getItem('user')
 

@@ -14,7 +14,7 @@ const ChatBox = () => {
   return (
     <div className={styles.main}>
       {
-        chats && chats.length > 0? chats.map((chat, index)=>(
+        groupChat && chats && chats.length > 0? chats.filter(chat=>chat.Group[0] === groupChat._id).map((chat, index)=>(
           <SingleChat chat={chat} key={index}/>
         )): null
       }
