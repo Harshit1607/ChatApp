@@ -1,4 +1,4 @@
-import { createNewChat, newChat } from "../Controllers/chatController.js";
+import { createNewChat, getLatestChat, newChat } from "../Controllers/chatController.js";
 
 
 
@@ -18,5 +18,27 @@ export const chatSocket = (io) =>{
         socket.emit('error', 'Unable to send chat');
       }
   })
+
+  socket.on('latestChat', async ({ group }) => {
+    if (!group || !group._id) {
+      console.error("Invalid group data received.");
+      return;
+    }
+  
+    try {
+      const message = await getLatestChat({ group });
+  
+      // Emit the message back to the client
+      if (message) {
+        socket.emit("latestChat", { message });
+      } else {
+        console.log("No messages found for this group.");
+      }
+    } catch (error) {
+      console.error("Error fetching latest chat:", error);
+    }
+  });
+  
+
   });
 }

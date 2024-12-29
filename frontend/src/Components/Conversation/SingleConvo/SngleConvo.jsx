@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './SingleConvo.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { openGroup } from '../../../Redux/Group/groupActions'
+import { getLatestChat, onLatestChat } from '../../../Socket/ChatSocket'
 
 const SngleConvo = ({single}) => {
   const {user} = useSelector(state=>state.userReducer);
+  const {chats} = useSelector(state=>state.chatReducer);
+  const [message, setMessage] = useState("")
+
   const dispatch = useDispatch();
+
+  
+
   const findName = () => {
     let name;
     single.UserDetails.forEach(each => {
@@ -15,7 +22,29 @@ const SngleConvo = ({single}) => {
     });
     return name; // returns the found name
   };
+
+  useEffect(() => {
+    getLatestChat(single);
+  }, [single, chats]);
+
+  useEffect(()=>{
+
+    const cleanup = onLatestChat((latestMessage) => {
+      if(latestMessage.Group[0] === single._id){
+        setMessage(latestMessage);
+      }
+      return;
+    });
+
+    console.log(message)
+
+    return () => {
+      cleanup(); // Clean up the listener on unmount
+    };
+  })
   
+
+
   const name = !single.isGroup && single.name === "" ? findName() : single.name;
   const handleClick = () =>{
 
@@ -28,7 +57,7 @@ const SngleConvo = ({single}) => {
       </div>
       <div className={styles.info}>
         <span>{name}</span>
-        <span>Message....</span>
+        <span>{message ? message.message.message : null}</span>
       </div>
       <div className={styles.others}>
         <div></div>

@@ -5,7 +5,7 @@ import http from 'http';
 export const initSocketServer = (app, corsOptions) => {
   const server = http.createServer(app);  // Create HTTP server from Express app
   const io = new Server(server, {
-    pingTimeout: 60000, // Timeout if no ping received within 60 seconds
+    pingTimeout: 100000, // Timeout if no ping received within 60 seconds
     cors: corsOptions,  // Apply CORS options for sockets
   });
   

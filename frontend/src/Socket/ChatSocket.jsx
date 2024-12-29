@@ -12,3 +12,21 @@ export const onNewChatError = (callback) => {
     callback(errorMessage);
   });
 };
+
+export const getLatestChat = (group) =>{
+  socket.emit('latestChat', {group})
+}
+
+export const onLatestChat = (callback) => {
+  const handleLatestChat = ({ message }) => {
+    callback(message); // Pass the message to the provided callback
+  };
+
+  // Register the listener
+  socket.on('latestChat', handleLatestChat);
+
+  // Return a cleanup function to remove the listener
+  return () => {
+    socket.off('latestChat', handleLatestChat);
+  };
+};

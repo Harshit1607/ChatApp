@@ -35,6 +35,7 @@ export const createNewChat = async ({ text, user, group }) => {
     message: {
       message: text,
       sentBy: user._id,
+      viewedBy: user._id
     },
     Users: group.Users || [], // Ensure Users is an array
     Group: group._id,
@@ -45,4 +46,17 @@ export const createNewChat = async ({ text, user, group }) => {
   await newChat.save();
 
   return newChat;
+};
+
+
+export const getLatestChat = async ({ group }) => {
+  try {
+    const message = await Chat.findOne({ Group: group._id })
+      .sort({ createdAt: -1 })
+      .exec(); // Use exec() for better debugging with Promises
+    return message;
+  } catch (error) {
+    console.error("Error in getLatestChat:", error);
+    throw error;
+  }
 };
