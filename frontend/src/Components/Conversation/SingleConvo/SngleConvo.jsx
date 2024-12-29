@@ -37,8 +37,6 @@ const SngleConvo = ({single}) => {
       return;
     });
 
-    console.log(message)
-
     return () => {
       cleanup(); // Clean up the listener on unmount
     };

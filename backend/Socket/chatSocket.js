@@ -50,10 +50,20 @@ export const chatSocket = (io) =>{
         io.in(group._id).emit("viewChat", { viewedChats });
       }
     } catch (error) {
-      
+      console.error("Error viewing chat:", error);
     }
   })
+
+  socket.on('typing', ({group, user}) => {
+    console.log("User typing in group:", group._id,);
+    socket.to(group._id).emit('typing', { typing: true, by: user});
+  });
   
+  socket.on('stop typing', ({group, user}) => {
+    console.log("User stopped typing in group:", group._id);
+    socket.to(group._id).emit('stop typing', { typing: false, by: user });
+  });
+
 
   });
 }

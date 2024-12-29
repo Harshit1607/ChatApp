@@ -43,3 +43,7 @@ export const Close_Chat = 'Close_Chat'
 
 export const View_Chat_Success = 'View_Chat_Success'
 export const View_Chat_Failure = 'View_Chat_Failure'
+
+export const Typing = "Typing"
+
+export const Stop_Typing = "Stop_Typing"

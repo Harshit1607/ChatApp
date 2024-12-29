@@ -4,12 +4,11 @@ import Chat from '../models/chats.js'
 export const getChats = async (req,res)=>{
   const {group, user} = req.body;
   try {
-    console.log(user._id)
     await Chat.updateMany(
       { Group: group._id }, // Match the group
       { $addToSet: { 'message.viewedBy': user._id } } // Add user to `viewedBy` only if not already present
     );
-    const chats = await Chat.find({Group: group._id}).sort({ createdAt: 1 });
+    const chats = await Chat.find({Group: group._id}).sort({ createdAt: -1 });
     res.status(200).json({chats});
   } catch (error) {
     console.log(error)
@@ -66,20 +65,33 @@ export const getLatestChat = async ({ group }) => {
   }
 };
 
-export const viewChat = async ({group, user}) =>{
+export const viewChat = async ({ group, user }) => {
   try {
+    // Ensure group and user IDs are provided
+    if (!group?._id || !user?._id) {
+      throw new Error("Group ID or User ID is missing.");
+    }
+
+    // Attempt to update the chats
     const viewedChats = await Chat.updateMany(
       { 
         Group: group._id,           // Match the group
-        'message.viewedBy': { $ne: user._id }   // Ensure the user ID is not already in `viewedBy`
+        'message.viewedBy': { $ne: user._id }   // Ensure user ID is not already in `viewedBy`
       },
       { 
-         $addToSet: { 'message.viewedBy': user._id }  // Add the user ID to `viewedBy` if not already present
+        $addToSet: { 'message.$[].viewedBy': user._id }  // Add user ID to `viewedBy`
       }
     );
+
+    // Return null if no chats are found (matchedCount is 0)
+    if (viewedChats.matchedCount === 0) {
+      return null;
+    }
+
+    // Return the result of the update operation
     return viewedChats;
   } catch (error) {
-    console.error("Error in viewing", error);
+    console.error("Error in viewing chats:", error);
     throw error;
   }
-}
+};

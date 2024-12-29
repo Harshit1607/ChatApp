@@ -3,15 +3,34 @@ import styles from './ChatInput.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { newChat } from '../../../Redux/Chat/chatActions'
 import send from '../../../Assets/send.svg'
+import { Debouncing } from '../../../Utils/Debouncing'
+import { stopTyping, typingIndi } from '../../../Socket/ChatSocket'
 
 const ChatInput = () => {
   const {user} = useSelector(state=>state.userReducer);
   const {groupChat} = useSelector(state=>state.groupReducer);
   const [text, setText] = useState("")
+  const [typing, setTyping] = useState(false)
   const dispatch = useDispatch();
+
   const handleInput = (e)=>{
     const value = e.target.value
     setText(value)
+
+    
+    
+    if(!typing){
+      setTyping(true);
+      // call socket.emit(typing) here
+      typingIndi(groupChat, user)
+    }
+    const debouncedStopTyping = Debouncing(() => {
+      setTyping(false); // Update typing state
+      stopTyping(groupChat, user); // Emit 'stop typing' event
+    }, 3000); // Shortened timeout to 2000ms (2 seconds)
+  
+    // Call debounced function
+    debouncedStopTyping();
   }
 
   const handleClick = ()=>{

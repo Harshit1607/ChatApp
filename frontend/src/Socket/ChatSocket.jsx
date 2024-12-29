@@ -34,3 +34,38 @@ export const onLatestChat = (callback) => {
 export const viewChat = (group, user) =>{
   socket.emit('viewChat', {group, user})
 }
+
+export const typingIndi = (group, user) =>{
+  
+  socket.emit("typing", {group, user})
+}
+
+export const stopTyping = (group, user) =>{
+  socket.emit("stop typing", {group, user})
+}
+
+export const otherTyping = (callback) => {
+  const handleTyping = ({ typing, by }) => {
+    
+    callback(typing, by); // Pass typing state and user info
+  };
+;
+  socket.on('typing', handleTyping);
+
+  return () => {
+    socket.off('typing', handleTyping);
+  };
+};
+
+export const otherStopTyping = (callback) => {
+  const handleStopTyping = ({ typing, by }) => {
+  
+    callback(typing, by); // Pass typing state and user info
+  };
+
+  socket.on('stop typing', handleStopTyping);
+
+  return () => {
+    socket.off('stop typing', handleStopTyping);
+  };
+};
