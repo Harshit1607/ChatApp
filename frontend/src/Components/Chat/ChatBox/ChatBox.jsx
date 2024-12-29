@@ -3,14 +3,19 @@ import styles from './ChatBox.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadChats } from '../../../Redux/Chat/chatActions';
 import SingleChat from '../SingleChat/SingleChat';
+import { viewChat } from '../../../Socket/ChatSocket';
 
 const ChatBox = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
+  const {user} = useSelector(state=>state.userReducer);
   const {chats} = useSelector(state=>state.chatReducer);
   const dispatch = useDispatch();
   useEffect(()=>{
-    dispatch(loadChats(groupChat));
+    dispatch(loadChats(groupChat, user));
   }, [groupChat])
+  useEffect(()=>{
+    viewChat(groupChat, user)
+  }, [chats])
   return (
     <div className={styles.main}>
       {

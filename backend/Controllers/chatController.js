@@ -2,9 +2,14 @@ import Group from '../models/groups.js'
 import Chat from '../models/chats.js'
 
 export const getChats = async (req,res)=>{
-  const {group} = req.body;
+  const {group, user} = req.body;
   try {
-    const chats = await Chat.find({Group: group._id}).sort({ createdAt: 1 });;
+    console.log(user._id)
+    await Chat.updateMany(
+      { Group: group._id }, // Match the group
+      { $addToSet: { 'message.viewedBy': user._id } } // Add user to `viewedBy` only if not already present
+    );
+    const chats = await Chat.find({Group: group._id}).sort({ createdAt: 1 });
     res.status(200).json({chats});
   } catch (error) {
     console.log(error)
@@ -60,3 +65,21 @@ export const getLatestChat = async ({ group }) => {
     throw error;
   }
 };
+
+export const viewChat = async ({group, user}) =>{
+  try {
+    const viewedChats = await Chat.updateMany(
+      { 
+        Group: group._id,           // Match the group
+        'message.viewedBy': { $ne: user._id }   // Ensure the user ID is not already in `viewedBy`
+      },
+      { 
+         $addToSet: { 'message.viewedBy': user._id }  // Add the user ID to `viewedBy` if not already present
+      }
+    );
+    return viewedChats;
+  } catch (error) {
+    console.error("Error in viewing", error);
+    throw error;
+  }
+}

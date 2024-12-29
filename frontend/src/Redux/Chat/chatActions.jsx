@@ -5,11 +5,11 @@ import { sendNewChat } from '../../Socket/ChatSocket';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
-export const loadChats = (group) => async (dispatch)=>{
+export const loadChats = (group, user) => async (dispatch)=>{
   dispatch({type: Load_Chat_Request})
   
   try {
-    const result = await axios.post(`${API_URL}chat/all`,{group});
+    const result = await axios.post(`${API_URL}chat/all`,{group, user});
     
     dispatch({type: Load_Chat_Success, payload: result.data})
   } catch (error) {

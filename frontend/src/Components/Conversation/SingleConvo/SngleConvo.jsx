@@ -3,6 +3,7 @@ import styles from './SingleConvo.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { openGroup } from '../../../Redux/Group/groupActions'
 import { getLatestChat, onLatestChat } from '../../../Socket/ChatSocket'
+import spidermanFace from '../../../Assets/spidermanFace.svg'
 
 const SngleConvo = ({single}) => {
   const {user} = useSelector(state=>state.userReducer);
@@ -60,7 +61,9 @@ const SngleConvo = ({single}) => {
         <span>{message ? message.message.message : null}</span>
       </div>
       <div className={styles.others}>
-        <div></div>
+        <div>
+          {message && !message.message.viewedBy.includes(user._id) ? <img src={spidermanFace} /> : null}
+        </div>
         <span>11:11 am</span>
       </div>
     </div>

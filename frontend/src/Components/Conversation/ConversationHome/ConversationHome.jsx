@@ -31,7 +31,7 @@ const ConversationHome = () => {
         <span>Conversations</span>
       </div>
       <div className={styles.searchBar}>
-        <input onChange={handleChange}/>
+        <input onChange={handleChange} placeholder='Search for users..'/>
         <div onClick={handleGroup}>
           <img src={spiderGroupBig} alt="Grp" />
         </div>

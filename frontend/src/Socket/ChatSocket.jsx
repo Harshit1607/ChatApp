@@ -30,3 +30,7 @@ export const onLatestChat = (callback) => {
     socket.off('latestChat', handleLatestChat);
   };
 };
+
+export const viewChat = (group, user) =>{
+  socket.emit('viewChat', {group, user})
+}

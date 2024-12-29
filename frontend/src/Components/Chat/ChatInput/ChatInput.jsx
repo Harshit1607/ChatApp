@@ -13,13 +13,28 @@ const ChatInput = () => {
     const value = e.target.value
     setText(value)
   }
+
   const handleClick = ()=>{
-    dispatch(newChat(text, user, groupChat))
-    setText("")
+    if (text.trim()) { // Prevent sending an empty message
+      dispatch(newChat(text, user, groupChat));
+      setText(""); // Clear the input after sending
+    }
   }
+
+  const handleKeyDown = (e) =>{
+    if (e.key === "Enter" && !e.shiftKey) { // If Enter is pressed without Shift
+      e.preventDefault(); // Prevent form submission or newline
+      handleClick(); // Trigger handleClick function
+    } else if (e.key === "Enter" && e.shiftKey) { // If Shift + Enter is pressed
+      // Allow newline
+      setText(prev => prev + '\n'); // Add a newline to the text
+    }
+  }
+
+  
   return (
     <div className={styles.main}>
-      <input type="text" value={text} onChange={(e)=>handleInput(e)}/>
+      <input type="text" value={text} onChange={(e)=>handleInput(e)} onKeyDown={handleKeyDown} placeholder='Enter you message...'/>
       <div onClick={handleClick}>
         <img src={send} />
       </div>

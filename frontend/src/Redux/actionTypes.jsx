@@ -40,3 +40,6 @@ export const Create_Group_Success = 'Create_Group_Success'
 export const Create_Group_Failure = 'Create_Group_Failure'
 
 export const Close_Chat = 'Close_Chat'
+
+export const View_Chat_Success = 'View_Chat_Success'
+export const View_Chat_Failure = 'View_Chat_Failure'

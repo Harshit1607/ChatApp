@@ -32,8 +32,14 @@ const Login = () => {
     dispatch(login(phone, pass));
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleContinue(); // Trigger handleContinue when Enter is pressed
+    }
+  };
+
   return (
-    <div className={styles.main}>
+    <div className={styles.main} onKeyDown={handleKeyDown} tabIndex="0">
       <div className={styles.authContainer} >
         <div className={styles.left}>
           <img src={spiderSmall} />

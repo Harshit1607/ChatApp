@@ -1,4 +1,4 @@
-import { createNewChat, getLatestChat, newChat } from "../Controllers/chatController.js";
+import { createNewChat, getLatestChat, newChat, viewChat } from "../Controllers/chatController.js";
 
 
 
@@ -38,6 +38,21 @@ export const chatSocket = (io) =>{
       console.error("Error fetching latest chat:", error);
     }
   });
+
+  socket.on('viewChat', async ({group, user})=>{
+    if (!group || !user) {
+      console.error("Invalid data received.");
+      return;
+    }
+    try {
+      const viewedChats = await viewChat({group, user});
+      if(viewedChats){
+        io.in(group._id).emit("viewChat", { viewedChats });
+      }
+    } catch (error) {
+      
+    }
+  })
   
 
   });

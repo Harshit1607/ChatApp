@@ -39,5 +39,6 @@
     height: 15px;
     border-radius: 50%;
     background-color: $primaryColor;
+    @include flexbox;
   }
 }
