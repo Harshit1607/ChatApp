@@ -11,8 +11,11 @@ export const chatSocket = (io) =>{
       try {
         // Call the newChat controller function to save the new chat
         const newChatData = await createNewChat({ text, user, group });
-        // Emit the new chat message to the group
-        io.in(group._id).emit("new message", { newChat: newChatData });
+        
+        group.Users.forEach(user=>{
+          socket.to(user).emit("new message", { newChat: newChatData })
+        })
+        io.in(user._id).emit("new message", { newChat: newChatData })
       } catch (error) {
         console.error('Error while saving chat:', error);
         socket.emit('error', 'Unable to send chat');
@@ -55,12 +58,10 @@ export const chatSocket = (io) =>{
   })
 
   socket.on('typing', ({group, user}) => {
-    console.log("User typing in group:", group._id,);
     socket.to(group._id).emit('typing', { typing: true, by: user});
   });
   
   socket.on('stop typing', ({group, user}) => {
-    console.log("User stopped typing in group:", group._id);
     socket.to(group._id).emit('stop typing', { typing: false, by: user });
   });
 

@@ -4,11 +4,10 @@ export const joinGroup = (data) => {
  socket.emit('joinGroup', (data));
 };
 
+export const leaveGroup = (data) => {
+  socket.emit('leaveGroup', (data));
+ };
 
-
-
-// export const groupCreated = (callback) =>{
-//   socket.on('groupCreated', (friend)=>{
-//     callback(friend);
-//   })
-// }
+export const joinUser = (user) => {
+  socket.emit('joinUser', (user));
+ };

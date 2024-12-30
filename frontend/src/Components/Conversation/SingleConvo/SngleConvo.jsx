@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { openGroup } from '../../../Redux/Group/groupActions'
 import { getLatestChat, onLatestChat } from '../../../Socket/ChatSocket'
 import spidermanFace from '../../../Assets/spidermanFace.svg'
+import { leaveGroup } from '../../../Socket/GroupSocket'
 
 const SngleConvo = ({single}) => {
   const {user} = useSelector(state=>state.userReducer);
+  const {groupChat} = useSelector(state=>state.groupReducer);
   const {chats} = useSelector(state=>state.chatReducer);
   const [message, setMessage] = useState("")
 
@@ -41,12 +43,17 @@ const SngleConvo = ({single}) => {
       cleanup(); // Clean up the listener on unmount
     };
   })
-  
 
+  const sentBy = (id) =>{
+    const sent = single.UserDetails.find(each => each._id === id);
+  return sent ? sent.name : undefined;
+  }
 
   const name = !single.isGroup && single.name === "" ? findName() : single.name;
   const handleClick = () =>{
-
+    if(groupChat){
+      leaveGroup(single)
+    }
     dispatch(openGroup(user, null, single));
   }
   return (
@@ -56,11 +63,11 @@ const SngleConvo = ({single}) => {
       </div>
       <div className={styles.info}>
         <span>{name}</span>
-        <span>{message ? message.message.message : null}</span>
+        <span>{message ? `${message.message.sentBy[0]===user._id ? "You": (single.isGroup? sentBy(message.message.sentBy[0]): name)} : ${message.message.message}`  : null}</span>
       </div>
       <div className={styles.others}>
         <div>
-          {message && !message.message.viewedBy.includes(user._id) ? <img src={spidermanFace} /> : null}
+          {message && !message.message.viewedBy.includes(user._id) && (groupChat ? !(message.Group === groupChat._id) : true) ? <img src={spidermanFace} /> : null}
         </div>
         <span>11:11 am</span>
       </div>

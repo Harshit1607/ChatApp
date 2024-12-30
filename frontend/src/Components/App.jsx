@@ -7,6 +7,8 @@ import Login from './Auth/Login/Login';
 import { useEffect } from 'react';
 import Welcome from './Auth/Welcome/Welcome';
 import GlobalSocket from '../Socket/GlobalSocket';
+import { joinUser } from '../Socket/GroupSocket';
+
 
 function App() {
   const {user} = useSelector(state=>state.userReducer);
@@ -19,6 +21,13 @@ function App() {
       navigate('/home');
     }
   },[user])
+  useEffect(()=>{
+    if(user){
+      joinUser(user)
+    }
+  }, [])
+
+  
 
 
   return (

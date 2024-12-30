@@ -21,18 +21,21 @@ const ChatBox = () => {
 
   return (
     <div className={styles.main}>
-      <div style={{"display": !typing? "none" : ""}} className={styles.typingIndicator}>
-        <img src={spider} alt="" />
-        <img src={spider} alt="" />
-        <img src={spider} alt="" />
-        <img src={spider} alt="" />
+      <div className={styles.chatbox}>
+        {
+          groupChat && chats && chats.length > 0? chats.filter(chat=>chat.Group[0] === groupChat._id).map((chat, index)=>(
+            <SingleChat chat={chat} key={index}/>
+          )): null
+        }
       </div>
-      {
-        groupChat && chats && chats.length > 0? chats.filter(chat=>chat.Group[0] === groupChat._id).map((chat, index)=>(
-          <SingleChat chat={chat} key={index}/>
-        )): null
-      }
+      <div style={{"display": !typing? "none" : ""}} className={styles.typingIndicator}>
+          <img src={spider} alt="" />
+          <img src={spider} alt="" />
+          <img src={spider} alt="" />
+          <img src={spider} alt="" />
+        </div>
     </div>
+    
   )
 }
 

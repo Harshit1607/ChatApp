@@ -11,6 +11,7 @@ const GlobalSocket = () => {
   useEffect(() => {
 
     const handleNewChat = ({ newChat }) => {
+      console.log(" xf ")
       dispatch({ type: New_Chat_Success, payload: { newChat } });
     };
   
