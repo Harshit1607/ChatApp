@@ -47,3 +47,5 @@ export const View_Chat_Failure = 'View_Chat_Failure'
 export const Typing = "Typing"
 
 export const Stop_Typing = "Stop_Typing"
+
+export const Sort_Groups = "Sort_Groups"

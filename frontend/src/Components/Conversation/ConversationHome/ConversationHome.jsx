@@ -39,7 +39,7 @@ const ConversationHome = () => {
       </div>
       <div className={styles.covoContainer}>
         <span>Recent Chats</span>
-        {allFriends ? allFriends.map((single, index) => (
+        {allFriends ? [...allFriends].map((single, index) => (
             <SingleConvo single={single} key={index}/>
         )): null}
       </div>

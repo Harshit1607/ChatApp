@@ -1,5 +1,4 @@
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, Search_Users_Failure, Search_Users_Request, Search_Users_Success } from "../actionTypes";
-import { searchUsers } from "./homeActions";
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups } from "../actionTypes";
 
 
 const initialState = {
@@ -50,6 +49,55 @@ function homeReducer(state=initialState,action){
         ...state,
         searchUsers: [],
       }
+    case Sort_Groups:
+      if(!sessionStorage.getItem('chats')){
+        return{
+          ...state,
+        }
+      }else {
+       // Retrieve and parse chats from sessionStorage
+          const chats = JSON.parse(sessionStorage.getItem('chats'));
+
+          // Sort the chats by createdAt (most recent first)
+          const sortedChats = [...chats].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+          // Map to find the latest chat for each group
+          const groupLatestChats = {};
+          sortedChats.forEach(chat => {
+            const groupId = chat.Group?.[0]?.toString(); // Assuming Group is an array
+            if (groupId && (!groupLatestChats[groupId] || new Date(chat.createdAt) > new Date(groupLatestChats[groupId].createdAt))) {
+              groupLatestChats[groupId] = chat;
+            }
+          });
+
+          // Sort groups based on the latest chat's createdAt timestamp
+          const sortedGroups = state.allFriends
+            .map(group => {
+              const groupId = group._id.toString();
+              const latestChat = groupLatestChats[groupId] || null;
+              return { ...group, latestChat };
+            })
+            .sort((a, b) => {
+              const dateA = new Date(a.latestChat?.createdAt || 0).getTime();
+              const dateB = new Date(b.latestChat?.createdAt || 0).getTime();
+              return dateB - dateA; // Most recent first
+            })
+            .map(group => {
+              // Remove the latestChat field after sorting
+              const { latestChat, ...rest } = group;
+              return rest;
+            });
+
+          // Store the sorted groups in localStorage
+          localStorage.setItem('allFriends', JSON.stringify(sortedGroups));
+          console.log(sortedGroups)
+          // Return the updated state
+          return {
+            ...state,
+            allFriends: [...sortedGroups],
+          }; 
+      }
+      
     case All_Users_Failure:
     case All_Friends_Failure:
     case Search_Users_Failure:

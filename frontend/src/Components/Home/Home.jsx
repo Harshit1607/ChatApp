@@ -5,21 +5,24 @@ import styles from './Home.module.scss'
 import ChatHome from '../Chat/ChatHome/ChatHome'
 import ConversationHome from '../Conversation/ConversationHome/ConversationHome'
 import Navbar from '../Navbar/Navbar'
-import { getAllFriends, getAllUsers } from '../../Redux/Home/homeActions'
+import { getAllFriends, getAllUsers, sortGroups } from '../../Redux/Home/homeActions'
 import Search from '../Search/Search'
 import Group from '../Group/Group'
 
 const Home = () => {
   const { user } = useSelector(state => state.userReducer)
-  const { searchUsers } = useSelector((state) => state.homeReducer);
+  const { searchUsers, allFriends } = useSelector((state) => state.homeReducer);
   const { makeGroup } = useSelector((state) => state.groupReducer);
+  const {chats} = useSelector(state=>state.chatReducer);
   const dispatch = useDispatch()
   useEffect(()=>{
     dispatch(getAllFriends(user));
-  },[user])
-  useEffect(()=>{
     
-  },[dispatch])
+  },[user])
+
+  useEffect(()=>{
+    dispatch(sortGroups())
+  }, [chats])
   // Directly check if the user exists in Redux or localStorage
   const isAuth = user || localStorage.getItem('user')
 
