@@ -69,3 +69,7 @@ export const otherStopTyping = (callback) => {
     socket.off('stop typing', handleStopTyping);
   };
 };
+
+export const checkUser = (user)=>{
+  socket.emit("checkUser", (user));
+}

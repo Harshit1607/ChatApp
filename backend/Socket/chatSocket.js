@@ -1,4 +1,5 @@
 import { createNewChat, getLatestChat, newChat, viewChat } from "../Controllers/chatController.js";
+import { checkUserOnline } from "../Controllers/userController.js";
 
 
 
@@ -65,6 +66,17 @@ export const chatSocket = (io) =>{
     socket.to(group._id).emit('stop typing', { typing: false, by: user });
   });
 
+  socket.on('checkUser', async (user) =>{
+    if(!user){
+      console.log("Invalid data")
+      return;
+    }try {
+      const {status, lastSeen} = await checkUserOnline(user);
+      socket.emit('checkUser', {status, lastSeen});
+    } catch (error) {
+      console.error("Error checking:", error);
+    }
+  })
 
   });
 }

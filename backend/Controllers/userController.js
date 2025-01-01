@@ -2,6 +2,7 @@ import User from '../models/user.js'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken';
+import { redisClient } from '../redis.js';
 
 dotenv.config();
 const jwt_secret = process.env.JWT_SECRET
@@ -44,4 +45,36 @@ export const login = async (req, res) =>{
   }
 }
 
+const formatDateTime = (date) => {
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const amPm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12; // Convert to 12-hour format, handle 0 as 12
 
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear().toString().slice(-2);
+
+  return `${hours}:${minutes} ${amPm} ${month}/${day}/${year}`;
+};
+
+export const markUserOnline = async (user) =>{
+  const currentTime = new Date();
+  const time = formatDateTime(currentTime)
+  await redisClient.set(`user:${user._id}:status`, 'online'); 
+  await redisClient.set(`user:${user._id}:last_seen`, time);
+}
+
+export const markUserOffline = async (user) =>{
+  const currentTime = new Date();
+  const time = formatDateTime(currentTime)
+  await redisClient.set(`user:${user}:status`, 'offline'); 
+  await redisClient.set(`user:${user}:last_seen`, time);
+}
+
+export const checkUserOnline = async (user) =>{
+  const status = await redisClient.get(`user:${user._id}:status`); 
+  const lastSeen =await redisClient.get(`user:${user._id}:last_seen`);
+
+  return {status, lastSeen}
+}

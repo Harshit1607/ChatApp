@@ -1,5 +1,6 @@
 import { Server } from 'socket.io';
 import http from 'http';
+import { markUserOffline } from '../Controllers/userController.js';
 
 // Export the io instance and server for use in other files
 export const initSocketServer = (app, corsOptions) => {
@@ -12,7 +13,11 @@ export const initSocketServer = (app, corsOptions) => {
   io.on('connection', (socket) => {
     console.log('Socket connected:', socket.id);
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
+      const userId = socket.userId;
+      if(userId){
+        await markUserOffline(userId);
+      }
       console.log('Socket disconnected:', socket.id);
     });
   });

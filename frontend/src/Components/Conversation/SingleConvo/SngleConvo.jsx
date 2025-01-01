@@ -14,8 +14,6 @@ const SngleConvo = ({single}) => {
 
   const dispatch = useDispatch();
 
-  
-
   const findName = () => {
     let name;
     single.UserDetails.forEach(each => {
@@ -28,7 +26,7 @@ const SngleConvo = ({single}) => {
 
   useEffect(() => {
     getLatestChat(single);
-  }, [single, chats]);
+  }, [chats?.length]);
 
   useEffect(()=>{
 
@@ -56,6 +54,23 @@ const SngleConvo = ({single}) => {
     }
     dispatch(openGroup(user, null, single));
   }
+
+  const formatDateTime =(timestamp)=> {
+    const now = Date.now();
+    const elapsed = now - timestamp; // Difference in milliseconds
+    const oneDay = 24 * 60 * 60 * 1000; // Milliseconds in 24 hours
+  
+    const dateObj = new Date(timestamp);
+  
+    if (elapsed > oneDay) {
+      // If more than 24 hours, return the date in a readable format
+      return dateObj.toLocaleDateString(); // Example: "12/31/2024" (MM/DD/YYYY format)
+    } else {
+      // If less than 24 hours, return the time in a readable format
+      return dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }); // Example: "12:45 PM"
+    }
+  }
+
   return (
     <div className={styles.main} onClick={handleClick}>
       <div className={styles.pfp}>
@@ -67,9 +82,9 @@ const SngleConvo = ({single}) => {
       </div>
       <div className={styles.others}>
         <div>
-          {message && !message.message.viewedBy.includes(user._id) && (groupChat ? !(message.Group === groupChat._id) : true) ? <img src={spidermanFace} /> : null}
+          {message && !message.message.viewedBy.includes(user._id) && (groupChat ? (message.Group === groupChat._id) : true) ? <img src={spidermanFace} /> : null}
         </div>
-        <span>11:11 am</span>
+        <span>{message && message.createdAt ? formatDateTime(message.createdAt) : ""}</span>
       </div>
     </div>
   )

@@ -17,7 +17,7 @@ const ChatBox = () => {
   }, [groupChat])
   useEffect(()=>{
     viewChat(groupChat, user)
-  }, [chats])
+  }, [chats?.length])
 
   return (
     <div className={styles.main}>

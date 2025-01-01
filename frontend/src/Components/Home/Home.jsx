@@ -17,12 +17,13 @@ const Home = () => {
   const dispatch = useDispatch()
   useEffect(()=>{
     dispatch(getAllFriends(user));
-    
   },[user])
 
   useEffect(()=>{
-    dispatch(sortGroups())
-  }, [chats])
+    if(allFriends){
+      dispatch(sortGroups())
+    }
+  }, [user, chats?.length])
   // Directly check if the user exists in Redux or localStorage
   const isAuth = user || localStorage.getItem('user')
 

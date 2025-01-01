@@ -90,7 +90,6 @@ function homeReducer(state=initialState,action){
 
           // Store the sorted groups in localStorage
           localStorage.setItem('allFriends', JSON.stringify(sortedGroups));
-          console.log(sortedGroups)
           // Return the updated state
           return {
             ...state,

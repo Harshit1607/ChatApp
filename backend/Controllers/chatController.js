@@ -67,29 +67,28 @@ export const getLatestChat = async ({ group }) => {
 
 export const viewChat = async ({ group, user }) => {
   try {
-    // Ensure group and user IDs are provided
     if (!group?._id || !user?._id) {
       throw new Error("Group ID or User ID is missing.");
     }
 
-    // Attempt to update the chats
-    const viewedChats = await Chat.updateMany(
-      { 
-        Group: group._id,           // Match the group
-        'message.viewedBy': { $ne: user._id }   // Ensure user ID is not already in `viewedBy`
+    // Update chats
+    await Chat.updateMany(
+      {
+        Group: group._id,
+        'message.viewedBy': { $ne: user._id }
       },
-      { 
-        $addToSet: { 'message.$[].viewedBy': user._id }  // Add user ID to `viewedBy`
+      {
+        $addToSet: { 'message.viewedBy': user._id }
       }
     );
 
-    // Return null if no chats are found (matchedCount is 0)
-    if (viewedChats.matchedCount === 0) {
-      return null;
-    }
+    // Fetch updated chats
+    const updatedChats = await Chat.find({
+      Group: group._id,
+      'message.viewedBy': user._id
+    });
 
-    // Return the result of the update operation
-    return viewedChats;
+    return updatedChats; // Ensure this is an array
   } catch (error) {
     console.error("Error in viewing chats:", error);
     throw error;

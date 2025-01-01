@@ -28,6 +28,7 @@ function chatReducer(state=initialState,action){
     case New_Chat_Success:
       const newChats = [action.payload.newChat,...state.chats ]
       sessionStorage.setItem('chats',JSON.stringify(newChats));
+      console.log("called")
       return{
         ...state,
         chats:newChats,
@@ -35,22 +36,25 @@ function chatReducer(state=initialState,action){
         error: null,
       }
     case View_Chat_Success:
-      if(!action.payload || action.payload.viewedChats.length === 0){
-        return{
-          ...state
-        }
-      }else{
-        const updatedChats = state.chats.map(chat=>{
-          const viewedChat = action.payload.viewedChats.find(view=>view._id === chat._id);
-          return viewedChat? {...chat, ...viewedChat} : chat;
-        })
-        sessionStorage.setItem('chats',JSON.stringify(updatedChats));
-        return{
+      if (!action.payload || !Array.isArray(action.payload.viewedChats) || action.payload.viewedChats.length === 0 || !state.chats) {
+        return {
           ...state,
-          chats:updatedChats,
-          loading:false,
+        };
+      } else {
+        console.log("called view")
+        const updatedChats = state.chats.map((chat) => {
+          const viewedChat = action.payload.viewedChats.find((view) => view._id === chat._id);
+          return viewedChat ? { ...chat, ...viewedChat } : chat;
+        });
+      
+        sessionStorage.setItem('chats', JSON.stringify(updatedChats));
+      
+        return {
+          ...state,
+          chats: updatedChats,
+          loading: false,
           error: null,
-        }
+        };
       }
       
     case Typing:

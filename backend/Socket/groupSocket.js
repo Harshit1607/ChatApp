@@ -1,3 +1,4 @@
+import { markUserOnline } from "../Controllers/userController.js";
 
 export const groupSocket = (io) =>{
   io.on('connection',(socket)=>{
@@ -12,9 +13,11 @@ export const groupSocket = (io) =>{
       }
     });
 
-    socket.on('joinUser', (data) => {
+    socket.on('joinUser', async (data) => {
       if (data && data._id) {
+        socket.userId = data._id
         socket.join(data._id);
+        markUserOnline(data);
         console.log(`User ${data._id} joined group ${data._id}`);
       } else {
         console.error('Invalid data received for joinUser:', data);
