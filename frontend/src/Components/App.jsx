@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import Welcome from './Auth/Welcome/Welcome';
 import GlobalSocket from '../Socket/GlobalSocket';
 import { joinUser } from '../Socket/GroupSocket';
+import Call from './Call/Call';
 
 
 function App() {
@@ -38,7 +39,9 @@ function App() {
         <Route path='/signup' element={<Signup />}/>
         <Route path='/login' element={<Login />}/>
         <Route path='/' element={<Welcome />}/>
+        
       </Routes>
+      <Call />
     </div>
   );
 }

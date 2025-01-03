@@ -1,19 +1,24 @@
 import React, {useState, useEffect} from 'react'
 import styles from './ChatNav.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
+import {useNavigate} from 'react-router-dom'
 import call from '../../../Assets/call.svg'
 import video from '../../../Assets/video.svg'
 import cross from '../../../Assets/cross.svg'
 import { closeChat } from '../../../Redux/Group/groupActions';
 import socket from '../../../Socket/Socket';
+import { makeCall } from '../../../Redux/Call/callActions';
+
 
 const ChatNav = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {user} = useSelector(state=>state.userReducer);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [status, setStatus] = useState("")
   const [lastSeen, setLastSeen] = useState("")
+  
 
   const findName = () => {
     let name;
@@ -34,34 +39,43 @@ const ChatNav = () => {
     }
 
    socket.on('checkUser', statusSeen) 
+
+   return ()=>{
+    socket.off('checkUser');
+   }
   })
+
+  
   
   const name = !groupChat.isGroup && groupChat.name === "" ? findName() : groupChat.name;
   
 ;  return (
-    <div className={styles.main}>
-      <div className={styles.pfp}>
-        <div></div>
-      </div>
-      <div className={styles.info}>
-        <span>{name}</span>
-        { groupChat.isGroup?
-          <span>{groupChat.UserDetails.map(each=>each.name).join(" ").substring(0,30)}</span>
-          :<span>{status==="online"? status : lastSeen ? `lastSeen: ${lastSeen}`: ""}</span>
-        }
-      </div>
-      <div className={styles.callBox}>
-        <div>
-          <img src={call} alt="" />
+
+    <>
+      <div className={styles.main}>
+        <div className={styles.pfp}>
+          <div></div>
         </div>
-        <div>
-          <img src={video} alt="" />
+        <div className={styles.info}>
+          <span>{name}</span>
+          { groupChat.isGroup?
+            <span>{groupChat.UserDetails.map(each=>each.name).join(" ").substring(0,30)}</span>
+            :<span>{status==="online"? status : lastSeen ? `lastSeen: ${lastSeen}`: ""}</span>
+          }
         </div>
-        <div onClick={()=>{dispatch(closeChat())}}>
-          <img src={cross} alt="" />
+        <div className={styles.callBox}>
+          <div onClick={()=>{dispatch(makeCall())}}>
+            <img src={call} alt="" />
+          </div>
+          <div onClick={()=>{dispatch(makeCall())}}>
+            <img src={video} alt="" />
+          </div>
+          <div onClick={()=>{dispatch(closeChat())}}>
+            <img src={cross} alt="" />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

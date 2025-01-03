@@ -4,12 +4,14 @@ import userReducer from "./User/userReducer";
 import homeReducer from "./Home/homeReducer";
 import groupReducer from "./Group/groupReducer";
 import chatReducer from "./Chat/chatReducer";
+import callReducer from "./Call/callReducer";
 
 const rootReducer = combineReducers({
   userReducer,
   homeReducer,
   groupReducer,
-  chatReducer
+  chatReducer, 
+  callReducer
 })
 
 const store = legacy_createStore(rootReducer, applyMiddleware(thunk));

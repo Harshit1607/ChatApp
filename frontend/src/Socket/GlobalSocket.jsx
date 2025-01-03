@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux"
+import {useNavigate} from 'react-router-dom';
 import socket from "./Socket.jsx";
-import { New_Chat_Success, Stop_Typing, Typing, View_Chat_Success } from '../Redux/actionTypes.jsx';
+import { Call_Rejected, ICE_Candidate_Received, New_Chat_Success, Recieved_Answer, Recieved_Offer, Stop_Typing, Typing, View_Chat_Success } from '../Redux/actionTypes.jsx';
 import { otherStopTyping, otherTyping } from './ChatSocket.jsx';
+import { storePeer } from '../Redux/Call/callActions.jsx';
 
 const GlobalSocket = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
  
   useEffect(() => {
@@ -34,6 +37,18 @@ const GlobalSocket = () => {
 
   socket.on('typing', handleTyping);
   socket.on('stop typing', handleStopTyping);
+
+  
+  // Handle call rejection
+  
+
+  // Handle ICE candidate reception
+  // const handleCandidate = ({ candidate }) => {
+  //   dispatch({ type: ICE_Candidate_Received, payload: { candidate } });
+  // };
+  // socket.on('receiveCandidate', handleCandidate);
+
+  
 
     return () => {
       socket.off("viewChat", handleViewChat)

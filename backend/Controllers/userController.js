@@ -75,6 +75,5 @@ export const markUserOffline = async (user) =>{
 export const checkUserOnline = async (user) =>{
   const status = await redisClient.get(`user:${user._id}:status`); 
   const lastSeen =await redisClient.get(`user:${user._id}:last_seen`);
-
   return {status, lastSeen}
 }

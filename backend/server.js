@@ -11,6 +11,7 @@ import { initSocketServer } from './Socket/socket.js';  // Import the function t
 import { chatSocket } from './Socket/chatSocket.js';
 import { groupSocket } from './Socket/groupSocket.js';
 import { redisClient } from './redis.js'; // Import the Redis client
+import { webrtcSocket } from './Socket/webrtcSocket.js';
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ const { server, io } = initSocketServer(app, corsOptions);
 
 groupSocket(io);
 chatSocket(io);
+webrtcSocket(io);
 
 // Export the server for listening later
 export { server, io };

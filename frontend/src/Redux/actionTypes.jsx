@@ -49,3 +49,21 @@ export const Typing = "Typing"
 export const Stop_Typing = "Stop_Typing"
 
 export const Sort_Groups = "Sort_Groups"
+
+export const Recieved_Offer  = 'Recieved_Offer'
+
+export const Sotre_Peer = "Sotre_Peer"
+
+export const Recieved_Answer = 'Recieved_Answer'
+
+export const Call_Rejected = 'Call_Rejected'
+
+export const ICE_Candidate_Received = 'ICE_Candidate_Received'
+
+export const Make__Call = 'Make__Call'
+
+export const Make__Incoming = 'Make__Incoming'
+
+export const Sotre_Candidate = "Sotre_Candidate"
+
+export const Clear_Offer = "Clear_Offer"
