@@ -1,27 +1,57 @@
 .main{
   position: absolute;
-  width: 200px;
-  height: 400px;
-  top:20%;
-  left:  20%;
-  @include flexbox(column);
-  >video{
-    width: 100%;
-    height: 50%;
+  width: 40%;
+  height: 60%;
+  @include flexbox(column, space-between);
+  background-color: $primaryColor;
+  color: $textColor;
+  > video{
+    width: 90%;
+    height: 40%;
+    border-radius: 10px;
   }
+  > div{
+    width: 100%;
+    height: 10%;
+    @include flexbox;
+    justify-content: space-evenly;
+    >button{
+      background-color: $textColor;
+      color: $primaryColor;
+      border: none;
+    }
+  }
+  
 }
+
 
 .incoming{
   position: absolute;
-  width: 200px;
-  height: 400px;
-  top:20%;
-  left:  20%;
+  width: 40%;
+  height: 60%;
+  background-color: $primaryColor;
+  color: $textColor;
   @include flexbox(column, end);
-  >div{
+  .acceptReject{
     width: 100%;
-    height: 30%;
+    height: 20%;
     @include flexbox;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    >button{
+      width: 40px;
+      height: 40px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      &:last-child{
+        background-color: greenyellow;
+      }
+    }
+  }
+  .info{
+    width: 100%;
+    height: 80%;
+    @include flexbox(column);
   }
 }

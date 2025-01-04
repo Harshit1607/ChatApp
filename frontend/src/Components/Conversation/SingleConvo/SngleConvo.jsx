@@ -50,7 +50,7 @@ const SngleConvo = ({single}) => {
   const name = !single.isGroup && single.name === "" ? findName() : single.name;
   const handleClick = () =>{
     if(groupChat){
-      leaveGroup(single)
+      leaveGroup(groupChat)
     }
     dispatch(openGroup(user, null, single));
   }
@@ -82,7 +82,7 @@ const SngleConvo = ({single}) => {
       </div>
       <div className={styles.others}>
         <div>
-          {message && !message.message.viewedBy.includes(user._id) && (groupChat ? (message.Group === groupChat._id) : true) ? <img src={spidermanFace} /> : null}
+          {message && !message.message.viewedBy.includes(user._id) && (groupChat ? (message.Group !== groupChat._id) : true) ? <img src={spidermanFace} /> : null}
         </div>
         <span>{message && message.createdAt ? formatDateTime(message.createdAt) : ""}</span>
       </div>

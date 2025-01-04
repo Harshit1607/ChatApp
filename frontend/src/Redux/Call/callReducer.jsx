@@ -52,7 +52,7 @@ function callReducer(state=initialState, action){
       return {
         ...state,
         call: false,
-        incoming: true,
+        incoming: false,
         peerConnection: null, 
         offer: null,
         sender: null,
@@ -63,7 +63,7 @@ function callReducer(state=initialState, action){
       return{
         ...state,
         call: false,
-        incoming: true,
+        incoming: false,
         peerConnection: null, 
         offer: null,
         sender: null,

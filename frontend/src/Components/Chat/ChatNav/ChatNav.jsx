@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import styles from './ChatNav.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
-import {useNavigate} from 'react-router-dom'
 import call from '../../../Assets/call.svg'
 import video from '../../../Assets/video.svg'
 import cross from '../../../Assets/cross.svg'
@@ -14,7 +13,6 @@ const ChatNav = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {user} = useSelector(state=>state.userReducer);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [status, setStatus] = useState("")
   const [lastSeen, setLastSeen] = useState("")

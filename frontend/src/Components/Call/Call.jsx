@@ -16,7 +16,6 @@ const Call = () => {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const pendingCandidates = useRef([]); // Ref to store ICE candidates if peerConnection is not ready
-  const [position, setPosition] = useState({ x: '50%', y: '50%' });
 
   useEffect(() => {
     if (call && !offer) {
@@ -70,19 +69,84 @@ const Call = () => {
     const handleRejection = () => {
       dispatch({ type: Call_Rejected });
     };
-    socket.on('callRejected', handleRejection);
 
-    socket.on('receiveOffer', handleReceiveOffer);
-    socket.on('receiveAnswer', handleReceiveAnswer);
-    
-    socket.on('receiveCandidate', handleReceiveCandidate);
-
-    return () => {
-      socket.off('receiveOffer', handleReceiveOffer);
-      socket.off('receiveAnswer', handleReceiveAnswer);
-      socket.off('callRejected', handleRejection);
-      socket.off('receiveCandidate', handleReceiveCandidate);
+    const handleCallEnd = () => {
+      // Perform the same cleanup on the receiving side
+      if (peerConnection) {
+        peerConnection.close();
+        dispatch(storePeer(null));
+      }
+  
+      if (localVideoRef.current && localVideoRef.current.srcObject) {
+        const stream = localVideoRef.current.srcObject;
+        stream.getTracks().forEach((track) => track.stop());
+        localVideoRef.current.srcObject = null;
+      }
+  
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = null;
+      }
+  
+      dispatch({ type: Call_Rejected });
+      console.log('Call ended by the other party.');
     };
+
+    const handleRecievedAudio = (data) => {
+      console.log(`Sender audio mute state: ${data.isMuted}`);
+
+      // Use remoteVideoRef to access the remote stream
+      if (remoteVideoRef.current && remoteVideoRef.current.srcObject) {
+        const remoteStream = remoteVideoRef.current.srcObject;
+        const audioTrack = remoteStream.getAudioTracks()[0]; // Get the audio track of the remote stream
+        if (audioTrack) {
+          audioTrack.enabled = data.isMuted; // Mute/Unmute the audio track based on sender's action
+        }
+      }
+    
+      // Update UI to reflect mute status
+      if (data.isMuted) {
+        console.log('Sender muted their audio');
+      } else {
+        console.log('Sender unmuted their audio');
+      }
+    }
+
+    const handleRecievedVideo =  (data) => {
+      console.log(`Sender video stop state: ${data.isStopped}`);
+
+      // Use remoteVideoRef to access the remote stream
+      if (remoteVideoRef.current && remoteVideoRef.current.srcObject) {
+        const remoteStream = remoteVideoRef.current.srcObject;
+        const videoTrack = remoteStream.getVideoTracks()[0]; // Get the video track of the remote stream
+        if (videoTrack) {
+          videoTrack.enabled = data.isStopped; // Stop/Start the video track based on sender's action
+        }
+      }
+
+      // Update UI to reflect video state
+      if (data.isStopped) {
+        console.log('Sender stopped their video');
+      } else {
+        console.log('Sender started their video');
+      }
+    }
+      socket.on('audioMute', handleRecievedAudio);
+      socket.on('videoStop', handleRecievedVideo);
+      socket.on('endCall', handleCallEnd);
+      socket.on('callRejected', handleRejection);
+      socket.on('receiveOffer', handleReceiveOffer);
+      socket.on('receiveAnswer', handleReceiveAnswer);
+      socket.on('receiveCandidate', handleReceiveCandidate);
+    
+      return () => {
+        socket.off('audioMute', handleRecievedAudio);
+        socket.off('videoStop', handleRecievedVideo);
+        socket.off('endCall', handleCallEnd);
+        socket.off('callRejected', handleRejection);
+        socket.off('receiveOffer', handleReceiveOffer);
+        socket.off('receiveAnswer', handleReceiveAnswer);
+        socket.off('receiveCandidate', handleReceiveCandidate);
+      };
   });
 
   
@@ -107,12 +171,6 @@ const Call = () => {
       stream.getTracks().forEach((track) => {
         peerConnection.addTrack(track, stream);
       });
-
-      // peerConnection.onicecandidate = (event) => {
-      //   if (event.candidate) {
-      //     socket.emit('sendCandidate', { candidate: event.candidate, recipient });
-      //   }
-      // };
 
       peerConnection.ontrack = (event) => {
         if (remoteVideoRef.current) {
@@ -187,6 +245,90 @@ const Call = () => {
     }
   };
 
+  const handleStopVideo = ()=>{
+    const stream = localVideoRef.current.srcObject; // Access the local media stream
+    const videoTrack = stream.getVideoTracks()[0]; // Get the video track of the stream
+
+    if (videoTrack) {
+      const isStopped = !videoTrack.enabled; // Toggle the current state
+      videoTrack.enabled = isStopped; // Stop/Start the video track
+
+      // Notify the receiver about the video state
+      if(sender){
+        socket.emit('videoStop', {
+          recipient: sender._id,
+          isStopped: isStopped, // True if stopped, false if started
+        });
+      }else{
+        const recipient = groupChat.Users.find((each) => each !== user._id);
+        socket.emit('videoStop', {
+          recipient,
+          isStopped: isStopped, // True if stopped, false if started
+        });
+      }
+    }
+  };
+  
+  const handleMuteAudio = ()=>{
+    const stream = localVideoRef.current.srcObject; // Access the local media stream
+    const audioTrack = stream.getAudioTracks()[0]; // Get the audio track of the stream
+
+    if (audioTrack) {
+      const isMuted = !audioTrack.enabled; // Toggle the current state
+      audioTrack.enabled = isMuted; // Mute/Unmute the audio track
+
+      // Notify the receiver about the mute/unmute state
+      if(sender){
+        socket.emit('audioMute', {
+          recipient: sender._id,
+          isMuted: isMuted, // True if muted, false if unmuted
+        });
+      }else{
+        const recipient = groupChat.Users.find((each) => each !== user._id);
+        socket.emit('audioMute', {
+          recipient,
+          isMuted: isMuted, // True if muted, false if unmuted
+        });
+      }
+    
+  }};
+  
+  const handleEndCall = () =>{
+    try {
+      // Close the peer connection
+      if (peerConnection) {
+        peerConnection.close();
+        dispatch(storePeer(null)); // Clear the peer connection in the state
+      }
+  
+      // Stop all local media tracks
+      if (localVideoRef.current && localVideoRef.current.srcObject) {
+        const stream = localVideoRef.current.srcObject;
+        stream.getTracks().forEach((track) => track.stop());
+        localVideoRef.current.srcObject = null;
+      }
+  
+      // Stop the remote video
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = null;
+      }
+  
+      // Notify the other party
+      if(sender){
+        socket.emit('endCall', { recipient: sender._id });
+      }else{
+        const recipient = groupChat.Users.find((each) => each !== user._id);
+        socket.emit('endCall', { recipient });
+      }
+      
+      dispatch({ type: Call_Rejected });
+  
+      console.log('Call ended successfully.');
+    } catch (error) {
+      console.error('Error ending the call:', error);
+    }
+  }
+
   useEffect(() => {
     
     if (peerConnection) {
@@ -206,11 +348,50 @@ const Call = () => {
     }
   }, [peerConnection, dispatch]);
 
+  const [position, setPosition] = useState({
+    x: window.innerWidth / 2 - 125,
+    y: window.innerHeight / 2 - 225,
+  });
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setPosition((prevPosition) => ({
+        x: Math.min(prevPosition.x, window.innerWidth - 250),
+        y: Math.min(prevPosition.y, window.innerHeight - 450),
+      }));
+    };
+  
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
   const onDragStart = (e) => {
     const { clientX, clientY } = e;
     setPosition({ x: clientX, y: clientY });
   };
-
+  
+  const onDrag = (e) => {
+    if (e.clientX === 0 && e.clientY === 0) return;
+    const { clientX, clientY } = e;
+  
+    const windowHeight = window.innerHeight;
+    const windowWidth = window.innerWidth;
+  
+    const element = e.target;
+    const rect = element.getBoundingClientRect();
+  
+    const newX = Math.min(
+      Math.max(clientX - rect.width / 2, 0),
+      windowWidth - rect.width
+    );
+    const newY = Math.min(
+      Math.max(clientY - rect.height / 2, 0),
+      windowHeight - rect.height
+    );
+  
+    setPosition({ x: newX, y: newY });
+  };
+  
   const onDragEnd = (e) => {
     const { clientX, clientY } = e;
     setPosition({ x: clientX, y: clientY });
@@ -220,25 +401,44 @@ const Call = () => {
     <>
       {call ? (
         <div
-          className={styles.incoming}
-        >VIdoes
-          <video ref={localVideoRef} autoPlay muted></video>
-          <video ref={remoteVideoRef} autoPlay></video>
-        </div>
-      ) : incoming && offer ? (
-        <div
           className={styles.main}
           draggable
           onDragStart={onDragStart}
+          onDrag={onDrag}
           onDragEnd={onDragEnd}
           style={{
+            position: "absolute",
             top: position.y,
             left: position.x,
           }}
         >
-          <div>
-            <button onClick={handleReject}>Reject</button>
-            <button onClick={handleAccept}>Accept</button>
+          <video ref={localVideoRef} autoPlay ></video>
+          <video ref={remoteVideoRef} autoPlay></video>
+          <div className={styles.control}>
+            <button onClick={handleMuteAudio}>MA</button>
+            <button onClick={handleEndCall}>E</button>
+            <button onClick={handleStopVideo}>MV</button>
+          </div>
+        </div>
+      ) : incoming && offer ? (
+        <div
+          className={styles.incoming}
+          draggable
+          onDragStart={onDragStart}
+          onDrag={onDrag}
+          onDragEnd={onDragEnd}
+          style={{
+            position: "absolute",
+            top: position.y,
+            left: position.x,
+          }}
+        >
+          <div className={styles.info}>
+            <span>{sender? sender.name : null}</span>
+          </div>
+          <div className={styles.acceptReject}>
+            <button onClick={handleReject}>R</button>
+            <button onClick={handleAccept}>A</button>
           </div>
         </div>
       ) : null}
