@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Clear_Offer, Make__Call, Make__Incoming, Sotre_Candidate, Sotre_Peer } from '../actionTypes';
+import { Auido_Only, Clear_Offer, Make__Call, Make__Incoming, Sotre_Candidate, Sotre_Peer } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -21,4 +21,8 @@ export const storeCandidate = (candidate)=>{
 
 export const clearOffer = ()=>{
   return{type: Clear_Offer}
+}
+
+export const onlyAudio = ()=>{
+  return{type: Auido_Only}
 }

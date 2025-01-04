@@ -6,7 +6,7 @@ import video from '../../../Assets/video.svg'
 import cross from '../../../Assets/cross.svg'
 import { closeChat } from '../../../Redux/Group/groupActions';
 import socket from '../../../Socket/Socket';
-import { makeCall } from '../../../Redux/Call/callActions';
+import { makeCall, onlyAudio } from '../../../Redux/Call/callActions';
 
 
 const ChatNav = () => {
@@ -62,7 +62,9 @@ const ChatNav = () => {
           }
         </div>
         <div className={styles.callBox}>
-          <div onClick={()=>{dispatch(makeCall())}}>
+          <div onClick={()=>{
+            dispatch(onlyAudio())
+            dispatch(makeCall())}}>
             <img src={call} alt="" />
           </div>
           <div onClick={()=>{dispatch(makeCall())}}>

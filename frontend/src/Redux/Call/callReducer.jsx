@@ -1,4 +1,4 @@
-import { Call_Rejected, Clear_Offer, ICE_Candidate_Received, Make__Call, Make__Incoming, Recieved_Answer, Recieved_Offer, Sotre_Candidate, Sotre_Peer } from "../actionTypes"
+import { Auido_Only, Call_Rejected, Clear_Offer, ICE_Candidate_Received, Make__Call, Make__Incoming, Recieved_Answer, Recieved_Offer, Sotre_Candidate, Sotre_Peer } from "../actionTypes"
 
 const initialState = {
   call: false,
@@ -8,10 +8,16 @@ const initialState = {
   sender: null,
   answer: null, 
   candidate: null,
+  audio: false,
 }
 
 function callReducer(state=initialState, action){
   switch(action.type){
+    case Auido_Only:
+      return{
+        ...state,
+        audio: true
+      }
     case Make__Call:
       return{
         ...state,
@@ -58,10 +64,12 @@ function callReducer(state=initialState, action){
         sender: null,
         answer: null, 
         candidate: null,
+        audio: false,
       }
     case Call_Rejected: 
       return{
         ...state,
+        audio: false,
         call: false,
         incoming: false,
         peerConnection: null, 

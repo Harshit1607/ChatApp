@@ -67,3 +67,4 @@ export const Make__Incoming = 'Make__Incoming'
 export const Sotre_Candidate = "Sotre_Candidate"
 
 export const Clear_Offer = "Clear_Offer"
+export const Auido_Only = 'Auido_Only'

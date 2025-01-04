@@ -2,13 +2,13 @@ export const webrtcSocket = (io) => {
   io.on('connection', (socket) => {
     console.log('Socket connected for WebRTC:', socket.id);
 
-    socket.on('sendOffer', ({ offer, recipient, user }) => {
+    socket.on('sendOffer', ({ offer, recipient, user, audio }) => {
       if (!offer || !recipient || !user) {
         console.error('Invalid data for sendOffer');
         return;
       }
       
-      socket.to(recipient).emit('receiveOffer', { offer, sender: user });
+      socket.to(recipient).emit('receiveOffer', { offer, sender: user, audioOnly: audio });
     
     });
 

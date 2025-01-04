@@ -5,10 +5,15 @@
   @include flexbox(column, space-between);
   background-color: $primaryColor;
   color: $textColor;
-  > video{
+  .avBox{
     width: 90%;
     height: 40%;
     border-radius: 10px;
+    @include flexbox(column, space-between);
+    >video{
+      width: 100%;
+      height: 90%;
+    }
   }
   > div{
     width: 100%;

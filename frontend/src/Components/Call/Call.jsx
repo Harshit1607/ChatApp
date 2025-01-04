@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import styles from './Call.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import socket from '../../Socket/Socket';
-import { makeCall, makeIncoming, storePeer, storeOffer, clearOffer } from '../../Redux/Call/callActions';
+import { makeCall, makeIncoming, storePeer, storeOffer, clearOffer, onlyAudio } from '../../Redux/Call/callActions';
 import { Call_Rejected, Recieved_Offer } from '../../Redux/actionTypes';
 
 const Call = () => {
   const { groupChat } = useSelector((state) => state.groupReducer);
   const { user } = useSelector((state) => state.userReducer);
-  const { call, incoming, peerConnection, offer,  sender } = useSelector(
+  const { call, incoming, peerConnection, offer,  sender, audio } = useSelector(
     (state) => state.callReducer
   );
 
@@ -24,9 +24,13 @@ const Call = () => {
   }, [call]);
 
   useEffect(() => {
-    const handleReceiveOffer = ({ offer, sender }) => {
+    const handleReceiveOffer = ({ offer, sender, audioOnly }) => {
       if (offer && offer.sdp && (offer.type === 'offer' || offer.type === 'answer')) {
         dispatch({ type: Recieved_Offer, payload: { offer, sender } });
+        if(audioOnly){
+          
+          dispatch(onlyAudio())
+        }
         dispatch(makeIncoming());
       } else {
         console.error('Received invalid offer:', offer);
@@ -164,13 +168,20 @@ const Call = () => {
           },
         ],
       });
-
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      localVideoRef.current.srcObject = stream;
-
-      stream.getTracks().forEach((track) => {
-        peerConnection.addTrack(track, stream);
-      });
+      if(audio){
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        localVideoRef.current.srcObject = stream;
+        stream.getTracks().forEach((track) => {
+          peerConnection.addTrack(track, stream);
+        });
+      }else{
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localVideoRef.current.srcObject = stream;
+        stream.getTracks().forEach((track) => {
+          peerConnection.addTrack(track, stream);
+        });
+      }
+      
 
       peerConnection.ontrack = (event) => {
         if (remoteVideoRef.current) {
@@ -182,8 +193,9 @@ const Call = () => {
 
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
-      socket.emit('sendOffer', { offer, recipient, user });
-      console.log(peerConnection)
+      
+      socket.emit('sendOffer', { offer, recipient, user, audio });
+    
       dispatch(storePeer(peerConnection));
     } catch (error) {
       console.error('Error starting call:', error);
@@ -228,9 +240,19 @@ const Call = () => {
         }
       };
   
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      localVideoRef.current.srcObject = stream;
-      stream.getTracks().forEach((track) => peerConnection.addTrack(track, stream));
+      if(audio){
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        localVideoRef.current.srcObject = stream;
+        stream.getTracks().forEach((track) => {
+          peerConnection.addTrack(track, stream);
+        });
+      }else{
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localVideoRef.current.srcObject = stream;
+        stream.getTracks().forEach((track) => {
+          peerConnection.addTrack(track, stream);
+        });
+      }
   
       await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
   
@@ -411,9 +433,30 @@ const Call = () => {
             top: position.y,
             left: position.x,
           }}
-        >
+        > {
+          audio?
+          <>
+            <div className={styles.avBox}>
+              {/* <span>{sender? sender.name : user.name}</span> */}
+              <audio ref={localVideoRef} autoPlay ></audio>
+            </div>
+            <div className={styles.avBox}>
+              {/* <span>{sender? sender.name : null}</span> */}
+              <audio ref={remoteVideoRef} autoPlay></audio>
+            </div>
+          </>
+          :
+          <>
+          <div className={styles.avBox}>
+          {/* <span>{sender? sender.name : user.name}</span> */}
           <video ref={localVideoRef} autoPlay ></video>
+          </div>
+          <div className={styles.avBox}>
           <video ref={remoteVideoRef} autoPlay></video>
+          </div>
+          </>
+        }
+          
           <div className={styles.control}>
             <button onClick={handleMuteAudio}>MA</button>
             <button onClick={handleEndCall}>E</button>
