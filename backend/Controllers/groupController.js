@@ -51,3 +51,8 @@ export const createGroup = async(req,res)=>{
     res.status(500).json({error: "Unable to create group"});
   }
 }
+
+export const getGroup = async(group)=>{
+  const GroupData = await Group.findById(group);
+  return GroupData;
+}

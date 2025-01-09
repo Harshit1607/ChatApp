@@ -30,19 +30,20 @@ export const newChat = async (req, res) => {
 
 export const createNewChat = async ({ text, user, group }) => {
   // Validate the input
-  if (!text || !user?._id || !group?._id) {
+  if (!text || !user || !group) {
     throw new Error("Invalid input data");
   }
 
+  const GroupData = await Group.findById(group)
   // Create the chat object
   const chatData = {
     message: {
       message: text,
-      sentBy: user._id,
-      viewedBy: user._id
+      sentBy: user,
+      viewedBy: user
     },
-    Users: group.Users || [], // Ensure Users is an array
-    Group: group._id,
+    Users: GroupData.Users || [], // Ensure Users is an array
+    Group: group,
   };
 
   // Save the new chat
@@ -55,7 +56,7 @@ export const createNewChat = async ({ text, user, group }) => {
 
 export const getLatestChat = async ({ group }) => {
   try {
-    const message = await Chat.findOne({ Group: group._id })
+    const message = await Chat.findOne({ Group: group })
       .sort({ createdAt: -1 })
       .exec(); // Use exec() for better debugging with Promises
     return message;
@@ -67,25 +68,25 @@ export const getLatestChat = async ({ group }) => {
 
 export const viewChat = async ({ group, user }) => {
   try {
-    if (!group?._id || !user?._id) {
+    if (!group || !user) {
       throw new Error("Group ID or User ID is missing.");
     }
 
     // Update chats
     await Chat.updateMany(
       {
-        Group: group._id,
-        'message.viewedBy': { $ne: user._id }
+        Group: group,
+        'message.viewedBy': { $ne: user }
       },
       {
-        $addToSet: { 'message.viewedBy': user._id }
+        $addToSet: { 'message.viewedBy': user }
       }
     );
 
     // Fetch updated chats
     const updatedChats = await Chat.find({
-      Group: group._id,
-      'message.viewedBy': user._id
+      Group: group,
+      'message.viewedBy': user
     });
 
     return updatedChats; // Ensure this is an array

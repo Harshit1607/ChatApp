@@ -10,6 +10,8 @@ import GlobalSocket from '../Socket/GlobalSocket';
 import { joinUser } from '../Socket/GroupSocket';
 import Call from './Call/Call';
 import Settings from './Settings/Settings';
+import GroupProfile from './Profile/GroupProfile/GroupProfile';
+import UserProfile from './Profile/UserProfile/UserProfile';
 // import GroupCall from './GroupCall/GroupCall';
 // import { DailyProvider,} from '@daily-co/daily-react';
 
@@ -24,10 +26,10 @@ function App() {
     if(user){
       navigate('/home');
     }
-  },[user.name])
+  },[])
   useEffect(()=>{
     if(user){
-      joinUser(user)
+      joinUser(user._id)
     }
   }, [])
 
@@ -43,6 +45,8 @@ function App() {
         <Route path='/login' element={<Login />}/>
         <Route path='/' element={<Welcome />}/>
         <Route path='/settings' element={<Settings />}/>
+        <Route path='/groupProfile' element={<GroupProfile />}/>
+        <Route path='/userProfile' element={<UserProfile />}/>
       </Routes>
       <Call />
       {/* <DailyProvider>

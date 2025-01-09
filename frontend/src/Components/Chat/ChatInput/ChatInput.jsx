@@ -22,11 +22,11 @@ const ChatInput = () => {
     if(!typing){
       setTyping(true);
       // call socket.emit(typing) here
-      typingIndi(groupChat, user)
+      typingIndi(groupChat._id, user._id)
     }
     const debouncedStopTyping = Debouncing(() => {
       setTyping(false); // Update typing state
-      stopTyping(groupChat, user); // Emit 'stop typing' event
+      stopTyping(groupChat._id, user._id); // Emit 'stop typing' event
     }, 3000); // Shortened timeout to 2000ms (2 seconds)
   
     // Call debounced function
@@ -35,7 +35,7 @@ const ChatInput = () => {
 
   const handleClick = ()=>{
     if (text.trim()) { // Prevent sending an empty message
-      dispatch(newChat(text, user, groupChat));
+      dispatch(newChat(text, user._id, groupChat._id));
       setText(""); // Clear the input after sending
     }
   }

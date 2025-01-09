@@ -8,12 +8,14 @@ import { closeChat } from '../../../Redux/Group/groupActions';
 import socket from '../../../Socket/Socket';
 import { makeCall, onlyAudio } from '../../../Redux/Call/callActions';
 import { makeGroupCall } from '../../../Redux/GroupCall/groupcallActions';
+import { useNavigate } from 'react-router-dom';
 
 
 const ChatNav = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {user} = useSelector(state=>state.userReducer);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [status, setStatus] = useState("")
   const [lastSeen, setLastSeen] = useState("")
@@ -53,7 +55,7 @@ const ChatNav = () => {
     <>
       <div className={styles.main}>
         <div className={styles.pfp}>
-          <div></div>
+          <div onClick={()=>{groupChat.isGroup? navigate('/groupProfile') : navigate("/userProfile")}}></div>
         </div>
         <div className={styles.info}>
           <span>{name}</span>

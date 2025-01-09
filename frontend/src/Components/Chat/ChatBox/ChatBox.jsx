@@ -16,7 +16,7 @@ const ChatBox = () => {
     dispatch(loadChats(groupChat, user));
   }, [groupChat])
   useEffect(()=>{
-    viewChat(groupChat, user)
+    viewChat(groupChat._id, user._id)
   }, [chats?.length])
 
   return (

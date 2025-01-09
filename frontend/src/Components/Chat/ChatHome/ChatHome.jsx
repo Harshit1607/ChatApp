@@ -15,7 +15,7 @@ const ChatHome = () => {
     setIsOpen(groupChat !== null); // Update isOpen based on groupChat
     if(groupChat && !groupChat.isGroup){
       const otherUser = groupChat.UserDetails.find(u=>u._id !== user._id)
-      checkUser(otherUser);
+      checkUser(otherUser._id);
     }
   }, [groupChat]);
 

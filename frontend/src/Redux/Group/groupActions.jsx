@@ -10,7 +10,7 @@ export const openGroup = (user, other, group=null) => async (dispatch) =>{
   try {
     // Now handle the group opening via API
     const result = await axios.post(`${API_URL}group/open`, { user, other, group });
-    joinGroup({user, group: result.data.groupChat});
+    joinGroup({user: user._id, group: result.data.groupChat._id});
     // Dispatch the success action with the group data
     dispatch({ type: Open_Group_Success, payload: result.data });
   } catch (error) {

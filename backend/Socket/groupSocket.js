@@ -5,29 +5,29 @@ export const groupSocket = (io) =>{
     console.log('Socket connected:', socket.id);
   
     socket.on('joinGroup', (data) => {
-      if (data && data.group && data.group._id) {
-        socket.join(data.group._id);
-        console.log(`User ${data.user._id} joined group ${data.group._id}`);
+      if (data && data.group) {
+        socket.join(data.group);
+        console.log(`User ${data.user} joined group ${data.group}`);
       } else {
         console.error('Invalid data received for joinGroup:', data);
       }
     });
 
     socket.on('joinUser', async (data) => {
-      if (data && data._id) {
-        socket.userId = data._id
-        socket.join(data._id);
+      if (data) {
+        socket.userId = data
+        socket.join(data);
         markUserOnline(data);
-        console.log(`User ${data._id} joined group ${data._id}`);
+        console.log(`User ${data} joined group ${data}`);
       } else {
         console.error('Invalid data received for joinUser:', data);
       }
     });
     socket.on('leaveGroup', (data) => {
     
-      if (data && data._id) {
-        socket.leave(data._id);
-        console.log(`User  left group ${data._id}`);
+      if (data) {
+        socket.leave(data);
+        console.log(`User  left group ${data}`);
       } else {
         console.error('Invalid data received for leaveGroup');
       }

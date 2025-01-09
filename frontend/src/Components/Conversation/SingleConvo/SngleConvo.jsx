@@ -25,7 +25,7 @@ const SngleConvo = ({single}) => {
   };
 
   useEffect(() => {
-    getLatestChat(single);
+    getLatestChat(single._id);
   }, [chats?.length]);
 
   useEffect(()=>{
@@ -50,7 +50,7 @@ const SngleConvo = ({single}) => {
   const name = !single.isGroup && single.name === "" ? findName() : single.name;
   const handleClick = () =>{
     if(groupChat){
-      leaveGroup(groupChat)
+      leaveGroup(groupChat._id)
     }
     dispatch(openGroup(user, null, single));
   }

@@ -61,8 +61,8 @@ const formatDateTime = (date) => {
 export const markUserOnline = async (user) =>{
   const currentTime = new Date();
   const time = formatDateTime(currentTime)
-  await redisClient.set(`user:${user._id}:status`, 'online'); 
-  await redisClient.set(`user:${user._id}:last_seen`, time);
+  await redisClient.set(`user:${user}:status`, 'online'); 
+  await redisClient.set(`user:${user}:last_seen`, time);
 }
 
 export const markUserOffline = async (user) =>{
@@ -73,8 +73,8 @@ export const markUserOffline = async (user) =>{
 }
 
 export const checkUserOnline = async (user) =>{
-  const status = await redisClient.get(`user:${user._id}:status`); 
-  const lastSeen =await redisClient.get(`user:${user._id}:last_seen`);
+  const status = await redisClient.get(`user:${user}:status`); 
+  const lastSeen =await redisClient.get(`user:${user}:last_seen`);
   return {status, lastSeen}
 }
 

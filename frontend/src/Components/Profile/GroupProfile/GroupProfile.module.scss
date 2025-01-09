@@ -1,0 +1,130 @@
+.main{
+  width: 100vw;
+  height: 100vh;
+  @include flexbox;
+  background-color: $tertiaryColor;
+
+  .cut{
+    top: 20px;
+    right: 20px;
+    position: fixed;
+  }
+
+  .left{
+    width: 25%;
+    height: 100%; 
+    background-color: $spiderRed;
+    @include flexbox(column, end);
+    gap: 10%;
+    .info{
+      width: 70%;
+      height: 70%;
+      @include flexbox(column, start);
+      gap: 5%;
+      .profile{
+        width: 100%;
+        height: 50%;
+        @include flexbox(column);
+        >div{
+          background-color: #fff;
+          width: 80%;
+          aspect-ratio: 1 / 1;
+          border-radius: 50%;
+        }
+        >span{
+          font-size: 1.7rem;
+        }
+      }
+      .description{
+        width: 100%;
+        height: 50%;
+        border-radius: 20px;
+        @include flexbox(column, start);
+        background-color: rgba($primaryColor, 0.25);
+      }
+    }
+    .leave{
+      height: 10%;
+      width: 50%;
+      @include flexbox(row, space-around);
+      >button{
+        font-size: 1.4rem;
+        width: 90%;
+        height: 50%;
+        border: none;
+        background-color: $spiderRed;
+      }
+    }
+  }
+  
+  .right{
+    width: 75%;
+    height: 100%;
+    @include flexbox(column, space-around, end);
+    .media{
+      width: 90%;
+      height: 30%;
+      @include flexbox(column);
+      align-items: start;
+      gap: 5%;
+      >span{
+        font-size: 1.4rem;
+      }
+    }
+
+    .members{
+      width: 90%;
+      height: 65%;
+      @include flexbox(column, start, start);
+      gap: 5%;
+      >div{
+        &:first-child{
+          width: 100%;
+          @include flexbox;
+          justify-content: start;
+          font-size: 1.4rem;
+          height: 10%;
+        }
+        width: 100%;
+        height: 90%;
+        overflow-y: scroll;
+        box-sizing: border-box;
+        scrollbar-width: none;
+        gap: 5%;
+        @include flexbox(column, start, start);
+        .memberInfo{
+          height: 12%;
+          width: 100%;
+          @include flexbox;
+          justify-content: space-between;
+          >div{
+            
+            height: 100%;
+            font-size: 1.2rem;
+            &:first-child{
+              width: 5%;
+              @include flexbox;
+              >div{
+                height: 100%;
+                aspect-ratio: 1/1;
+                background-color: #fff;
+                border-radius: 50%;
+                
+              }
+            }
+            &:last-child{
+              width: 30%;
+              @include flexbox;
+              justify-content: end;
+              gap: 10%;
+            }
+            width: 50%;
+            @include flexbox(column, space-evenly, start);
+          }
+        }
+
+      }
+    }
+
+  }
+}
