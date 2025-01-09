@@ -68,3 +68,19 @@ export const Sotre_Candidate = "Sotre_Candidate"
 
 export const Clear_Offer = "Clear_Offer"
 export const Auido_Only = 'Auido_Only'
+
+export const Make_Group_Call = 'Make_Group_Call'
+
+export const Make_Group_Incoming = 'Make_Group_Incoming'
+
+export const Save_Room = 'Save_Room'
+
+export const Change_Photo_Request = 'Change_Photo_Request'
+export const Change_Photo_Success = 'Change_Photo_Success'
+export const Change_Photo_Failure = 'Change_Photo_Failure'
+
+export const Delete_Photo_Request = 'Delete_Photo_Request'
+export const Delete_Photo_Success = 'Delete_Photo_Success'
+export const Delete_Photo_Failure = 'Delete_Photo_Failure'
+
+export const Logout = 'Logout'

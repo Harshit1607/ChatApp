@@ -51,7 +51,6 @@ const Call = () => {
       };
       dispatch(storePeer(peerConnection));
     }
-
     
 
     const handleReceiveCandidate = async ({ candidate }) => {

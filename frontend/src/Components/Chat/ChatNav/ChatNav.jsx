@@ -7,6 +7,7 @@ import cross from '../../../Assets/cross.svg'
 import { closeChat } from '../../../Redux/Group/groupActions';
 import socket from '../../../Socket/Socket';
 import { makeCall, onlyAudio } from '../../../Redux/Call/callActions';
+import { makeGroupCall } from '../../../Redux/GroupCall/groupcallActions';
 
 
 const ChatNav = () => {
@@ -62,12 +63,17 @@ const ChatNav = () => {
           }
         </div>
         <div className={styles.callBox}>
-          <div onClick={()=>{
-            dispatch(onlyAudio())
-            dispatch(makeCall())}}>
+          <div onClick={() => {
+              if (groupChat.isGroup) {
+                dispatch(makeGroupCall());
+              } else {
+                dispatch(onlyAudio());
+                dispatch(makeCall());
+              }
+          }}>
             <img src={call} alt="" />
           </div>
-          <div onClick={()=>{dispatch(makeCall())}}>
+          <div onClick={()=>{groupChat.isGroup? dispatch(makeGroupCall()) :dispatch(makeCall())}}>
             <img src={video} alt="" />
           </div>
           <div onClick={()=>{dispatch(closeChat())}}>

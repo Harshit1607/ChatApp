@@ -1,0 +1,122 @@
+.main{
+  width: 100vw;
+  height: 100vh;
+  @include flexbox(column, space-evenly, center);
+  background-color: $tertiaryColor;
+  // position: relative;
+
+  .cut{
+    top: 20px;
+    right: 20px;
+    position: fixed;
+  }
+  .info{
+    width: 90%;
+    height: 45%;
+    @include flexbox(row, space-around);
+    >div{
+      width: 22%;
+      height: 100%;
+      @include flexbox(column, space-between);
+      &:last-of-type{
+        justify-content: start;
+      }
+    }
+    .profile{
+      .photo{
+        aspect-ratio: 1 / 1; // Ensures the height is equal to the width
+        width: 60%;
+        border-radius: 50%;
+        background-color: $navColor;
+        overflow: hidden;
+        >img{
+          object-fit: cover;
+          width: 100%;
+          height: 100%;
+        }
+      }
+      >button{
+        width: 100%;
+        height: 15%;
+        background-color: #397DCF;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        >input{
+          display: none;
+        }
+        &:last-of-type{
+          background-color: #7B93B0;
+        }
+      }
+    }
+  
+    .userInfo{
+      
+      color: white;
+      >div{
+        width: 100%;
+        @include flexbox(column, center, start);
+        font-size: 1.4rem;
+        >span:first-of-type{
+          font-size: 1rem;
+          color: #7B93B0;
+        }
+      }
+    }
+  
+  .logout{
+    >button{
+      width: 100%;
+      height: 15%;
+      background-color: #397DCF;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1.2rem;
+    }
+  }
+  }
+
+  .themes{
+    width: 90%;
+    height: 40%;
+    @include flexbox(row, space-around);
+    .themeBox{
+      width: 22%;
+      height: 80%;
+      @include flexbox(column, space-between);
+      .theme{
+        width: 100%;
+        height: 80%;
+        position: relative;
+        background-color: $navColor;
+        >div{
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          aspect-ratio: 1 / 1; // Ensures the height is equal to the width
+          width: 25%;
+          border-radius: 10px;
+          background-color: $tertiaryColor;
+          @include flexbox;
+          >button{
+            width: 80%;
+            aspect-ratio: 1 / 1; // Ensures the height is equal to the width
+            border: none;
+            border-radius: 50% ;
+            background-color: $navColor;
+          }
+        }
+      }  
+      >span{
+        color: white;
+        &:last-child{
+          font-size: 0.8rem;
+          color: #7B93B0;
+        }
+      }
+    }
+  }
+}

@@ -77,3 +77,55 @@ export const checkUserOnline = async (user) =>{
   const lastSeen =await redisClient.get(`user:${user._id}:last_seen`);
   return {status, lastSeen}
 }
+
+export const changePhoto = async (req, res) => {
+  const { image, phone } = req.body;
+
+  try {
+    if (!image || !phone) {
+      return res.status(400).json({ error: 'Image and phone are required' });
+    }
+
+    // Assuming the image is already a base64 string from the frontend
+    const user = await User.findOneAndUpdate(
+      { phone },
+      { $set: { profile: image } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User doesn't exist" });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update photo' });
+  }
+};
+
+export const deletePhoto = async (req, res) => {
+  const { phone } = req.body;
+
+  try {
+    if (!phone) {
+      return res.status(400).json({ error: 'phone is required' });
+    }
+
+    // Assuming the image is already a base64 string from the frontend
+    const user = await User.findOneAndUpdate(
+      { phone },
+      { $set: { profile: ""} },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User doesn't exist" });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update photo' });
+  }
+};

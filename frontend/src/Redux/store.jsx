@@ -5,13 +5,15 @@ import homeReducer from "./Home/homeReducer";
 import groupReducer from "./Group/groupReducer";
 import chatReducer from "./Chat/chatReducer";
 import callReducer from "./Call/callReducer";
+import groupcallReducer from "./GroupCall/groupcallReducer";
 
 const rootReducer = combineReducers({
   userReducer,
   homeReducer,
   groupReducer,
   chatReducer, 
-  callReducer
+  callReducer,
+  groupcallReducer,
 })
 
 const store = legacy_createStore(rootReducer, applyMiddleware(thunk));

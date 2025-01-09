@@ -9,6 +9,9 @@ import Welcome from './Auth/Welcome/Welcome';
 import GlobalSocket from '../Socket/GlobalSocket';
 import { joinUser } from '../Socket/GroupSocket';
 import Call from './Call/Call';
+import Settings from './Settings/Settings';
+// import GroupCall from './GroupCall/GroupCall';
+// import { DailyProvider,} from '@daily-co/daily-react';
 
 
 function App() {
@@ -21,7 +24,7 @@ function App() {
     if(user){
       navigate('/home');
     }
-  },[user])
+  },[user.name])
   useEffect(()=>{
     if(user){
       joinUser(user)
@@ -39,9 +42,13 @@ function App() {
         <Route path='/signup' element={<Signup />}/>
         <Route path='/login' element={<Login />}/>
         <Route path='/' element={<Welcome />}/>
-        
+        <Route path='/settings' element={<Settings />}/>
       </Routes>
       <Call />
+      {/* <DailyProvider>
+        <GroupCall />
+      </DailyProvider> */}
+      
     </div>
   );
 }

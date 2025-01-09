@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema({
   phone: {type : Number, required: true},
   email: {type : String, required: true},
   password: {type: String, required: true},
+  about: {type: String, default: "I Love Spiderman"},
+  profile: {type: String,},
   Groups: {type: [mongoose.Schema.Types.ObjectId], ref: 'Group', default: []}
 }, { timestamps: true })
 

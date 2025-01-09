@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { User_Login_Failure, User_Login_Request, User_Login_Success, User_Signup_Failure, User_Signup_Request, User_Signup_Success } from '../actionTypes';
+import { Change_Photo_Failure, Change_Photo_Request, Change_Photo_Success, Delete_Photo_Failure, Delete_Photo_Request, Delete_Photo_Success, Logout, User_Login_Failure, User_Login_Request, User_Login_Success, User_Signup_Failure, User_Signup_Request, User_Signup_Success } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -29,4 +29,30 @@ export const login = (phone, pass) => async (dispatch) =>{
   } catch (error) {
     dispatch({type: User_Login_Failure, error: error.message});
   }
+}
+
+export const changePhoto = (image, phone) => async (dispatch) =>{
+  dispatch({type: Change_Photo_Request});
+  try {
+    const result = await axios.post(`${API_URL}user/profile`, {image, phone});
+    
+    dispatch({type: Change_Photo_Success, payload: result.data});
+  } catch (error) {
+    dispatch({type: Change_Photo_Failure, error: error.message});
+  }
+}
+
+export const deletePhoto = (phone) => async (dispatch) =>{
+  dispatch({type: Delete_Photo_Request});
+  try {
+    const result = await axios.post(`${API_URL}user/deleteprofile`, {phone});
+    
+    dispatch({type: Delete_Photo_Success, payload: result.data});
+  } catch (error) {
+    dispatch({type: Delete_Photo_Failure, error: error.message});
+  }
+}
+
+export const logout = ()=>{
+  return({type: Logout})
 }

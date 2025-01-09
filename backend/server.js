@@ -12,14 +12,16 @@ import { chatSocket } from './Socket/chatSocket.js';
 import { groupSocket } from './Socket/groupSocket.js';
 import { redisClient } from './redis.js'; // Import the Redis client
 import { webrtcSocket } from './Socket/webrtcSocket.js';
+// import { dailycoSocket } from './Socket/dailycoSocket.js';
+
 
 dotenv.config();
 
 const app = express();
 // const port = process.env.PORT || 5000;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '10mb' })); // Set limit for JSON bodies (10MB)
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' })); // Set limit for URL-encoded bodies (10MB)
 
 app.use(corsMiddleware);  // Apply CORS middleware
 app.options('*', corsMiddleware);  // Handle preflight requests for all routes
@@ -32,7 +34,6 @@ app.use('/group', groupRoutes);
 app.use('/chat', chatRoutes);
 
 
-
 redisClient.on('connect', () => {
   console.log('Redis is connected in server.js');
 });
@@ -43,6 +44,7 @@ const { server, io } = initSocketServer(app, corsOptions);
 groupSocket(io);
 chatSocket(io);
 webrtcSocket(io);
+// dailycoSocket(io);
 
 // Export the server for listening later
 export { server, io };
