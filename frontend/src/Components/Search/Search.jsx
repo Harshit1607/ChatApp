@@ -34,14 +34,14 @@ const Search = () => {
     <>
       {searchUsers && searchUsers.length > 0 ? (
         <div ref={boxRef} className={styles.main}>
-          {searchUsers.map((single, index) => (
+          {searchUsers.filter(single=>single._id !== user._id).map((single, index) => (
             <div key={index} className={styles.single} onClick={()=>handleClick(single)}>
               <div className={styles.pfp}>
                 <div></div>
               </div>
               <div className={styles.info}>
                 <span>{single.name}</span>
-                <span>{single.email}</span>
+                <span>{single.phone}</span>
               </div>
             </div>
           ))}

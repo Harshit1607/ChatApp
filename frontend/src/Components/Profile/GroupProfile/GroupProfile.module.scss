@@ -3,6 +3,25 @@
   height: 100vh;
   @include flexbox;
   background-color: $tertiaryColor;
+  position: relative;
+
+  .mainImg{
+    width: 80%;
+    height: 80%;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    @include flexbox(column, space-between, end);
+    box-shadow: 0 0 10px 5px rgba($primaryColor, 0.25);
+    >span{
+      cursor: pointer;
+    }
+    >img{
+      width: 100%;
+      height: 90%;
+
+    }
+  }
 
   .cut{
     top: 20px;
@@ -25,11 +44,39 @@
         width: 100%;
         height: 50%;
         @include flexbox(column);
+        position: relative;
+        .profileOptions{
+          position: absolute;
+          top: 40%;
+          left: 40%;
+          height: 60px;
+          width: 100px;
+          background-color: white;
+          box-shadow: 0 0 10px 5px rgba($primaryColor, 0.25);
+          @include flexbox(column);
+          >button{
+            width: 100%;
+            height: 50%;
+            border: none;
+            color: black  ;
+          }
+        }
         >div{
           background-color: #fff;
           width: 80%;
           aspect-ratio: 1 / 1;
           border-radius: 50%;
+          overflow: hidden;
+          
+          
+          >img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+          >input{
+            display: none;
+          }
         }
         >span{
           font-size: 1.7rem;
@@ -40,7 +87,27 @@
         height: 50%;
         border-radius: 20px;
         @include flexbox(column, start);
+        gap: 5%;
         background-color: rgba($primaryColor, 0.25);
+        >span{
+          font-size: 1.2rem;
+        }
+        >textarea{
+          box-sizing: border-box;
+          padding: 5px;
+          text-align: top;
+          resize: none;
+          font-size: 1.1rem;
+          width: 90%;
+          background-color: transparent;
+          box-shadow: 0 0 10px 5px rgba($primaryColor, 0.25);
+          border: none;
+          height: 80%;
+          scrollbar-width: none;
+          &:focus{
+            outline: none;
+          }
+        }
       }
     }
     .leave{
@@ -79,13 +146,13 @@
       gap: 5%;
       >div{
         &:first-child{
-          width: 100%;
+          width: 90%;
           @include flexbox;
           justify-content: start;
           font-size: 1.4rem;
           height: 10%;
         }
-        width: 100%;
+        width: 90%;
         height: 90%;
         overflow-y: scroll;
         box-sizing: border-box;
@@ -102,6 +169,7 @@
             height: 100%;
             font-size: 1.2rem;
             &:first-child{
+              max-width: fit-content;
               width: 5%;
               @include flexbox;
               >div{
@@ -117,6 +185,14 @@
               @include flexbox;
               justify-content: end;
               gap: 10%;
+
+              .admin{
+                padding: 5px;
+                background-color: $spiderRed;
+                border: none;
+                border-radius: 5px;
+                color: white;
+              }
             }
             width: 50%;
             @include flexbox(column, space-evenly, start);

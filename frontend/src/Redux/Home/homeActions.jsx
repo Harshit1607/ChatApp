@@ -40,3 +40,12 @@ export const closeSearch = ()=>(
 export const sortGroups = ()=>(
   {type: Sort_Groups}
 )
+
+export const getPhoto = (id) => async (dispatch)=>{
+  try {
+    const result = await axios.post(`${API_URL}getprofile`, {id});
+    return result.data;
+  } catch (error) {
+    console.log(error.message)
+  }
+}

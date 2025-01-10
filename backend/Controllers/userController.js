@@ -79,16 +79,16 @@ export const checkUserOnline = async (user) =>{
 }
 
 export const changePhoto = async (req, res) => {
-  const { image, phone } = req.body;
+  const { image, user: id } = req.body;
 
   try {
-    if (!image || !phone) {
-      return res.status(400).json({ error: 'Image and phone are required' });
+    if (!image || !id) {
+      return res.status(400).json({ error: 'Image and id are required' });
     }
 
     // Assuming the image is already a base64 string from the frontend
     const user = await User.findOneAndUpdate(
-      { phone },
+      { _id: id },
       { $set: { profile: image } },
       { new: true }
     );
@@ -105,16 +105,16 @@ export const changePhoto = async (req, res) => {
 };
 
 export const deletePhoto = async (req, res) => {
-  const { phone } = req.body;
+  const { user: id } = req.body;
 
   try {
-    if (!phone) {
-      return res.status(400).json({ error: 'phone is required' });
+    if (!id) {
+      return res.status(400).json({ error: 'id is required' });
     }
 
     // Assuming the image is already a base64 string from the frontend
     const user = await User.findOneAndUpdate(
-      { phone },
+      { _id: id },
       { $set: { profile: ""} },
       { new: true }
     );
@@ -129,3 +129,4 @@ export const deletePhoto = async (req, res) => {
     res.status(500).json({ error: 'Failed to update photo' });
   }
 };
+

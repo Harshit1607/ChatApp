@@ -60,7 +60,7 @@ const Group = () => {
             />
           </div>
           <div className={styles.Users}>
-            {allUsers
+            {allUsers && allUsers
               .filter((single) => single._id !== user._id) // Exclude current user
               .map((single) => (
                 <div
@@ -77,7 +77,7 @@ const Group = () => {
                   </div>
                   <div className={styles.info}>
                     <span>{single.name}</span>
-                    <span>{single.email}</span>
+                    <span>{single.phone}</span>
                   </div>
                 </div>
               ))}

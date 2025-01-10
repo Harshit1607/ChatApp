@@ -55,6 +55,7 @@ function userReducer(state=initialState,action){
       sessionStorage.clear();
       return{
         ...state,
+        user: null,
         loading:false,
         error: null,
       }

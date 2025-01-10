@@ -84,3 +84,7 @@ export const Delete_Photo_Success = 'Delete_Photo_Success'
 export const Delete_Photo_Failure = 'Delete_Photo_Failure'
 
 export const Logout = 'Logout'
+
+export const Change_GroupPhoto_Request = 'Change_GroupPhoto_Request'
+export const Change_GroupPhoto_Success = 'Change_GroupPhoto_Success'
+export const Change_GroupPhoto_Failure = 'Change_GroupPhoto_Failure'

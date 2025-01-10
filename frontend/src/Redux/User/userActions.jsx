@@ -31,10 +31,10 @@ export const login = (phone, pass) => async (dispatch) =>{
   }
 }
 
-export const changePhoto = (image, phone) => async (dispatch) =>{
+export const changePhoto = (image, user) => async (dispatch) =>{
   dispatch({type: Change_Photo_Request});
   try {
-    const result = await axios.post(`${API_URL}user/profile`, {image, phone});
+    const result = await axios.post(`${API_URL}user/profile`, {image, user});
     
     dispatch({type: Change_Photo_Success, payload: result.data});
   } catch (error) {
@@ -42,10 +42,10 @@ export const changePhoto = (image, phone) => async (dispatch) =>{
   }
 }
 
-export const deletePhoto = (phone) => async (dispatch) =>{
+export const deletePhoto = (user) => async (dispatch) =>{
   dispatch({type: Delete_Photo_Request});
   try {
-    const result = await axios.post(`${API_URL}user/deleteprofile`, {phone});
+    const result = await axios.post(`${API_URL}user/deleteprofile`, {user});
     
     dispatch({type: Delete_Photo_Success, payload: result.data});
   } catch (error) {
@@ -56,3 +56,4 @@ export const deletePhoto = (phone) => async (dispatch) =>{
 export const logout = ()=>{
   return({type: Logout})
 }
+

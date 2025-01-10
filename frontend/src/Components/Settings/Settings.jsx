@@ -23,7 +23,7 @@ const Settings = () => {
       reader.onloadend = () => {
         const base64Image = reader.result; // This gives the base64 encoded image
         setImage(base64Image); // Update the state with the base64 image
-        dispatch(changePhoto(base64Image, user.phone)); // Dispatch action to update the profile photo
+        dispatch(changePhoto(base64Image, user._id)); // Dispatch action to update the profile photo
       };
       reader.readAsDataURL(file); // Convert image to base64 string
     }
@@ -42,7 +42,7 @@ const Settings = () => {
             {user.profile && <img src={user.profile} alt="Pfp" />}
           </div>
           <button onClick={handleChangePhoto}>Change Photo <input ref={fileInputRef} type='file'accept="image/*" onChange={handleNewImage}/></button>
-          <button onClick={()=>{dispatch(deletePhoto(user.phone))}}>Delete Photo</button>
+          <button onClick={()=>{dispatch(deletePhoto(user._id))}}>Delete Photo</button>
         </div>
         <div className={styles.userInfo}>
           <div>

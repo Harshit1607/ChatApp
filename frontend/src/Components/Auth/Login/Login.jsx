@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import {useDispatch} from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import styles from './Login.module.scss'
 import { login } from '../../../Redux/User/userActions'
 import { useNavigate } from 'react-router-dom'
@@ -7,8 +7,15 @@ import spider from '../../../Assets/spiderMan1.png'
 import spiderSmall from '../../../Assets/spiderCursor.png'
 
 const Login = () => {
+  const {user} = useSelector(state=>state.userReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(user){
+      navigate('/home');
+    }
+  },[user])
 
   const [phone, setPhone] = useState("");
   const [pass, setPass] = useState("");
