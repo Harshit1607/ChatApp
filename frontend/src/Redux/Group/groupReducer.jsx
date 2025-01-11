@@ -1,5 +1,5 @@
-import { Change_GroupPhoto_Failure, Change_GroupPhoto_Request, Change_GroupPhoto_Success, Close_Chat, Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Leave_Group_Failure, Leave_Group_Request, Leave_Group_Success, Make_Admin_Failure, Make_Admin_Request, Make_Admin_Success, Make_Group, Open_Group_Failure, Open_Group_Request, Open_Group_Success } from "../actionTypes";
-import { makeGroup } from "./groupActions";
+import { Change_GroupPhoto_Failure, Change_GroupPhoto_Request, Change_GroupPhoto_Success, Close_Chat, Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Leave_Group_Failure, Leave_Group_Request, Leave_Group_Success, Make_Admin_Failure, Make_Admin_Request, Make_Admin_Success, Make_Group, New_Admin, Open_Group_Failure, Open_Group_Request, Open_Group_Success, Updated_Group } from "../actionTypes";
+
 
 
 const initialState = {
@@ -64,7 +64,7 @@ function groupReducer(state=initialState,action){
     case Leave_Group_Success:
       const newGroup = action.payload.groupChat;
       const user = JSON.parse(localStorage.getItem('user'));
-      if(!newGroup.Users.includes(user._id) || !newGroup){
+      if(!newGroup.Users.includes(user._id) || newGroup === null){
         sessionStorage.removeItem('groupChat');
         return{
           ...state,
@@ -88,6 +88,52 @@ function groupReducer(state=initialState,action){
         groupChat: newGroup,
         loading:false,
         error: null,
+      }
+    case New_Admin:
+      if(state.groupChat._id === action.payload.group){
+        // Create a new object to ensure immutability
+        const newGroup = {
+          ...state.groupChat,
+          Admin: action.payload.admins, // Update the Admin field
+        };
+
+        // Save the updated object to sessionStorage
+        sessionStorage.setItem('groupChat', JSON.stringify(newGroup));
+
+        // Return the updated state
+        return {
+            ...state,
+            groupChat: newGroup,
+            loading: false,
+            error: null,
+        };
+      }
+      return{
+        ...state
+      }
+
+    case Updated_Group:
+      if(state.groupChat._id === action.payload.group){
+        // Create a new object to ensure immutability
+        const newGroup = {
+          ...state.groupChat,
+          Users: action.payload.users, 
+          UserDetails: action.payload.userDetails// Update the Admin field
+        };
+
+        // Save the updated object to sessionStorage
+        sessionStorage.setItem('groupChat', JSON.stringify(newGroup));
+
+        // Return the updated state
+        return {
+            ...state,
+            groupChat: newGroup,
+            loading: false,
+            error: null,
+        };
+      }
+      return{
+        ...state
       }
     case Open_Group_Failure:
     case Create_Group_Failure:

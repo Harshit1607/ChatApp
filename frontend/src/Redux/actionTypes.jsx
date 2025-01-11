@@ -96,3 +96,7 @@ export const Leave_Group_Failure = 'Leave_Group_Failure'
 export const Make_Admin_Request = 'Make_Admin_Request'
 export const Make_Admin_Success = 'Make_Admin_Success'
 export const Make_Admin_Failure = 'Make_Admin_Failure'
+
+export const New_Admin = "New_Admin"
+
+export const Updated_Group = "Updated_Group"

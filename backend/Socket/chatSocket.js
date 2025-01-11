@@ -16,8 +16,10 @@ export const chatSocket = (io) =>{
 
         const GroupData = await getGroup(group);
         
-        GroupData.Users.forEach(user=>{
-          socket.to(user).emit("new message", { newChat: newChatData })
+        GroupData.Users.forEach(each=>{
+          const sent = each.toString();
+          
+          socket.to(sent).emit("new message", { newChat: newChatData })
         })
         io.in(user).emit("new message", { newChat: newChatData })
       } catch (error) {

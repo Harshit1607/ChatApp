@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch } from "react-redux"
 import {useNavigate} from 'react-router-dom';
 import socket from "./Socket.jsx";
-import { Call_Rejected, ICE_Candidate_Received, New_Chat_Success, Recieved_Answer, Recieved_Offer, Stop_Typing, Typing, View_Chat_Success } from '../Redux/actionTypes.jsx';
+import { Call_Rejected, ICE_Candidate_Received, New_Admin, New_Chat_Success, Recieved_Answer, Recieved_Offer, Stop_Typing, Typing, Updated_Group, View_Chat_Success } from '../Redux/actionTypes.jsx';
 import { otherStopTyping, otherTyping } from './ChatSocket.jsx';
 import { storePeer } from '../Redux/Call/callActions.jsx';
 
@@ -14,7 +14,7 @@ const GlobalSocket = () => {
   useEffect(() => {
 
     const handleNewChat = ({ newChat }) => {
-      console.log(" xf ")
+      console.log("new message recieved")
       dispatch({ type: New_Chat_Success, payload: { newChat } });
     };
   
@@ -38,6 +38,18 @@ const GlobalSocket = () => {
   socket.on('typing', handleTyping);
   socket.on('stop typing', handleStopTyping);
 
+  const handleNewAdmin = ({group, admins}) =>{
+    console.log("new Admin")
+    dispatch({type: New_Admin, payload:{group, admins} })
+  }
+  socket.on("NewAdmin", handleNewAdmin)
+
+  const handleNewGroup = ({group, users, userDetails}) =>{
+    console.log("removed or left")
+    dispatch({type: Updated_Group, payload: {group, users, userDetails}})
+  }
+  socket.on("UpdatedGroup", handleNewGroup)
+
   
   // Handle call rejection
   
@@ -55,6 +67,8 @@ const GlobalSocket = () => {
       socket.off("new message", handleNewChat);
       socket.off('typing', handleTyping);
       socket.off('stop typing', handleStopTyping);
+      socket.off("NewAdmin", handleNewAdmin);
+      socket.off("UpdatedGroup", handleNewGroup)
     };
   });
 

@@ -98,7 +98,7 @@ const GroupProfile = () => {
             </div>
         </div>
         <div className={styles.leave}>
-          <button onClick={()=>handleLeaveGroup(user._id)}>Exit Group</button>
+          <button onClick={()=>handleLeaveGroup(user._id, groupChat._id)}>Exit Group</button>
         </div>
       </div>
       <div className={styles.right}>
@@ -128,8 +128,8 @@ const GroupProfile = () => {
 
                       <div className={styles.adminOptions}  style={{'visibility': adminOption === each._id? "" : "hidden"}}>
                         {groupChat.Admin.some(admin => admin === user._id) && each._id !== user._id?
-                        <>{<button onClick={()=>{dispatch(leaveGroup(each._id, groupChat._id))}} >Remove</button>}
-                        <button onClick={()=>{dispatch(makeAdmin(each._id, groupChat._id))}}>Make Admin</button></>: null}
+                        <>{<button onClick={()=>{dispatch(leaveGroup(user._id, groupChat._id, each._id))}} >Remove</button>}
+                        <button onClick={()=>{dispatch(makeAdmin(user._id, groupChat._id, each._id))}}>Make Admin</button></>: null}
                         <button>View</button>
                       </div>
                     </div>

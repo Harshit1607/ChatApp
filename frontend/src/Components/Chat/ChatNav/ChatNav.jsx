@@ -34,8 +34,8 @@ const ChatNav = () => {
         }
   
         // Wait for the dispatch to resolve and update the profile state
-        const photo = await dispatch(getPhoto(otherUserId));
-        setProfile(photo);
+        // const photo = await dispatch(getPhoto(otherUserId));
+        // setProfile(photo);
       };
   
       fetchProfile();

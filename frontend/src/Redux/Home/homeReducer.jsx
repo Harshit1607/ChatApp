@@ -1,4 +1,4 @@
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups } from "../actionTypes";
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group } from "../actionTypes";
 
 
 const initialState = {
@@ -96,7 +96,43 @@ function homeReducer(state=initialState,action){
             allFriends: [...sortedGroups],
           }; 
       }
+    
+      case New_Admin:
+        const updatedFriends = state.allFriends.map(friend => {
+          if (friend._id === action.payload.group) {
+              return {
+                  ...friend,
+                  Admin: action.payload.admins // Update the `Admin` field
+              };
+          }
+          return friend; // Keep the rest of the objects unchanged
+      });
+  
+      localStorage.setItem('allFriends', JSON.stringify(updatedFriends));
+  
+      return {
+          ...state,
+          allFriends: updatedFriends
+      };
       
+      case Updated_Group: 
+      const newFriends = state.allFriends.map(friend =>{
+        if(friend._id === action.payload.group){
+          return{
+            ...friend,
+            Users: action.payload.users,
+            UserDetails: action.payload.userDetails
+          }
+        }
+        return friend;
+      })
+      localStorage.setItem('allFriends', JSON.stringify(newFriends));
+  
+      return {
+          ...state,
+          allFriends: newFriends
+      };
+
     case All_Users_Failure:
     case All_Friends_Failure:
     case Search_Users_Failure:

@@ -54,22 +54,21 @@ export const changeGroupPhoto = (image, group)=> async (dispatch)=>{
   }
 }
 
-export const leaveGroup = ( user, group) => async (dispatch) =>{
+export const leaveGroup = (user, group, newUser=null) => async (dispatch) =>{
   dispatch({type: Leave_Group_Request})
-  
   try {
-    const result = await axios.post(`${API_URL}group/leave`,{user, group});
+    const result = await axios.post(`${API_URL}group/leave`,{user, group, newUser});
     dispatch({type: Leave_Group_Success, payload: result.data})
   } catch (error) {
     dispatch({type: Leave_Group_Failure, error: error.message})
   }
 }
 
-export const makeAdmin = (user, group) => async (dispatch) =>{
+export const makeAdmin = (user, group, newUser) => async (dispatch) =>{
   dispatch({type: Make_Admin_Request})
   
   try {
-    const result = await axios.post(`${API_URL}group/admin`,{user, group});
+    const result = await axios.post(`${API_URL}group/admin`,{user, group, newUser});
     dispatch({type: Make_Admin_Success, payload: result.data})
   } catch (error) {
     dispatch({type: Make_Admin_Failure, error: error.message})
