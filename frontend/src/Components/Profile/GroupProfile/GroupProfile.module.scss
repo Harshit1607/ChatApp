@@ -185,6 +185,10 @@
               @include flexbox;
               justify-content: end;
               gap: 10%;
+              position: relative;
+              >img{
+                cursor: pointer;
+              }
 
               .admin{
                 padding: 5px;
@@ -192,6 +196,20 @@
                 border: none;
                 border-radius: 5px;
                 color: white;
+                font-size: 0.8rem;
+                font-weight: lighter;
+              }
+              .adminOptions{
+                position: absolute;
+                bottom: 0;
+                right: 10%;
+                @include flexbox(column);
+                > button{
+                  color: black;
+                  width: 100px;
+                  height: 30px;
+                  border: none;
+                }
               }
             }
             width: 50%;

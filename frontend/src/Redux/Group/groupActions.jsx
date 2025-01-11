@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Change_GroupPhoto_Failure, Change_GroupPhoto_Request, Change_GroupPhoto_Success, Close_Chat, Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Make_Group, Open_Group_Failure, Open_Group_Request, Open_Group_Success } from '../actionTypes';
+import { Change_GroupPhoto_Failure, Change_GroupPhoto_Request, Change_GroupPhoto_Success, Close_Chat, Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Leave_Group_Failure, Leave_Group_Request, Leave_Group_Success, Make_Admin_Failure, Make_Admin_Request, Make_Admin_Success, Make_Group, Open_Group_Failure, Open_Group_Request, Open_Group_Success } from '../actionTypes';
 import { joinGroup } from '../../Socket/GroupSocket';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
@@ -51,5 +51,27 @@ export const changeGroupPhoto = (image, group)=> async (dispatch)=>{
     dispatch({type: Change_GroupPhoto_Success, payload: result.data});
   } catch (error) {
     dispatch({type: Change_GroupPhoto_Failure, error: error.message});
+  }
+}
+
+export const leaveGroup = ( user, group) => async (dispatch) =>{
+  dispatch({type: Leave_Group_Request})
+  
+  try {
+    const result = await axios.post(`${API_URL}group/leave`,{user, group});
+    dispatch({type: Leave_Group_Success, payload: result.data})
+  } catch (error) {
+    dispatch({type: Leave_Group_Failure, error: error.message})
+  }
+}
+
+export const makeAdmin = (user, group) => async (dispatch) =>{
+  dispatch({type: Make_Admin_Request})
+  
+  try {
+    const result = await axios.post(`${API_URL}group/admin`,{user, group});
+    dispatch({type: Make_Admin_Success, payload: result.data})
+  } catch (error) {
+    dispatch({type: Make_Admin_Failure, error: error.message})
   }
 }

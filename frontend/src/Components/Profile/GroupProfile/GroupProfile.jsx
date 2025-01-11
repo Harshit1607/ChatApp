@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './GroupProfile.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import options from '../../../Assets/3Dots.png'
-import { changeGroupPhoto } from '../../../Redux/Group/groupActions';
+import { changeGroupPhoto, leaveGroup, makeAdmin } from '../../../Redux/Group/groupActions';
 
 const GroupProfile = () => {
 
@@ -12,10 +12,35 @@ const GroupProfile = () => {
 
   const [image, setImage] = useState();
   const [option, setOption] = useState(false);
+  const [adminOption, setAdminOption] = useState(null);
   const [icon, setIcon] = useState(false);
+  const adminOptionRefs = useRef({});
 
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(!groupChat){
+      navigate('/home')
+    }
+  }, [groupChat])
+
+  useEffect(() => {
+    const handleCloseAdminOption = (event) => {
+      const clickedOutsideAll = Object.values(adminOptionRefs.current).every(
+        (ref) => ref && !ref.contains(event.target)
+      );
+
+      if (clickedOutsideAll) {
+        setAdminOption(null);
+      }
+    };
+
+    document.addEventListener('click', handleCloseAdminOption);
+    return () => {
+      document.removeEventListener('click', handleCloseAdminOption);
+    };
+  }, []);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const fileInputRef = useRef(null);
   const ProfileOptionRef = useRef(null);
@@ -43,6 +68,14 @@ const GroupProfile = () => {
       }
     }
 
+    const handleLeaveGroup = (id)=>{
+      dispatch(leaveGroup(id, groupChat._id))
+    }
+    
+    if (!groupChat) {
+      return null; // or a loading spinner if necessary
+    }
+  
   return (
     <div className={styles.main}>
       {groupChat.profile && <div className={styles.mainImg} style={{'visibility': icon? "" : "hidden"}}><span onClick={showImg}>X</span> <img  src={groupChat.profile} alt=""  /> </div>}
@@ -65,7 +98,7 @@ const GroupProfile = () => {
             </div>
         </div>
         <div className={styles.leave}>
-          <button>Exit Group</button>
+          <button onClick={()=>handleLeaveGroup(user._id)}>Exit Group</button>
         </div>
       </div>
       <div className={styles.right}>
@@ -89,9 +122,16 @@ const GroupProfile = () => {
                       <span>{each._id === user._id? "You":each.name}</span>
                       <span>{each.about}</span>
                     </div>
-                    <div>
-                      {groupChat.Admin && groupChat.Admin.some(admin => admin === user._id)? <div className={styles.admin}>Group Admin</div>: null}
-                      <img src={options} alt="" />
+                    <div ref={(el) => (adminOptionRefs.current[each._id] = el)}>
+                      {groupChat.Admin && groupChat.Admin.some(admin => admin === each._id)? <div className={styles.admin}>Group Admin</div>: null}
+                      <img src={options} alt="" onClick={()=>setAdminOption((prev)=>(prev === each._id)? null : each._id)}/>
+
+                      <div className={styles.adminOptions}  style={{'visibility': adminOption === each._id? "" : "hidden"}}>
+                        {groupChat.Admin.some(admin => admin === user._id) && each._id !== user._id?
+                        <>{<button onClick={()=>{dispatch(leaveGroup(each._id, groupChat._id))}} >Remove</button>}
+                        <button onClick={()=>{dispatch(makeAdmin(each._id, groupChat._id))}}>Make Admin</button></>: null}
+                        <button>View</button>
+                      </div>
                     </div>
                   </div>
               );

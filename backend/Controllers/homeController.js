@@ -38,7 +38,6 @@ export const getProfile = async (req, res) => {
 
   try {
     let profile;
-    console.log(id)
     // Check User collection
     const user = await User.findById(id);
     if (user && user.profile) {

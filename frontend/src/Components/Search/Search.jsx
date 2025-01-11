@@ -28,6 +28,7 @@ const Search = () => {
 
   const handleClick =(single)=>{
     dispatch(openGroup(user, single));
+    dispatch(closeSearch());
   }
 
   return (

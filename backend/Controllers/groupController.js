@@ -1,6 +1,7 @@
 import Group from '../models/groups.js'
 import Chat from '../models/chats.js'
 import User from'../models/user.js'
+import mongoose from 'mongoose';
 
 export const openGroup = async (req, res) => {
   const { user, other, group } = req.body;
@@ -96,3 +97,55 @@ export const changeGroupPhoto = async (req, res) => {
     res.status(500).json({ error: 'Failed to update photo' });
   }
 };
+
+export const leaveGroup = async (req, res) =>{
+  const {user, group} = req.body;
+  try {
+    const groupChat = await Group.findByIdAndUpdate(
+      group,
+      {
+        $pull: {
+          Users: user // Remove from Users array
+        }
+      },
+      { new: true }
+    );
+
+    if (groupChat.Users.length === 0) {
+      await groupChat.delete(); // Delete the document if no users left
+      return res.status(200).json({ groupChat: null });
+    }
+
+    groupChat.UserDetails = groupChat.UserDetails.filter(userDetails => {
+      return userDetails._id.toString() !== user.toString(); // Ensure both _id and user are ObjectIds or strings
+    });
+
+    
+    
+    // Save the updated groupChat document
+    await groupChat.save();
+
+    res.status(200).json({ groupChat });
+
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update photo' });
+  }
+}
+
+export const makeAdmin = async (req, res) =>{
+  const {user, group} = req.body;
+  try {
+    const groupChat = await Group.findByIdAndUpdate(
+      group,
+      {
+        $addToSet: { Admin: user }, // Add adminId to the Admin array if it doesn't exist
+      },
+      { new: true }
+    );
+
+    res.status(200).json({ groupChat });
+
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update photo' });
+  }
+}

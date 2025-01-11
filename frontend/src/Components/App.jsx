@@ -18,6 +18,7 @@ import UserProfile from './Profile/UserProfile/UserProfile';
 
 function App() {
   const {user} = useSelector(state=>state.userReducer);
+  const {groupChat} = useSelector(state=>state.groupReducer);
   const {chats} = useSelector(state=>state.chatReducer);
   const navigate = useNavigate();
   const dispatch= useDispatch()

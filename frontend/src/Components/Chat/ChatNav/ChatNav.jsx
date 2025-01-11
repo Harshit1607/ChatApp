@@ -9,6 +9,7 @@ import socket from '../../../Socket/Socket';
 import { makeCall, onlyAudio } from '../../../Redux/Call/callActions';
 import { makeGroupCall } from '../../../Redux/GroupCall/groupcallActions';
 import { useNavigate } from 'react-router-dom';
+import { getPhoto } from '../../../Redux/Home/homeActions';
 
 
 const ChatNav = () => {
@@ -19,6 +20,26 @@ const ChatNav = () => {
 
   const [status, setStatus] = useState("")
   const [lastSeen, setLastSeen] = useState("")
+  const [profile, setProfile] = useState();
+
+  useEffect(()=>{
+      const fetchProfile = async () => {
+        let otherUserId;
+        
+        if (!groupChat.isGroup) {
+          const otherUser = groupChat.Users.find(u => u !== user._id);
+          otherUserId = otherUser;
+        } else {
+          otherUserId = groupChat._id;
+        }
+  
+        // Wait for the dispatch to resolve and update the profile state
+        const photo = await dispatch(getPhoto(otherUserId));
+        setProfile(photo);
+      };
+  
+      fetchProfile();
+    }, [groupChat])
   
 
   const findName = () => {
@@ -55,7 +76,9 @@ const ChatNav = () => {
     <>
       <div className={styles.main}>
         <div className={styles.pfp}>
-          <div onClick={()=>{groupChat.isGroup? navigate('/groupProfile') : navigate("/userProfile")}}></div>
+          <div onClick={()=>{groupChat.isGroup? navigate('/groupProfile') : navigate("/userProfile")}}>
+            {profile && <img src={profile} alt=''/>}
+          </div>
         </div>
         <div className={styles.info}>
           <span>{name}</span>

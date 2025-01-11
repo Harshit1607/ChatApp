@@ -14,4 +14,3 @@ export const makeGroupIncoming = ()=>{
 export const saveRoom = (room)=>{
   return{type: Save_Room, payload: room}
 }
-

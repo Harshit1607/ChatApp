@@ -88,3 +88,11 @@ export const Logout = 'Logout'
 export const Change_GroupPhoto_Request = 'Change_GroupPhoto_Request'
 export const Change_GroupPhoto_Success = 'Change_GroupPhoto_Success'
 export const Change_GroupPhoto_Failure = 'Change_GroupPhoto_Failure'
+
+export const Leave_Group_Request = 'Leave_Group_Request'
+export const Leave_Group_Success = 'Leave_Group_Success'
+export const Leave_Group_Failure = 'Leave_Group_Failure'
+
+export const Make_Admin_Request = 'Make_Admin_Request'
+export const Make_Admin_Success = 'Make_Admin_Success'
+export const Make_Admin_Failure = 'Make_Admin_Failure'

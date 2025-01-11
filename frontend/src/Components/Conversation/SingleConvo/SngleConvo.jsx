@@ -26,14 +26,13 @@ const SngleConvo = ({single}) => {
       } else {
         otherUserId = single._id;
       }
-
       // Wait for the dispatch to resolve and update the profile state
       const photo = await dispatch(getPhoto(otherUserId));
       setProfile(photo);
     };
 
     fetchProfile();
-  }, [])
+  }, [single])
 
   const findName = () => {
     let name;
@@ -92,7 +91,7 @@ const SngleConvo = ({single}) => {
   }
 
   return (
-    <div className={styles.main} onClick={handleClick}>
+    <div className={styles.main} onClick={handleClick} >
       <div className={styles.pfp}>
         <div>
           {profile && <img src={profile} alt ="" />}
