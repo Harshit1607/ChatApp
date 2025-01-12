@@ -1,4 +1,4 @@
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group } from "../actionTypes";
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group, New_Group_Created, Removed_From_Group, Create_Group_Success } from "../actionTypes";
 
 
 const initialState = {
@@ -48,6 +48,13 @@ function homeReducer(state=initialState,action){
       return{
         ...state,
         searchUsers: [],
+      }
+    case Create_Group_Success:
+      const newGroupSuccess = [...state.allFriends, action.payload.groupChat];
+      localStorage.setItem('allFriends', JSON.stringify(newGroupSuccess));
+      return{
+        ...state,
+        allFriends: newGroupSuccess
       }
     case Sort_Groups:
       if(!sessionStorage.getItem('chats')){
@@ -133,6 +140,20 @@ function homeReducer(state=initialState,action){
           allFriends: newFriends
       };
 
+    case New_Group_Created:
+      const newGroupIncluded = [...state.allFriends, action.payload.groupChat];
+      localStorage.setItem('allFriends', JSON.stringify(newGroupIncluded));
+      return{
+        ...state,
+        allFriends: newGroupIncluded
+      }
+    case Removed_From_Group:
+      const removedGroup = state.allFriends.filter(friend=> friend._id !== action.payload.group);
+      localStorage.setItem('allFriends', JSON.stringify(removedGroup));
+      return{
+        ...state,
+        allFriends: removedGroup,
+      }
     case All_Users_Failure:
     case All_Friends_Failure:
     case Search_Users_Failure:

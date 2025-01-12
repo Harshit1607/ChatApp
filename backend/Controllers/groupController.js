@@ -23,6 +23,8 @@ export const openGroup = async (req, res) => {
 
     const groupChat = new Group({ UserDetails: userArray, Users: userIds });
     await groupChat.save(); // Make sure to await save()
+    const io = getIo();
+    io.to(other._id).emit("NewGroupCreated", {groupChat});
     res.status(200).json({ groupChat });
   } catch (error) {
     console.error(error);
@@ -60,6 +62,12 @@ export const createGroup = async (req, res) => {
       Admin: admins,
     });
     await groupChat.save(); // Make sure to await save()
+
+    const io = getIo();
+    others.forEach(other=>{
+      io.to(other._id).emit("NewGroupCreated", {groupChat});
+    })
+
     res.status(200).json({ groupChat });
   } catch (error) {
     console.error(error);
@@ -103,6 +111,7 @@ export const leaveGroup = async (req, res) =>{
   const {user, group, newUser} = req.body;
   try {
     const id = newUser ? newUser : user;
+    console.log(id)
     const groupChat = await Group.findByIdAndUpdate(
       group,
       {
@@ -117,22 +126,20 @@ export const leaveGroup = async (req, res) =>{
       await Group.deleteOne({_id: group})
       return res.status(200).json({ groupChat: null  });
     }
-    console.log("hi")
     groupChat.UserDetails = groupChat.UserDetails.filter(userDetails => {
-      return userDetails._id.toString() !== user.toString(); // Ensure both _id and user are ObjectIds or strings
+      return userDetails._id.toString() !== id; // Ensure both _id and user are ObjectIds or strings
     });
-    console.log(groupChat);
     const users = groupChat.Users;
     const userDetails = groupChat.UserDetails;
 
     const io = getIo();
-    console.log(groupChat);
     groupChat.Users.map(each=>{
       if(each !== user){
         const sent = each.toString();
         io.to(sent).emit("UpdatedGroup", {group, users, userDetails})
       } 
     })
+      newUser? io.to(newUser).emit("RemovedFromGroup", {group}) : null;
     
     // Save the updated groupChat document
     await groupChat.save();

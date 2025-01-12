@@ -64,22 +64,23 @@ function groupReducer(state=initialState,action){
     case Leave_Group_Success:
       const newGroup = action.payload.groupChat;
       const user = JSON.parse(localStorage.getItem('user'));
-      if(!newGroup.Users.includes(user._id) || newGroup === null){
+
+      if (!newGroup || !newGroup.Users.includes(user._id)) {
         sessionStorage.removeItem('groupChat');
-        return{
+        return {
           ...state,
           groupChat: null,
-          loading:false,
+          loading: false,
           error: null,
-        }
-      }else{
-        sessionStorage.setItem('groupChat',JSON.stringify(newGroup));
-      return{
-        ...state,
-        groupChat: newGroup,
-        loading:false,
-        error: null,
-      }
+        };
+      } else {
+        sessionStorage.setItem('groupChat', JSON.stringify(newGroup));
+        return {
+          ...state,
+          groupChat: newGroup,
+          loading: false,
+          error: null,
+        };
       }
     case Make_Admin_Success:
       sessionStorage.setItem('groupChat',JSON.stringify(newGroup));

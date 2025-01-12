@@ -100,3 +100,7 @@ export const Make_Admin_Failure = 'Make_Admin_Failure'
 export const New_Admin = "New_Admin"
 
 export const Updated_Group = "Updated_Group"
+
+export const New_Group_Created = "New_Group_Created"
+
+export const Removed_From_Group = "Removed_From_Group"

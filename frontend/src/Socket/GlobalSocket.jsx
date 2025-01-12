@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch } from "react-redux"
 import {useNavigate} from 'react-router-dom';
 import socket from "./Socket.jsx";
-import { Call_Rejected, ICE_Candidate_Received, New_Admin, New_Chat_Success, Recieved_Answer, Recieved_Offer, Stop_Typing, Typing, Updated_Group, View_Chat_Success } from '../Redux/actionTypes.jsx';
+import { Call_Rejected, ICE_Candidate_Received, New_Admin, New_Chat_Success, New_Group_Created, Recieved_Answer, Recieved_Offer, Removed_From_Group, Stop_Typing, Typing, Updated_Group, View_Chat_Success } from '../Redux/actionTypes.jsx';
 import { otherStopTyping, otherTyping } from './ChatSocket.jsx';
 import { storePeer } from '../Redux/Call/callActions.jsx';
 
@@ -45,11 +45,22 @@ const GlobalSocket = () => {
   socket.on("NewAdmin", handleNewAdmin)
 
   const handleNewGroup = ({group, users, userDetails}) =>{
-    console.log("removed or left")
+    console.log("someone removed or left")
     dispatch({type: Updated_Group, payload: {group, users, userDetails}})
   }
   socket.on("UpdatedGroup", handleNewGroup)
 
+  const handleNewGroupCreated = ({groupChat})=>{
+    console.log("new group created")
+    dispatch({type: New_Group_Created, payload: {groupChat}})
+  }
+  socket.on("NewGroupCreated", handleNewGroupCreated)
+
+  const handleRemovedFromGroup = ({group})=>{
+    console.log("removed from group")
+    dispatch({type: Removed_From_Group, payload: {group}})
+  }
+  socket.on("RemovedFromGroup", handleRemovedFromGroup)
   
   // Handle call rejection
   
@@ -69,6 +80,7 @@ const GlobalSocket = () => {
       socket.off('stop typing', handleStopTyping);
       socket.off("NewAdmin", handleNewAdmin);
       socket.off("UpdatedGroup", handleNewGroup)
+      socket.off("NewGroupCreated", handleNewGroupCreated)
     };
   });
 
