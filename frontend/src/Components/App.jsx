@@ -12,8 +12,8 @@ import Call from './Call/Call';
 import Settings from './Settings/Settings';
 import GroupProfile from './Profile/GroupProfile/GroupProfile';
 import UserProfile from './Profile/UserProfile/UserProfile';
-// import GroupCall from './GroupCall/GroupCall';
-// import { DailyProvider,} from '@daily-co/daily-react';
+import GroupCall from './GroupCall/GroupCall';
+import { DailyProvider,} from '@daily-co/daily-react';
 
 
 function App() {
@@ -50,9 +50,9 @@ function App() {
         <Route path='/userProfile' element={<UserProfile />}/>
       </Routes>
       <Call />
-      {/* <DailyProvider>
+      <DailyProvider>
         <GroupCall />
-      </DailyProvider> */}
+      </DailyProvider>
       
     </div>
   );

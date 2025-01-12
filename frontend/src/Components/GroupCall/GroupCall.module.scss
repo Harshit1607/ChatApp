@@ -1,62 +1,110 @@
 .main {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 40%;
   height: 60%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   background-color: $primaryColor;
   color: $textColor;
-  min-width: 300px;  // Add minimum width
-  min-height: 400px; // Add minimum height
-  
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+
   .avBox {
     width: 90%;
-    height: 40%;
+    height: 60%;
     border-radius: 10px;
-    margin: 10px auto; // Center the box
-    position: relative; // Important for video positioning
-    overflow: hidden;  // Contain the video
-    
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.1);
+
     video {
       width: 100%;
       height: 100%;
-      object-fit: cover; // Maintain aspect ratio
-      position: absolute; // Position video within container
-      top: 0;
-      left: 0;
-      background: rgba(0, 0, 0, 0.2); // Visual feedback
+      object-fit: cover;
+    }
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
     }
   }
 }
 
-
-.incoming{
+.incoming {
   position: absolute;
-  width: 40%;
-  height: 60%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 200px;
   background-color: $primaryColor;
   color: $textColor;
-  @include flexbox(column, end);
-  .acceptReject{
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .acceptReject {
+    display: flex;
+    justify-content: space-between;
     width: 100%;
-    height: 20%;
-    @include flexbox;
-    justify-content: space-evenly;
-    >button{
-      width: 40px;
-      height: 40px;
-      background-color: red;
-      color: white;
-      border: none;
+    padding: 0 20px;
+
+    button {
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      &:last-child{
-        background-color: greenyellow;
+      border: none;
+      cursor: pointer;
+      color: white;
+
+      &:first-child {
+        background-color: red;
+
+        &:hover {
+          background-color: darkred;
+        }
+      }
+
+      &:last-child {
+        background-color: green;
+
+        &:hover {
+          background-color: darkgreen;
+        }
       }
     }
   }
-  .info{
-    width: 100%;
-    height: 80%;
-    @include flexbox(column);
+
+  .info {
+    margin-bottom: 20px;
+    text-align: center;
   }
 }
