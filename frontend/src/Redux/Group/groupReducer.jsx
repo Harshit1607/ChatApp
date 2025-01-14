@@ -1,4 +1,4 @@
-import { Change_GroupPhoto_Failure, Change_GroupPhoto_Request, Change_GroupPhoto_Success, Close_Chat, Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Leave_Group_Failure, Leave_Group_Request, Leave_Group_Success, Make_Admin_Failure, Make_Admin_Request, Make_Admin_Success, Make_Group, New_Admin, Open_Group_Failure, Open_Group_Request, Open_Group_Success, Updated_Group } from "../actionTypes";
+import { Change_GroupPhoto_Failure, Change_GroupPhoto_Request, Change_GroupPhoto_Success, Close_Chat, Close_Group, Create_Group_Failure, Create_Group_Request, Create_Group_Success, Leave_Group_Failure, Leave_Group_Request, Leave_Group_Success, Make_Admin_Failure, Make_Admin_Request, Make_Admin_Success, Make_Group, New_Admin, Open_Group_Failure, Open_Group_Request, Open_Group_Success, Set_Description_Failure, Set_Description_Request, Set_Description_Success, Updated_Group } from "../actionTypes";
 
 
 
@@ -16,6 +16,7 @@ function groupReducer(state=initialState,action){
     case Change_GroupPhoto_Request:
     case Leave_Group_Request:
     case Make_Admin_Request:
+    case Set_Description_Request:
       return{
         ...state,
         loading: true,
@@ -136,11 +137,20 @@ function groupReducer(state=initialState,action){
       return{
         ...state
       }
+    case Set_Description_Success:
+      const descGroup = {...state.groupChat, description: action.payload.desc}
+      return{
+        ...state,
+        groupChat: descGroup,
+        loading: false,
+        error: null,
+      }
     case Open_Group_Failure:
     case Create_Group_Failure:
     case Change_GroupPhoto_Failure:
     case Leave_Group_Failure:
     case Make_Admin_Failure:
+    case Set_Description_Failure:
       return{
         ...state,
         loading:false,

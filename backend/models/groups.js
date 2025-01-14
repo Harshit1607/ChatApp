@@ -7,7 +7,7 @@ const groupSchema = new mongoose.Schema({
   Admin: {type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] },
   UserDetails:{type: Object, default:[]},
   profile: {type: String},
-  description: {type: String},
+  description: {type: String, maxlength: 200},
 }, { timestamps: true })
 
 export default  mongoose.model('Group', groupSchema);

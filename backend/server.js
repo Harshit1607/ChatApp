@@ -10,7 +10,7 @@ import chatRoutes from './Routes/chatRoutes.js';
 import { initSocketServer } from './Socket/socket.js';  // Import the function to initialize socket server
 import { chatSocket } from './Socket/chatSocket.js';
 import { groupSocket } from './Socket/groupSocket.js';
-// import { redisClient } from './redis.js'; // Import the Redis client
+import { redisClient } from './redis.js'; // Import the Redis client
 import { webrtcSocket } from './Socket/webrtcSocket.js';
 import { dailycoSocket } from './Socket/dailycoSocket.js';
 
@@ -34,9 +34,9 @@ app.use('/group', groupRoutes);
 app.use('/chat', chatRoutes);
 
 
-// redisClient.on('connect', () => {
-//   console.log('Redis is connected in server.js');
-// });
+redisClient.on('connect', () => {
+  console.log('Redis is connected in server.js');
+});
 
 // Initialize the socket server by passing the Express app and CORS options
 const { server, io } = initSocketServer(app, corsOptions);

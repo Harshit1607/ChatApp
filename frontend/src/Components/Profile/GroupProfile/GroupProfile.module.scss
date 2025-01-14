@@ -87,7 +87,7 @@
         height: 50%;
         border-radius: 20px;
         @include flexbox(column, start);
-        gap: 5%;
+        gap: 2.5%;
         background-color: rgba($primaryColor, 0.25);
         >span{
           font-size: 1.2rem;
@@ -107,6 +107,13 @@
           &:focus{
             outline: none;
           }
+        }
+        .descButton{
+          width: 50%;
+          height: 8%;
+          background-color: $spiderRed;
+          border: none;
+          color: white,
         }
       }
     }

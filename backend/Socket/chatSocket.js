@@ -76,8 +76,8 @@ export const chatSocket = (io) =>{
       console.log("Invalid data")
       return;
     }try {
-      // const {status, lastSeen} = await checkUserOnline(user);
-      socket.emit('checkUser', {status: "online", lastSeen: "Lo"});
+      const {status, lastSeen} = await checkUserOnline(user);
+      socket.emit('checkUser', {status, lastSeen});
     } catch (error) {
       console.error("Error checking:", error);
     }

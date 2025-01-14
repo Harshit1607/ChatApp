@@ -3,7 +3,7 @@ import styles from './GroupProfile.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import options from '../../../Assets/3Dots.png'
-import { changeGroupPhoto, leaveGroup, makeAdmin } from '../../../Redux/Group/groupActions';
+import { changeGroupPhoto, leaveGroup, makeAdmin, newDesc } from '../../../Redux/Group/groupActions';
 
 const GroupProfile = () => {
 
@@ -14,6 +14,8 @@ const GroupProfile = () => {
   const [option, setOption] = useState(false);
   const [adminOption, setAdminOption] = useState(null);
   const [icon, setIcon] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [desc, setDesc] = useState(groupChat?.description)
   const adminOptionRefs = useRef({});
 
   const navigate = useNavigate()
@@ -51,10 +53,16 @@ const GroupProfile = () => {
   const showImg = ()=>{
     setIcon(!icon);
   }
+
+  const handleGroupDescription = (e)=>{
+    const text = e.target.value;
+    setDesc(text);
+  }
+
   const handleChangePhoto = ()=>{
       fileInputRef.current.click(); // Programmatically trigger the input
     }
-  
+
     const handleNewImage = (e)=>{
       const file = e.target.files[0];  // Get the file from input
       if (file) {
@@ -94,7 +102,12 @@ const GroupProfile = () => {
             </div>
             <div className={styles.description}>
               <span>Group Description</span>
-              <textarea type="text" />
+              <textarea type="text" maxLength="200" value={desc} onChange={handleGroupDescription} disabled={!edit}/>
+              {!edit ? <button className={styles.descButton} onClick={()=>{setEdit(true)}}>Edit</button>
+              : <button className={styles.descButton} onClick={()=>{
+                dispatch(newDesc(groupChat._id, desc))
+                setEdit(false)
+                }}>Done</button>}
             </div>
         </div>
         <div className={styles.leave}>
@@ -111,9 +124,9 @@ const GroupProfile = () => {
             <span>{groupChat.Users.length} Members</span>
           </div>
           <div>
-            {groupChat.UserDetails.map(each=>{
+            {groupChat.UserDetails.map((each, index)=>{
                 return(
-                  <div className={styles.memberInfo}>
+                  <div className={styles.memberInfo} key={index}>
                     <div>
                       <div>{each.profile && <img src={each.profile} alt="" />}</div>
                       

@@ -104,3 +104,7 @@ export const Updated_Group = "Updated_Group"
 export const New_Group_Created = "New_Group_Created"
 
 export const Removed_From_Group = "Removed_From_Group"
+
+export const Set_Description_Request = 'Set_Description_Request'
+export const Set_Description_Success = 'Set_Description_Success'
+export const Set_Description_Failure = 'Set_Description_Failure'

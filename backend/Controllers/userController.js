@@ -2,7 +2,7 @@ import User from '../models/user.js'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken';
-// import { redisClient } from '../redis.js';
+import { redisClient } from '../redis.js';
 
 dotenv.config();
 const jwt_secret = process.env.JWT_SECRET
@@ -61,21 +61,21 @@ const formatDateTime = (date) => {
 export const markUserOnline = async (user) =>{
   const currentTime = new Date();
   const time = formatDateTime(currentTime)
-  // await redisClient.set(`user:${user}:status`, 'online'); 
-  // await redisClient.set(`user:${user}:last_seen`, time);
+  await redisClient.set(`user:${user}:status`, 'online'); 
+  await redisClient.set(`user:${user}:last_seen`, time);
 }
 
 export const markUserOffline = async (user) =>{
   const currentTime = new Date();
   const time = formatDateTime(currentTime)
-  // await redisClient.set(`user:${user}:status`, 'offline'); 
-  // await redisClient.set(`user:${user}:last_seen`, time);
+  await redisClient.set(`user:${user}:status`, 'offline'); 
+  await redisClient.set(`user:${user}:last_seen`, time);
 }
 
 export const checkUserOnline = async (user) =>{
-  // const status = await redisClient.get(`user:${user}:status`); 
-  // const lastSeen =await redisClient.get(`user:${user}:last_seen`);
-  // return {status, lastSeen}
+  const status = await redisClient.get(`user:${user}:status`); 
+  const lastSeen =await redisClient.get(`user:${user}:last_seen`);
+  return {status, lastSeen}
 }
 
 export const changePhoto = async (req, res) => {

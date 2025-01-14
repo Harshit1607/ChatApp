@@ -3,9 +3,34 @@
   height: 100vh;
   @include flexbox;
   background-color: $tertiaryColor;
+  position: relative;
+
   .cut{
     top: 20px;
     right: 20px;
     position: fixed;
+  }
+
+  .left{
+    width: 25%;
+    height: 100%; 
+    background-color: $spiderRed;
+    @include flexbox(column, end);
+    gap: 10%;
+  } 
+  .right{
+    width: 75%;
+    height: 100%;
+    @include flexbox(column, space-around, end);
+    .media{
+      width: 90%;
+      height: 30%;
+      @include flexbox(column);
+      align-items: start;
+      gap: 5%;
+      >span{
+        font-size: 1.4rem;
+      }
+    }
   }
 }

@@ -8,6 +8,13 @@ const UserProfile = () => {
   const navigate = useNavigate();
   return (
     <div className={styles.main}>
+      <div className={styles.left}></div>
+      <div className={styles.right}>
+        <div className={styles.media}>
+          <span>Media</span>
+          <div></div>
+        </div>
+      </div>
       <div className={styles.cut} onClick={()=>navigate('/home')}>X</div>
     </div>
   )

@@ -177,3 +177,20 @@ export const makeAdmin = async (req, res) =>{
     res.status(500).json({ error: 'Failed to update photo' });
   }
 }
+
+export const setDescription = async (req, res)=>{
+  const {group, text} = req.body;
+  try {
+    const groupChat = await Group.findByIdAndUpdate(
+      group,
+      {
+        description: text, // Add adminId to the Admin array if it doesn't exist
+      },
+      { new: true }
+    );
+    const desc = groupChat.description;
+    res.status(200).json({ desc });
+  } catch (error) {
+    
+  }
+}
