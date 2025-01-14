@@ -21,11 +21,13 @@ const GroupCall = () => {
   const { groupCall, groupCallIncoming } = useSelector(state => state.groupcallReducer);
   const { groupChat } = useSelector(state => state.groupReducer);
   const { user } = useSelector(state => state.userReducer);
-  const [localStream, setLocalStream] = useState(null); // To hold local media stream
   const dispatch = useDispatch();
   const participantIds = useParticipantIds(); // This hook provides participant IDs
   const localSessionId = useLocalSessionId(); // This hook provides the local participant's session ID
   // To get the local participant's session ID
+  const [isAudioMuted, setIsAudioMuted] = useState(false); // Tracks audio mute state
+  const [isVideoPaused, setIsVideoPaused] = useState(false); // Tracks video pause state
+  const [localParticipant, setLocalParticipant] = useState(null);
 
   const joinRoom = async (url, token) => {
     try {
@@ -56,6 +58,7 @@ const GroupCall = () => {
   // Start call when groupCall state changes
   useEffect(() => {
     if (groupCall && !groupCallIncoming) {
+      console.log("call started")
       startCall();
     }
   }, [groupCall]);
@@ -123,7 +126,28 @@ const GroupCall = () => {
       ];
     });
   });
+
+  useEffect(() => {
+    if (daily && localSessionId) {
+      const participants = daily.participants();
+      const local = participants[localSessionId];
+      setLocalParticipant(local);
+    }
+  }, [daily, localSessionId]);
   
+  const toggleAudio = () => {
+    if (daily) {
+      daily.setLocalAudio(!isAudioMuted);
+      setIsAudioMuted(!isAudioMuted);
+    }
+  };
+  
+  const toggleVideo = () => {
+    if (daily) {
+      daily.setLocalVideo(!isVideoPaused);
+      setIsVideoPaused(!isVideoPaused);
+    }
+  };
   
   useDailyEvent('participant-updated', (event) => {
     console.log('Participant updated:', event);
@@ -206,6 +230,21 @@ const GroupCall = () => {
     x: window.innerWidth / 2 - 125,
     y: window.innerHeight / 2 - 225,
   });
+
+  useEffect(() => {
+    if (participants.size === 0) {
+      cleanupRoom();
+    }
+  }, [participants]);
+  const cleanupRoom = async () => {
+    console.log('Room is empty. Cleaning up...');
+    try {
+      socket.emit("DeleteCallRoom", {roomUrl, roomToken});
+    
+    } catch (error) {
+      console.error('Error during room cleanup:', error);
+    }
+  };
   
   useEffect(() => {
     const handleResize = () => {
@@ -254,43 +293,86 @@ const GroupCall = () => {
           left: position.x,
         }}
       >
-        {localSessionId && (
       <div className={styles.videoWrapper}>
-        <h3>Me</h3>
-        <DailyVideo
-          sessionId={localSessionId}
-          muted
-          mirror
-          style={{ width: '100px', height: '100px', backgroundColor: 'black' }}
-        />
-      </div>
-    )}
+        {localSessionId && (
+          <div>
+            {/* <h3>Me</h3> */}
+            <video
+              autoPlay
+              playsInline
+              muted
+              ref={(videoElement) => {
+                if (videoElement && localParticipant?.tracks?.video?.state === 'playable') {
+                  const videoTrack = localParticipant.tracks.video.persistentTrack;
+                  if (videoTrack) {
+                    videoElement.srcObject = new MediaStream([videoTrack]);
+                  }
+                }
+              }}
+              style={{ width: '100%', height: '100%', backgroundColor: 'black' }}
+            />
+            <audio
+              autoPlay
+              playsInline
+              ref={(audioElement) => {
+                if (audioElement) {
+                  const localParticipant = daily.participants()?.[localSessionId];
+                  const audioTrack = localParticipant?.tracks?.audio?.track;
+                  audioElement.srcObject = audioTrack ? new MediaStream([audioTrack]) : null;
+                }
+              }}
+            />
+          </div>
+        )}
     
-    <div>
-    {participantIds.map((id) => {
-  if (id === localSessionId) return null;
-  const participant = participants.find(p => p.session_id === id);
-  const videoTrack = participant?.tracks?.video?.track;
   
-  if (videoTrack) {
-    return (
-      <div key={id} className={styles.videoWrapper}>
-        <h3>Participant</h3>
-        <DailyVideo
-          sessionId={id}
-          style={{ width: '100px', height: '100px', backgroundColor: 'black' }}
-        />
-      </div>
-    );
-  } else {
-    return <div key={id}>No video for this participant</div>;
-  }
-})}
+        {participantIds.map((id) => {
+          if (id === localSessionId) return null;
+          const participant = participants.find(p => p.session_id === id);
+          const videoTrack = participant?.tracks?.video?.track;
+          const audioTrack = participant?.tracks?.audio?.persistentTrack;
+          
+          if (videoTrack) {
+            return (
+              <div key={id}>
+                {/* <h3>Participant</h3> */}
+                <video
+                  autoPlay
+                  playsInline
+                  ref={(videoElement) => {
+                    if (videoElement) {
+                      videoElement.srcObject = videoTrack ? new MediaStream([videoTrack]) : null;
+                    }
+                  }}
+                  style={{ width: '100%', height: '100%', backgroundColor: 'black' }}
+                ></video>
+                <audio
+                  autoPlay
+                  playsInline
+                  ref={(audioElement) => {
+                    if (audioElement && audioTrack) {
+                      audioElement.srcObject = new MediaStream([audioTrack]);
+                    } else if (audioElement) {
+                      audioElement.srcObject = null;
+                    }
+                  }}
+                />
+              </div>
+            );
+          }
+        })}
+
+    </div>
+    <div className={styles.controls}>
+      <button onClick={toggleAudio}>
+        {!isAudioMuted ? "Unmute" : "Mute"} Audio
+      </button>
+      <button onClick={toggleVideo}>
+        {!isVideoPaused ? "Resume Video" : "Pause Video"}
+      </button>
+      <button onClick={handleLeaveCall}>End Call</button>
     </div>
 
-        <div className={styles.controls}>
-          <button onClick={handleLeaveCall}>End Call</button>
-        </div>
       </div>
       ) : groupCallIncoming ? 
       (<div className={styles.incoming}

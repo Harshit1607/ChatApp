@@ -60,6 +60,25 @@ const createMeetingToken = async (roomName) => {
   }
 };
 
+const deleteRoom = async (roomName) => {
+  try {
+    const response = await axios.delete(
+      `${DAILY_API_URL}/rooms/${roomName}`,
+      {
+        headers: {
+          Authorization: `Bearer ${DAILY_API_KEY}`,
+        },
+      }
+    );
+    console.log(`Room ${roomName} deleted successfully`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting room:', error);
+    throw error;
+  }
+};
+
+
 export const dailycoSocket = (io) => {
   io.on('connection', (socket) => {
       console.log('Socket connected:', socket.id);
@@ -83,6 +102,7 @@ export const dailycoSocket = (io) => {
             // Notify other participants
             group.forEach(participantId => {
               if(participantId !== user){
+                console.log(participantId)
               socket.to(participantId).emit('incoming-group-call', {
                 roomName: room.name,
                 token,
@@ -99,5 +119,15 @@ export const dailycoSocket = (io) => {
             });
           }
         });
+        socket.on("DeleteCallRoom", async ({roomUrl, roomToken})=>{
+          const roomName = roomUrl.split('/').pop();
+
+        // Validate room token (optional, depends on your use case)
+      
+
+        // Delete the room
+        await deleteRoom(roomName);
+
+        })
     });
 };
