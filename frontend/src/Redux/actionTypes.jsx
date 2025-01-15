@@ -108,3 +108,7 @@ export const Removed_From_Group = "Removed_From_Group"
 export const Set_Description_Request = 'Set_Description_Request'
 export const Set_Description_Success = 'Set_Description_Success'
 export const Set_Description_Failure = 'Set_Description_Failure'
+
+export const Set_AboutMe_Request = 'Set_AboutMe_Request'
+export const Set_AboutMe_Success = 'Set_AboutMe_Success'
+export const Set_AboutMe_Failure = 'Set_AboutMe_Failure'

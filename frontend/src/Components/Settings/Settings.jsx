@@ -2,11 +2,13 @@ import React, { useRef, useState } from 'react'
 import styles from './Settings.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { changePhoto, deletePhoto, logout } from '../../Redux/User/userActions';
+import { changePhoto, deletePhoto, logout, newAboutme } from '../../Redux/User/userActions';
 const Settings = () => {
   const { user } = useSelector(state => state.userReducer);
 
   const [image, setImage] = useState();
+  const [userAbout, setuserAbout] = useState(user?.about);
+  const [edit, setEdit] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,6 +36,11 @@ const Settings = () => {
     dispatch(logout());
   }
 
+  const handleNewAbout = (e)=>{
+    const text = e.target.value;
+    setuserAbout(text);
+  }
+
   return (
     <div className={styles.main}>
       <div className={styles.info}>
@@ -51,7 +58,13 @@ const Settings = () => {
           </div>
           <div>
             <span>About me</span>
-            <span>{user.about}</span>
+            <div>
+              <textarea maxLength={50} value={userAbout} onChange={handleNewAbout} disabled={!edit}/>
+              {!edit ? <button onClick={()=>{setEdit(true)}}>E</button> : <button onClick={()=>{
+                dispatch(newAboutme(user._id, userAbout))
+                setEdit(false)}}>D</button>}
+            </div>
+            
           </div>
           <div>
             <span>Email</span>

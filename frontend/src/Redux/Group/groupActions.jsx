@@ -75,10 +75,10 @@ export const makeAdmin = (user, group, newUser) => async (dispatch) =>{
   }
 }
 
-export const newDesc = (group, text)=> async (dispatch)=>{
+export const newDesc = (group, text, user)=> async (dispatch)=>{
   dispatch({type: Set_Description_Request})
   try {
-    const result = await axios.post(`${API_URL}group/description`, {group, text});
+    const result = await axios.post(`${API_URL}group/description`, {group, text, user});
     dispatch({type: Set_Description_Success, payload: result.data})
   } catch (error) {
     dispatch({type: Set_Description_Failure, error: error.message})

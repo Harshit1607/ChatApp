@@ -179,7 +179,7 @@ export const makeAdmin = async (req, res) =>{
 }
 
 export const setDescription = async (req, res)=>{
-  const {group, text} = req.body;
+  const {group, text, user} = req.body;
   try {
     const groupChat = await Group.findByIdAndUpdate(
       group,
@@ -188,8 +188,15 @@ export const setDescription = async (req, res)=>{
       },
       { new: true }
     );
+    const io = getIo();
     const desc = groupChat.description;
-    res.status(200).json({ desc });
+    groupChat.Users.map(each=>{
+      if(each !== user){
+        const sent = each.toString();
+        io.to(sent).emit("Description", {desc, id})
+      } 
+    })
+    res.status(200).json({ desc, id });
   } catch (error) {
     
   }

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Change_Photo_Failure, Change_Photo_Request, Change_Photo_Success, Delete_Photo_Failure, Delete_Photo_Request, Delete_Photo_Success, Logout, User_Login_Failure, User_Login_Request, User_Login_Success, User_Signup_Failure, User_Signup_Request, User_Signup_Success } from '../actionTypes';
+import { Change_Photo_Failure, Change_Photo_Request, Change_Photo_Success, Delete_Photo_Failure, Delete_Photo_Request, Delete_Photo_Success, Logout, Set_AboutMe_Failure, Set_AboutMe_Request, Set_AboutMe_Success, User_Login_Failure, User_Login_Request, User_Login_Success, User_Signup_Failure, User_Signup_Request, User_Signup_Success } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -57,3 +57,12 @@ export const logout = ()=>{
   return({type: Logout})
 }
 
+export const newAboutme = (user, text)=> async (dispatch)=>{
+  dispatch({type: Set_AboutMe_Request})
+  try {
+    const result = await axios.post(`${API_URL}user/about`, {user, text});
+    dispatch({type: Set_AboutMe_Success, payload: result.data})
+  } catch (error) {
+    dispatch({type: Set_AboutMe_Failure, error: error.message})
+  }
+}

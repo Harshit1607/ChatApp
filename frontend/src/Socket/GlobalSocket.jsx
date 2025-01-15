@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch } from "react-redux"
 import {useNavigate} from 'react-router-dom';
 import socket from "./Socket.jsx";
-import { Call_Rejected, ICE_Candidate_Received, New_Admin, New_Chat_Success, New_Group_Created, Recieved_Answer, Recieved_Offer, Removed_From_Group, Stop_Typing, Typing, Updated_Group, View_Chat_Success } from '../Redux/actionTypes.jsx';
+import { Call_Rejected, ICE_Candidate_Received, New_Admin, New_Chat_Success, New_Group_Created, Recieved_Answer, Recieved_Offer, Removed_From_Group, Set_Description_Success, Stop_Typing, Typing, Updated_Group, View_Chat_Success } from '../Redux/actionTypes.jsx';
 import { otherStopTyping, otherTyping } from './ChatSocket.jsx';
 import { storePeer } from '../Redux/Call/callActions.jsx';
 
@@ -60,27 +60,20 @@ const GlobalSocket = () => {
     console.log("removed from group")
     dispatch({type: Removed_From_Group, payload: {group}})
   }
-  socket.on("RemovedFromGroup", handleRemovedFromGroup)
-  
-  // Handle call rejection
-  
-
-  // Handle ICE candidate reception
-  // const handleCandidate = ({ candidate }) => {
-  //   dispatch({ type: ICE_Candidate_Received, payload: { candidate } });
-  // };
-  // socket.on('receiveCandidate', handleCandidate);
-
-  
-
+  socket.on("RemovedFromGroup", handleRemovedFromGroup);
+  const handleDescription = ({desc, id})=>{
+    dispatch({type: Set_Description_Success, payload: {desc, id}});
+  }
+  socket.on("Description", handleDescription);
     return () => {
-      socket.off("viewChat", handleViewChat)
+      socket.off("viewChat", handleViewChat); 
       socket.off("new message", handleNewChat);
       socket.off('typing', handleTyping);
       socket.off('stop typing', handleStopTyping);
       socket.off("NewAdmin", handleNewAdmin);
-      socket.off("UpdatedGroup", handleNewGroup)
-      socket.off("NewGroupCreated", handleNewGroupCreated)
+      socket.off("UpdatedGroup", handleNewGroup);
+      socket.off("NewGroupCreated", handleNewGroupCreated);
+      socket.off("Description", handleDescription);
     };
   });
 

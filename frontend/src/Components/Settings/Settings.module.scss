@@ -53,12 +53,38 @@
     }
   
     .userInfo{
-      
       color: white;
       >div{
         width: 100%;
         @include flexbox(column, center, start);
         font-size: 1.4rem;
+        >div{
+          @include flexbox;
+          justify-content: space-between;
+          align-items: start;
+          width: 100%;
+          height: 100%;
+          >textarea{
+            font-size: 1.4rem;
+            width: 85%;
+            background-color: transparent;
+            scrollbar-width: none;
+            resize: none;
+            height: fit-content;
+            border: none;
+            &:focus{
+              outline: none;
+            }
+          }
+          >button{
+            width: 10%;
+            color: white;
+            height: fit-content;
+            background-color: transparent;
+            font-size: 1.4rem;
+            border: none;
+          }
+        }
         >span:first-of-type{
           font-size: 1rem;
           color: #7B93B0;

@@ -130,3 +130,19 @@ export const deletePhoto = async (req, res) => {
   }
 };
 
+export const setAbout = async (req, res)=>{
+  const {user, text} = req.body;
+  try {
+    const newUser = await User.findByIdAndUpdate(
+      user,
+      {
+        about: text, // Add adminId to the Admin array if it doesn't exist
+      },
+      { new: true }
+    );
+    const desc = newUser.about;
+    res.status(200).json({ desc });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to Update' });
+  }
+}

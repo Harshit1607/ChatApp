@@ -138,7 +138,15 @@ function groupReducer(state=initialState,action){
         ...state
       }
     case Set_Description_Success:
+      if(state.groupChat !== action.payload.id){
+        return{
+          ...state,
+          loading: false,
+          error: null,
+        }
+      }
       const descGroup = {...state.groupChat, description: action.payload.desc}
+      sessionStorage.setItem('groupChat', JSON.stringify(descGroup));
       return{
         ...state,
         groupChat: descGroup,
