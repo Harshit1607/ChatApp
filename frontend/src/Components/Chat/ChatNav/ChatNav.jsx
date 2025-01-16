@@ -9,7 +9,7 @@ import socket from '../../../Socket/Socket';
 import { makeCall, onlyAudio } from '../../../Redux/Call/callActions';
 import { makeGroupCall } from '../../../Redux/GroupCall/groupcallActions';
 import { useNavigate } from 'react-router-dom';
-import { getPhoto } from '../../../Redux/Home/homeActions';
+import { getPhoto, getSingleUser } from '../../../Redux/Home/homeActions';
 
 
 const ChatNav = () => {
@@ -76,7 +76,14 @@ const ChatNav = () => {
     <>
       <div className={styles.main}>
         <div className={styles.pfp}>
-          <div onClick={()=>{groupChat.isGroup? navigate('/groupProfile') : navigate("/userProfile")}}>
+          <div onClick={() => {
+            if (groupChat.isGroup) {
+              navigate('/groupProfile');
+            } else {
+              dispatch(getSingleUser(groupChat.Users.find(each=>each !== user._id)));
+              navigate("/userProfile");
+            }
+          }}>
             {profile && <img src={profile} alt=''/>}
           </div>
         </div>

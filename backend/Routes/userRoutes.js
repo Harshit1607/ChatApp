@@ -4,10 +4,10 @@ import { changePhoto, deletePhoto, login, setAbout, signup } from '../Controller
 const router = express.Router();
 
 router.post('/signup', signup);
-router.post('/login', login)
-router.post('/profile', changePhoto)
-router.post('/deleteprofile', deletePhoto)
-router.post('/about', setAbout)
+router.post('/login', login);
+router.post('/profile', changePhoto);
+router.post('/deleteprofile', deletePhoto);
+router.post('/about', setAbout);
 
 
 export default router;

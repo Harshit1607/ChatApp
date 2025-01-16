@@ -66,3 +66,13 @@ export const getProfile = async (req, res) => {
     res.status(500).json({ error: "Failed to get profile" });
   }
 };
+
+export const getUser = async (req, res)=>{
+  const {id} =req.body;
+  try {
+    const newUser = await User.findById(id)
+    res.status(200).json({newUser});
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to Update' });
+  }
+}

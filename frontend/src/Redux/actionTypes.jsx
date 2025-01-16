@@ -112,3 +112,7 @@ export const Set_Description_Failure = 'Set_Description_Failure'
 export const Set_AboutMe_Request = 'Set_AboutMe_Request'
 export const Set_AboutMe_Success = 'Set_AboutMe_Success'
 export const Set_AboutMe_Failure = 'Set_AboutMe_Failure'
+
+export const Get_User_Request = 'Get_User_Request'
+export const Get_User_Success = 'Get_User_Success'
+export const Get_User_Failure = 'Get_User_Failure'

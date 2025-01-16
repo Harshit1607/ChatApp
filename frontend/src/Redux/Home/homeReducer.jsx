@@ -1,10 +1,12 @@
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group, New_Group_Created, Removed_From_Group, Create_Group_Success } from "../actionTypes";
+import { act } from "react";
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group, New_Group_Created, Removed_From_Group, Create_Group_Success, Get_User_Request, Get_User_Failure, Get_User_Success } from "../actionTypes";
 
 
 const initialState = {
   allUsers: localStorage.getItem('allUsers') ? JSON.parse(localStorage.getItem('allUsers')) : '',
   allFriends: localStorage.getItem('allFriends') ? JSON.parse(localStorage.getItem('allFriends')) : '',
   searchUsers: localStorage.getItem('searchUsers') ? JSON.parse(localStorage.getItem('searchUsers')) : '',
+  newUser: '',
   loading: false,
   error: null,
 }
@@ -14,6 +16,7 @@ function homeReducer(state=initialState,action){
     case All_Users_Request:
     case All_Friends_Request:
     case Search_Users_Request:
+    case Get_User_Request:
       return{
         ...state,
         loading: true,
@@ -154,9 +157,17 @@ function homeReducer(state=initialState,action){
         ...state,
         allFriends: removedGroup,
       }
+    case Get_User_Success:
+      return{
+        ...state,
+        newUser: action.payload.newUser,
+        error: null,
+        loading: false,
+      }
     case All_Users_Failure:
     case All_Friends_Failure:
     case Search_Users_Failure:
+    case Get_User_Failure:
       return{
         ...state,
         loading:false,
