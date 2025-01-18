@@ -36,10 +36,15 @@
   width: 10%;
   @include flexbox;
   justify-content: end;
-  gap: 4px;
+  gap: 5px;
   >div{
     width: 45px;
     height: 40px;
     @include flexbox;
+    background-color: $spiderRed;
+    border-radius: 10px;
+    &:last-child{
+      background-color: $navColor;
+    }
   }
 }

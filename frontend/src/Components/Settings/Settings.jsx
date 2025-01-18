@@ -60,8 +60,11 @@ const Settings = () => {
             <span>About me</span>
             <div>
               <textarea maxLength={50} value={userAbout} onChange={handleNewAbout} disabled={!edit}/>
+              <span className={styles.charCount}>{`${userAbout.length}/50`}</span>
               {!edit ? <button onClick={()=>{setEdit(true)}}>E</button> : <button onClick={()=>{
-                dispatch(newAboutme(user._id, userAbout))
+                if(userAbout !== user.about){
+                  dispatch(newAboutme(user._id, userAbout))
+                } 
                 setEdit(false)}}>D</button>}
             </div>
             

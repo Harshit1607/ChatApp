@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useState} from 'react'
 import SingleConvo from '../SingleConvo/SngleConvo'
 import styles from './ConversationHome.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
@@ -10,6 +10,8 @@ import { makeGroup } from '../../../Redux/Group/groupActions'
 const ConversationHome = () => {
   const {allFriends, allUsers} = useSelector(state=>state.homeReducer);
   const dispatch = useDispatch();
+
+  const [isVisible, setIsVisible] = useState(false);
   
   const debouncedSearch = useCallback(Debouncing((text) => {
     dispatch(searchUsers(text))
@@ -33,8 +35,11 @@ const ConversationHome = () => {
       </div>
       <div className={styles.searchBar}>
         <input onChange={handleChange} placeholder='Search for users..'/>
-        <div onClick={handleGroup}>
+        <div onClick={handleGroup} onMouseEnter={()=>{setIsVisible(true)}} onMouseLeave={()=>{setIsVisible(false)}}>
           <img src={spiderGroupBig} alt="Grp" />
+        </div>
+        <div className={styles.groupVisible} style={{display: isVisible? "" : "none"}}>
+            Create Group
         </div>
       </div>
       <div className={styles.covoContainer}>

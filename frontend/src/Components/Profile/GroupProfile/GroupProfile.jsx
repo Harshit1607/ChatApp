@@ -102,10 +102,13 @@ const GroupProfile = () => {
             </div>
             <div className={styles.description}>
               <span>Group Description</span>
-              <textarea type="text" maxLength="200" value={desc} onChange={handleGroupDescription} disabled={!edit}/>
+              <textarea type="text" maxLength="200" value={desc} onChange={handleGroupDescription} disabled={!edit} />
+              <span className={styles.charCount}>{`${desc.length}/200`}</span>
               {!edit ? <button className={styles.descButton} onClick={()=>{setEdit(true)}}>Edit</button>
               : <button className={styles.descButton} onClick={()=>{
-                dispatch(newDesc(groupChat._id, desc, user._id))
+                if(desc !== groupChat.description){
+                  dispatch(newDesc(groupChat._id, desc, user._id))
+                }
                 setEdit(false)
                 }}>Done</button>}
             </div>

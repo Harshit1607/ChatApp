@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './Navbar.module.scss'
 import web from '../../Assets/web.svg'
-import spiderWeb from '../../Assets/spiderWeb.svg'
+import spiderWeb from '../../Assets/Settings.svg'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
