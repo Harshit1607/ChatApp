@@ -17,6 +17,13 @@
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
+  .dateSeparator {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 1.4rem;
+    color: $textColor;
+    font-weight: bold;
+  }
 }
 
 .typingIndicator {

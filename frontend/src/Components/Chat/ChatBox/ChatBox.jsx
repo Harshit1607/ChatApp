@@ -19,14 +19,35 @@ const ChatBox = () => {
     viewChat(groupChat._id, user._id)
   }, [chats?.length])
 
+  const isNewDay = (currentChat, previousChat) => {
+    const currentDate = new Date(currentChat.createdAt).toDateString();
+    const previousDate = previousChat ? new Date(previousChat.createdAt).toDateString() : null;
+    return currentDate !== previousDate;
+  };
+
+
   return (
     <div className={styles.main}>
       <div className={styles.chatbox}>
-        {
-          groupChat && chats && chats.length > 0? chats.filter(chat=>chat.Group[0] === groupChat._id).map((chat, index)=>(
-            <SingleChat chat={chat} key={index}/>
-          )): null
-        }
+      {groupChat && chats && chats.length > 0
+          ? chats
+              .filter((chat) => chat.Group[0] === groupChat._id)
+              .map((chat, index) => (
+                <React.Fragment key={chat._id}>
+                  <SingleChat chat={chat} />
+                  {isNewDay(chat, chats.filter((chat) => chat.Group[0] === groupChat._id)[index + 1]) && (
+                    <div className={styles.dateSeparator}>
+                      {new Date(chat.createdAt).toLocaleDateString(undefined, {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </div>
+                  )}
+                  
+                </React.Fragment>
+              ))
+          : null}
       </div>
       <div style={{"display": !typing? "none" : ""}} className={styles.typingIndicator}>
           <img src={spider} alt="" />

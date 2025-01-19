@@ -11,27 +11,50 @@
   align-items: start;
 }
 .chat{
-  padding: 5px 10px;
+  padding: 5px 30px 15px 5px;
   background-color: $primaryColor;
   color: $textColor;
   @include flexbox;
   justify-content:start;
   border-radius: 10px;
   border-bottom-left-radius: 0px;
+  position: relative;
   >span{
     padding: 5px;
   }
+  >div{
+    @include flexbox;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 0.8rem;
+  }
 }
 .userChat{
-  padding: 5px 10px;
+  padding: 5px 45px 15px 5px;
   background-color: $secondaryColor;
   color: $textColor;
   @include flexbox;
-  justify-content: end;
+  justify-content: start;
   border-radius: 10px;
   border-top-right-radius: 0px;
+  position: relative;
   >span{
     padding: 5px;
+  }
+  >div{
+    @include flexbox;
+    gap: 5px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 0.8rem;
+    color: $textColor;
+    >img{
+      width: 20px;
+      height: 20px;
+      color: $textColor;
+    }
   }
 }
 
