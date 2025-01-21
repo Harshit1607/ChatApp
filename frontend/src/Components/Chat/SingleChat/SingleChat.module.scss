@@ -50,13 +50,35 @@
     right: 5px;
     font-size: 0.8rem;
     color: $textColor;
-    >img{
+    
+    img{
+      cursor: pointer;
       width: 20px;
       height: 20px;
       color: $textColor;
     }
   }
+  .viewDetails{
+    width: 200px;
+    height: fit-content;
+    position: absolute;
+    left: -200px;
+    background-color: $primaryColor;
+    color: $textColor;
+    @include flexbox(column, space-between, start);
+    transition: visibility 0.3s ease-in-out; /* Smooth transition */
+    >div{
+      width: 100%;
+      @include flexbox(column, start, start);
+      >span{
+        &:first-child{
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
 }
+
 
 .triangle{
   width: 0;

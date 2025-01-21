@@ -11,6 +11,7 @@
   max-height: 100%;
   @include flexbox(column-reverse, end);
   gap: 15px;
+  overflow-x: hidden;
   overflow-y: scroll;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */

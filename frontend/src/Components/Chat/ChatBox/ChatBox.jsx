@@ -10,6 +10,8 @@ const ChatBox = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {user} = useSelector(state=>state.userReducer);
   const {chats, typing} = useSelector(state=>state.chatReducer);
+
+  const [visibleChatId, setVisibleChatId] = useState(null);
   
   const dispatch = useDispatch();
   useEffect(()=>{
@@ -34,7 +36,8 @@ const ChatBox = () => {
               .filter((chat) => chat.Group[0] === groupChat._id)
               .map((chat, index) => (
                 <React.Fragment key={chat._id}>
-                  <SingleChat chat={chat} />
+                  <SingleChat chat={chat} visible={visibleChatId === chat._id} // Check if this chat is currently visible
+                    setVisibleChatId={setVisibleChatId} index={index} />
                   {isNewDay(chat, chats.filter((chat) => chat.Group[0] === groupChat._id)[index + 1]) && (
                     <div className={styles.dateSeparator}>
                       {new Date(chat.createdAt).toLocaleDateString(undefined, {
