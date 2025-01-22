@@ -7,6 +7,7 @@ import userRoutes from './Routes/userRoutes.js';
 import homeRoutes from './Routes/homeRoutes.js';
 import groupRoutes from './Routes/groupRoutes.js';
 import chatRoutes from './Routes/chatRoutes.js';
+import translationRoutes from './Routes/translationRoutes.js'
 import { initSocketServer } from './Socket/socket.js';  // Import the function to initialize socket server
 import { chatSocket } from './Socket/chatSocket.js';
 import { groupSocket } from './Socket/groupSocket.js';
@@ -32,6 +33,7 @@ app.use('/', homeRoutes);
 app.use('/user', userRoutes);
 app.use('/group', groupRoutes);
 app.use('/chat', chatRoutes);
+app.use('/translation', translationRoutes)
 
 
 redisClient.on('connect', () => {

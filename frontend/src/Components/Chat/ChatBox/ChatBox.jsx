@@ -10,8 +10,10 @@ const ChatBox = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {user} = useSelector(state=>state.userReducer);
   const {chats, typing} = useSelector(state=>state.chatReducer);
+  const {languages} = useSelector(state=>state.translationReducer);
 
   const [visibleChatId, setVisibleChatId] = useState(null);
+  const [chatOptions, setChatOptions] = useState(null);
   
   const dispatch = useDispatch();
   useEffect(()=>{
@@ -37,7 +39,8 @@ const ChatBox = () => {
               .map((chat, index) => (
                 <React.Fragment key={chat._id}>
                   <SingleChat chat={chat} visible={visibleChatId === chat._id} // Check if this chat is currently visible
-                    setVisibleChatId={setVisibleChatId} index={index} />
+                    setVisibleChatId={setVisibleChatId} index={index} chatOptions={chatOptions === chat._id}
+                    setChatOptions={setChatOptions}/>
                   {isNewDay(chat, chats.filter((chat) => chat.Group[0] === groupChat._id)[index + 1]) && (
                     <div className={styles.dateSeparator}>
                       {new Date(chat.createdAt).toLocaleDateString(undefined, {
@@ -57,7 +60,14 @@ const ChatBox = () => {
           <img src={spider} alt="" />
           <img src={spider} alt="" />
           <img src={spider} alt="" />
-        </div>
+      </div>
+      {languages && <div className={styles.translationBox}>
+        {languages.map(each=>{
+          return(
+            <div>{each.name}</div>
+          )
+        })}
+      </div>}
     </div>
     
   )

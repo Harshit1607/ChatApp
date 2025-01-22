@@ -116,3 +116,7 @@ export const Set_AboutMe_Failure = 'Set_AboutMe_Failure'
 export const Get_User_Request = 'Get_User_Request'
 export const Get_User_Success = 'Get_User_Success'
 export const Get_User_Failure = 'Get_User_Failure'
+
+export const Get_Languages_Request = 'Get_Languages_Request'
+export const Get_Languages_Success = 'Get_Languages_Success'
+export const Get_Languages_Failure = 'Get_Languages_Failure'

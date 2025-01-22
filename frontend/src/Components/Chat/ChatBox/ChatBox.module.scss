@@ -3,6 +3,18 @@
   height: calc(96% - 165px);
   padding: 2% 0;
   @include flexbox(column, end);
+  position: relative;
+  .translationBox{
+    position: absolute;
+    width: 60%;
+    height: 50%;
+    top: 25%;
+    left: 20%;
+    overflow: scroll;
+    scrollbar-width: 0;
+    background-color: $primaryColor;
+    color: $textColor;
+  }
 }
 
 .chatbox{

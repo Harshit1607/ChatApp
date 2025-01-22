@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styles from'./SingleChat.module.scss'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import singleTick from '../../../Assets/singleTick.svg'
 import doubleTick from '../../../Assets/doubleTick.png'
+import { getLanguages } from '../../../Redux/Translation/translationActions'
 
-const SingleChat = ({chat, visible, setVisibleChatId, index }) => {
+const SingleChat = ({chat, visible, setVisibleChatId, index, chatOptions, setChatOptions }) => {
   const {user} = useSelector(state=>state.userReducer);
   const {groupChat} = useSelector(state=>state.groupReducer);
+  const dispatch = useDispatch();
   
 
   function convertTo24HourFormat(dateString) {
@@ -21,6 +23,7 @@ const SingleChat = ({chat, visible, setVisibleChatId, index }) => {
 }
 
 const viewDetailsRef = useRef(null);
+const chatOptionRef = useRef(null);
 
 useEffect(() => {
   const handleClickOutside = (event) => {
@@ -29,7 +32,10 @@ useEffect(() => {
       !viewDetailsRef.current.contains(event.target)
     ) {
       setVisibleChatId(null); // Close the viewDetails div when clicking outside
-    }
+    }else if( chatOptionRef.current && 
+      !chatOptionRef.current.contains(event.target)){
+        setChatOptions(null)
+      }
   };
 
   // Attach the event listener
@@ -45,11 +51,17 @@ const handleToggle = (e) => {
   e.stopPropagation();
   setVisibleChatId(visible ? null : chat._id); // Toggle visibility for this chat
 };
+const handleOptions = (e)=>{
+  e.preventDefault();
+  e.stopPropagation();
+  setChatOptions(chatOptions ? null : chat._id)
+}
 
+console.log(chatOptions)
 
   return (
     <div className={user._id  === chat.message.sentBy[0] ? styles.userMain :  styles.main}>
-      <div className={user._id  === chat.message.sentBy[0] ? styles.userChat :  styles.chat}>
+      <div className={user._id  === chat.message.sentBy[0] ? styles.userChat :  styles.chat} onContextMenu={handleOptions}>
         <span>{chat.message.message}</span>
         <div>
           <span>{convertTo24HourFormat(chat.createdAt)}</span>
@@ -62,27 +74,30 @@ const handleToggle = (e) => {
           </div>
         </div>
         <div className={styles.viewDetails} ref={viewDetailsRef} style={{visibility: visible? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%"}}>
-        <div className={styles.viewed}>
-          <span>Viewed By</span>
-          {
-            chat.message.viewedBy.filter(each=>each !== user._id).map(each=>{
-              return(
-                
-                <span>{groupChat.UserDetails.find(e => e._id === each).name}</span>
-              )
-              })
-          }
-        </div>
-        <div className={styles.sent}>
-          <span>Sent to</span>
-          {
-            chat.Users.filter(each=> !chat.message.viewedBy.includes(each)).map(each=>{ 
-              return(
-                <span>{groupChat.UserDetails.find(e => e._id === each).name}</span>
-              )
-              })
-          }
-        </div>
+          <div>
+            <span>Viewed By</span>
+            {
+              chat.message.viewedBy.filter(each=>each !== user._id).map(each=>{
+                return(
+                  
+                  <span>{groupChat.UserDetails.find(e => e._id === each).name}</span>
+                )
+                })
+            }
+          </div>
+          <div>
+            <span>Sent to</span>
+            {
+              chat.Users.filter(each=> !chat.message.viewedBy.includes(each)).map(each=>{ 
+                return(
+                  <span>{groupChat.UserDetails.find(e => e._id === each).name}</span>
+                )
+                })
+            }
+          </div>
+      </div>
+      <div className={styles.chatOption} ref={chatOptionRef} style={{visibility: chatOptions? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%"}}>
+        <button onClick={()=>{dispatch(getLanguages())}}>Translate</button>
       </div>
       </div>
       <div className={user._id  === chat.message.sentBy[0] ? styles.usertriangle :  styles.triangle}></div>

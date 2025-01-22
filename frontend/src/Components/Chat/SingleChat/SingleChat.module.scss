@@ -77,6 +77,23 @@
       }
     }
   }
+  .chatOption{
+    width: 200px;
+    height: fit-content;
+    position: absolute;
+    left: -200px;
+    background-color: $primaryColor;
+    color: $textColor;
+    @include flexbox(column, start, start);
+    >button{
+      width: 100%;
+      height: 50px;
+      @include flexbox;
+      background-color: $primaryColor;
+      color: $textColor;
+      border: none;
+    }
+  }
 }
 
 

@@ -6,6 +6,7 @@ import groupReducer from "./Group/groupReducer";
 import chatReducer from "./Chat/chatReducer";
 import callReducer from "./Call/callReducer";
 import groupcallReducer from "./GroupCall/groupcallReducer";
+import translationReducer from "./Translation/translationReducer";
 
 const rootReducer = combineReducers({
   userReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   chatReducer, 
   callReducer,
   groupcallReducer,
+  translationReducer,
 })
 
 const store = legacy_createStore(rootReducer, applyMiddleware(thunk));
