@@ -57,7 +57,6 @@ const ChatNav = () => {
     const statusSeen = (detail)=>{
       setStatus(detail.status)
       setLastSeen(detail.lastSeen)
-      console.log(status, lastSeen);
     }
 
    socket.on('checkUser', statusSeen) 

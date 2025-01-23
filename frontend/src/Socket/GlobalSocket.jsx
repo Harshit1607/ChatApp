@@ -14,7 +14,6 @@ const GlobalSocket = () => {
   useEffect(() => {
 
     const handleNewChat = ({ newChat }) => {
-      console.log("new message recieved")
       dispatch({ type: New_Chat_Success, payload: { newChat } });
     };
   
@@ -39,25 +38,21 @@ const GlobalSocket = () => {
   socket.on('stop typing', handleStopTyping);
 
   const handleNewAdmin = ({group, admins}) =>{
-    console.log("new Admin")
     dispatch({type: New_Admin, payload:{group, admins} })
   }
   socket.on("NewAdmin", handleNewAdmin)
 
   const handleNewGroup = ({group, users, userDetails}) =>{
-    console.log("someone removed or left")
     dispatch({type: Updated_Group, payload: {group, users, userDetails}})
   }
   socket.on("UpdatedGroup", handleNewGroup)
 
   const handleNewGroupCreated = ({groupChat})=>{
-    console.log("new group created")
     dispatch({type: New_Group_Created, payload: {groupChat}})
   }
   socket.on("NewGroupCreated", handleNewGroupCreated)
 
   const handleRemovedFromGroup = ({group})=>{
-    console.log("removed from group")
     dispatch({type: Removed_From_Group, payload: {group}})
   }
   socket.on("RemovedFromGroup", handleRemovedFromGroup);

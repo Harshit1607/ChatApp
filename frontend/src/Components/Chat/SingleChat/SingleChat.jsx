@@ -57,8 +57,6 @@ const handleOptions = (e)=>{
   setChatOptions(chatOptions ? null : chat._id)
 }
 
-console.log(chatOptions)
-
   return (
     <div className={user._id  === chat.message.sentBy[0] ? styles.userMain :  styles.main}>
       <div className={user._id  === chat.message.sentBy[0] ? styles.userChat :  styles.chat} onContextMenu={handleOptions}>
@@ -97,7 +95,7 @@ console.log(chatOptions)
           </div>
       </div>
       <div className={styles.chatOption} ref={chatOptionRef} style={{visibility: chatOptions? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%"}}>
-        <button onClick={()=>{dispatch(getLanguages())}}>Translate</button>
+        <button onClick={()=>{dispatch(getLanguages(chat.message.message))}}>Translate</button>
       </div>
       </div>
       <div className={user._id  === chat.message.sentBy[0] ? styles.usertriangle :  styles.triangle}></div>

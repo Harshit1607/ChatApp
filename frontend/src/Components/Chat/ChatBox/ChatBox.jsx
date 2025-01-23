@@ -5,13 +5,15 @@ import { loadChats } from '../../../Redux/Chat/chatActions';
 import SingleChat from '../SingleChat/SingleChat';
 import { otherStopTyping, otherTyping, viewChat } from '../../../Socket/ChatSocket';
 import spider from '../../../Assets/redSpider.svg'
+import { translateText } from '../../../Redux/Translation/translationActions';
 
 const ChatBox = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {user} = useSelector(state=>state.userReducer);
   const {chats, typing} = useSelector(state=>state.chatReducer);
-  const {languages} = useSelector(state=>state.translationReducer);
+  const {languages, isTranslating, toTranslate, translatedText} = useSelector(state=>state.translationReducer);
 
+  const [selectedLang, setSelectedLang] = useState("");
   const [visibleChatId, setVisibleChatId] = useState(null);
   const [chatOptions, setChatOptions] = useState(null);
   
@@ -28,6 +30,14 @@ const ChatBox = () => {
     const previousDate = previousChat ? new Date(previousChat.createdAt).toDateString() : null;
     return currentDate !== previousDate;
   };
+  const handleTranslateLanguage = (e)=>{
+    const selectedCode = e.target.value; // Get the selected language code
+    const selectedLanguage = languages.find(lang => lang.code === selectedCode); // Find the corresponding language object
+    setSelectedLang(selectedLanguage); // Update the state with the language object
+  }
+  const submitTranslateLang = ()=>{
+    dispatch(translateText(toTranslate, selectedLang.code));
+  }
 
 
   return (
@@ -61,15 +71,31 @@ const ChatBox = () => {
           <img src={spider} alt="" />
           <img src={spider} alt="" />
       </div>
-      {languages && <div className={styles.translationBox}>
-        {languages.map(each=>{
-          return(
-            <div>{each.name}</div>
-          )
-        })}
-      </div>}
+      {isTranslating && languages && (
+        <div className={styles.translationBox}>
+          <select
+            value={selectedLang?.code || ""} // Use the code of the selected language or an empty string
+            onChange={handleTranslateLanguage}
+          >
+            <option value="" disabled>
+              Select an option
+            </option>
+            {languages.map((each) => (
+              <option key={each.code} value={each.code}>
+                {each.name}
+              </option>
+            ))}
+          </select>
+          <button onClick={submitTranslateLang}>Select</button>
+        </div>
+      )}
+      {
+        translatedText && 
+        <div className={styles.translatedBox}>
+          <span>{translatedText}</span>
+        </div>
+      }
     </div>
-    
   )
 }
 

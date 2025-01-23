@@ -120,3 +120,7 @@ export const Get_User_Failure = 'Get_User_Failure'
 export const Get_Languages_Request = 'Get_Languages_Request'
 export const Get_Languages_Success = 'Get_Languages_Success'
 export const Get_Languages_Failure = 'Get_Languages_Failure'
+
+export const Translate_Text_Request = 'Translate_Text_Request'
+export const Translate_Text_Success = 'Translate_Text_Success'
+export const Translate_Text_Failure = 'Translate_Text_Failure'

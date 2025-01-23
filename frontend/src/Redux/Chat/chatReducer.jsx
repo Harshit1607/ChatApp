@@ -28,7 +28,6 @@ function chatReducer(state=initialState,action){
     case New_Chat_Success:
       const newChats = [action.payload.newChat,...state.chats ]
       sessionStorage.setItem('chats',JSON.stringify(newChats));
-      console.log("called")
       return{
         ...state,
         chats:newChats,
@@ -41,7 +40,6 @@ function chatReducer(state=initialState,action){
           ...state,
         };
       } else {
-        console.log("called view")
         const updatedChats = state.chats.map((chat) => {
           const viewedChat = action.payload.viewedChats.find((view) => view._id === chat._id);
           return viewedChat ? { ...chat, ...viewedChat } : chat;
