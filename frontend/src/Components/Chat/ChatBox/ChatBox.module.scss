@@ -44,6 +44,11 @@
     color: $textColor;
     @include flexbox(column, space-around);
     font-size: 1.4rem;
+    >div{
+      width: 90%;
+      @include flexbox(row, start, center);
+      gap: 10px;
+    }
   }
 }
 

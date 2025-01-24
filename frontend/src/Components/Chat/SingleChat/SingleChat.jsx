@@ -9,7 +9,7 @@ const SingleChat = ({chat, visible, setVisibleChatId, index, chatOptions, setCha
   const {user} = useSelector(state=>state.userReducer);
   const {groupChat} = useSelector(state=>state.groupReducer);
   const dispatch = useDispatch();
-  
+  const {isTranslating} = useSelector(state=>state.translationReducer);
 
   function convertTo24HourFormat(dateString) {
     const date = new Date(dateString);
@@ -94,8 +94,10 @@ const handleOptions = (e)=>{
             }
           </div>
       </div>
-      <div className={styles.chatOption} ref={chatOptionRef} style={{visibility: chatOptions? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%"}}>
-        <button onClick={()=>{dispatch(getLanguages(chat.message.message))}}>Translate</button>
+      <div className={styles.chatOption} ref={chatOptionRef} style={{visibility: chatOptions && user._id !== chat.message.sentBy[0] ? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%"}}>
+        <button onClick={()=>{dispatch(getLanguages(chat.message.message))
+                              setChatOptions(chatOptions ? null : chat._id)
+        }}>Translate</button>
       </div>
       </div>
       <div className={user._id  === chat.message.sentBy[0] ? styles.usertriangle :  styles.triangle}></div>

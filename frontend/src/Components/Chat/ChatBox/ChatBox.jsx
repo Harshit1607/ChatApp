@@ -92,7 +92,15 @@ const ChatBox = () => {
       {
         translatedText && 
         <div className={styles.translatedBox}>
-          <span>{translatedText}</span>
+          <div>
+            <span>Orignal: </span>
+            <span>{toTranslate}</span>
+          </div>
+          <div>
+            <span>{selectedLang.name}: </span>
+            <span>{translatedText}</span>
+          </div>
+          
         </div>
       }
     </div>
