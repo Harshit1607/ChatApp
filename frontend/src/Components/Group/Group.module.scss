@@ -3,11 +3,7 @@
   height: 70%;
   background:
     url('../../Assets/chatWeb.svg') no-repeat center,
-    radial-gradient(
-      at center, /* Set ellipse shape and center position */
-      #9D1F13,          /* Starting color */
-      #090909           /* Ending color */
-    );
+    var(--home-gradient);
   background-size: 150%, cover;
   background-position: right, center;
   @include flexbox(column, space-evenly);
@@ -29,8 +25,8 @@
     border-radius: 10px;
     border: none;
     font-size: 1.5rem;
-    color: $textColor;
-    background-color: $primaryColor;
+    color: var(--text-color);
+    background-color: var(--primary-color);
 }}
 .Users{
   width: 100%;
@@ -47,8 +43,8 @@
   max-width: calc(33.333% - 10px); /* Avoids expanding too much */
   height: 70px;
   box-sizing: border-box;
-  background-color: $primaryColor;
-  color: $textColor;
+  background-color: var(--primary-color);
+  color: var(--text-color);
   @include flexbox
 }
 .include{
@@ -58,8 +54,8 @@
   max-width: calc(33.333% - 10px); /* Avoids expanding too much */
   height: 70px;
   box-sizing: border-box;
-  background-color: rgba($secondaryColor, 0.8);
-  color: $textColor;
+  background-color: rgba(var(--secondary-color), 0.8);
+  color: var(--text-color);
   @include flexbox
   
 }
@@ -70,7 +66,7 @@
   >div{
     width: 40px;
     height: 40px;
-    background-color: $textColor;
+    background-color: var(--text-color);
     border-radius: 50%;
   }
   
@@ -91,7 +87,7 @@
     border-radius: 10px;
     border: none;
     font-size: 1.5rem;
-    color: $textColor;
-    background-color: $primaryColor;
+    color: var(--text-color);
+    background-color: var(--primary-color);
   }
 }

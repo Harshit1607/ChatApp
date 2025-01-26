@@ -2,7 +2,7 @@
   width: 100vw;
   height: 100vh;
   @include flexbox;
-  background-color: $tertiaryColor;
+  background-color: var(--tertiary-color);
   position: relative;
 
   .mainImg{
@@ -12,7 +12,7 @@
     top: 10%;
     left: 10%;
     @include flexbox(column, space-between, end);
-    box-shadow: 0 0 10px 5px rgba($primaryColor, 0.25);
+    box-shadow: 0 0 10px 5px rgba(var(--primary-color), 0.25);
     >span{
       cursor: pointer;
     }
@@ -32,7 +32,7 @@
   .left{
     width: 25%;
     height: 100%; 
-    background-color: $spiderRed;
+    background-color: var(--spider-red);
     @include flexbox(column, end);
     gap: 10%;
     .info{
@@ -52,7 +52,7 @@
           height: 60px;
           width: 100px;
           background-color: white;
-          box-shadow: 0 0 10px 5px rgba($primaryColor, 0.25);
+          box-shadow: 0 0 10px 5px rgba(var(--primary-color), 0.25);
           @include flexbox(column);
           >button{
             width: 100%;
@@ -88,7 +88,7 @@
         border-radius: 20px;
         @include flexbox(column, start);
         gap: 2.5%;
-        background-color: rgba($primaryColor, 0.25);
+        background-color: rgba(var(--primary-color), 0.25);
         position: relative;
         >span{
           font-size: 1.2rem;
@@ -101,7 +101,7 @@
           font-size: 1.1rem;
           width: 90%;
           background-color: transparent;
-          box-shadow: 0 0 10px 5px rgba($primaryColor, 0.25);
+          box-shadow: 0 0 10px 5px rgba(var(--primary-color), 0.25);
           border: none;
           height: 80%;
           scrollbar-width: none;
@@ -115,12 +115,12 @@
           bottom: 10px;
           right: 15px;
           font-size: 0.8rem;
-          color: $textColor;
+          color: var(--text-color);
         }
         .descButton{
           width: 50%;
           height: 8%;
-          background-color: $spiderRed;
+          background-color: var(--spider-red);
           border: none;
           color: white,
         }
@@ -135,7 +135,7 @@
         width: 90%;
         height: 50%;
         border: none;
-        background-color: $spiderRed;
+        background-color: var(--spider-red);
       }
     }
   }
@@ -208,7 +208,7 @@
 
               .admin{
                 padding: 5px;
-                background-color: $spiderRed;
+                background-color: var(--spider-red);
                 border: none;
                 border-radius: 5px;
                 color: white;

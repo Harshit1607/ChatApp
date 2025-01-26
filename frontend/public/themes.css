@@ -1,0 +1,54 @@
+/* themes.css */
+:root {
+  --primary-color: #181818;
+  --secondary-color: #232323;
+  --tertiary-color: #090909;
+  --nav-color: #151515;
+  --text-color: #E0E0E0;
+  --spider-red: #9D1F13;
+}
+
+[data-theme="mm"] {
+  --primary-color: #181818;
+  --secondary-color: #232323;
+  --tertiary-color: #090909;
+  --nav-color: #151515;
+  --text-color: #E0E0E0;
+  --spider-red: #9D1F13;
+  --home-gradient: radial-gradient(
+    at center, /* Set ellipse shape and center position */
+    #9D1F13,          /* Starting color */
+    #090909           /* Ending color */
+  );
+}
+
+[data-theme="og"] {
+  --primary-color: #181818;
+  --secondary-color: #232323;
+  --tertiary-color: #090909;
+  --nav-color: #151515;
+  --text-color: #E0E0E0;
+  --spider-red: #9D1F13;
+  --home-gradient: radial-gradient(
+    at center, /* Set ellipse shape and center position */
+    #9F0707,          /* Starting color */
+    #03022A,
+    #010011           /* Ending color */
+  );
+}
+
+html[data-theme="gw"] {
+  --primary-color: #F7F7F7;
+  --secondary-color: #D0D0D0;
+  --tertiary-color: #E26BA5;
+  --nav-color: #f2489a;
+  --text-color: #252523;
+  --spider-red: #37f5f5;
+  --home-gradient: radial-gradient(
+    at center,
+    #E26BA5, /* Set ellipse shape and center position */
+              /* Starting color */
+    #FEFEFE           /* Ending color */
+  );
+}
+

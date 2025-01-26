@@ -1,9 +1,9 @@
-$primaryColor: #181818;
-$secondaryColor: #232323;
-$tertiaryColor: #090909;
-$navColor: #151515;
-$spiderRed: #9D1F13;
-$textColor: #E0E0E0;
+// var(--primary-color): #181818;
+// var(--secondary-color): #232323;
+// var(--tertiary-color): #090909;
+// var(--nav-color): #151515;
+// var(--spider-red): #9D1F13;
+// var(--text-color): #E0E0E0;
 
 @mixin flexbox($direction: row, $justify: center, $align: center) {
   display: flex;

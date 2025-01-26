@@ -2,7 +2,7 @@
   width: 100vw;
   height: 100vh;
   @include flexbox(column, space-evenly, center);
-  background-color: $tertiaryColor;
+  background-color: var(--tertiary-color);
   // position: relative;
 
   .cut{
@@ -27,7 +27,7 @@
         aspect-ratio: 1 / 1; // Ensures the height is equal to the width
         width: 60%;
         border-radius: 50%;
-        background-color: $navColor;
+        background-color: var(--nav-color);
         overflow: hidden;
         >img{
           object-fit: cover;
@@ -90,7 +90,7 @@
             bottom: 10px;
             right: 10px;
             font-size: 0.8rem;
-            color: $textColor;
+            color: var(--text-color);
           }
         }
         >span:first-of-type{
@@ -125,7 +125,7 @@
         width: 100%;
         height: 80%;
         position: relative;
-        background-color: $navColor;
+        background-color: var(--nav-color);
         >div{
           position: absolute;
           bottom: 0;
@@ -133,14 +133,15 @@
           aspect-ratio: 1 / 1; // Ensures the height is equal to the width
           width: 25%;
           border-radius: 10px;
-          background-color: $tertiaryColor;
+          border-bottom-right-radius: 0;
+          background-color: var(--tertiary-color);
           @include flexbox;
           >button{
             width: 80%;
             aspect-ratio: 1 / 1; // Ensures the height is equal to the width
             border: none;
             border-radius: 50% ;
-            background-color: $navColor;
+            background-color: var(--nav-color);
           }
         }
       }  

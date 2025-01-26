@@ -4,7 +4,7 @@
   min-height: 80px;
   @include flexbox;
   justify-content: center;
-  background-color: $navColor;
+  background-color: var(--nav-color);
 }
 
 .pfp{
@@ -18,7 +18,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: $textColor;
+    background-color: var(--text-color);
     overflow: hidden;
     >img{
       width: 100%;
@@ -41,10 +41,10 @@
     width: 45px;
     height: 40px;
     @include flexbox;
-    background-color: $spiderRed;
+    background-color: var(--spider-red);
     border-radius: 10px;
     &:last-child{
-      background-color: $navColor;
+      background-color: var(--nav-color);
     }
   }
 }

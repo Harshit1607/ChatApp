@@ -42,7 +42,7 @@
   height: 60%;
   width: 80%;
   @include flexbox(column, start, start);
-  color: $textColor;
+  color: var(--text-color);
   gap: 11%;
   .heading{
     font-size: 8rem;
@@ -58,21 +58,21 @@
     @include flexbox(row, start);
     gap: 05%;
     >button{
-      box-shadow: 0 0 5px $primaryColor;
+      box-shadow: 0 0 5px var(--primary-color);
       width: 40%;
       font-size: 1.5rem;
       padding: 20px 0;
       border: none;
-      background-color: $spiderRed;
-      color: $textColor;
+      background-color: var(--spider-red);
+      color: var(--text-color);
       border-radius: 10px;
       &:last-child{
-        background-color: $textColor;
-        color: $primaryColor;
+        background-color: var(--text-color);
+        color: var(--primary-color);
       }
       &:hover{
-        background-color: $primaryColor;
-      color: $textColor;
+        background-color: var(--primary-color);
+      color: var(--text-color);
       }
     } 
   }

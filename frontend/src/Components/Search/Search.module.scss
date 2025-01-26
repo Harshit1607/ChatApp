@@ -3,11 +3,7 @@
   height: 70%;
   background:
     url('../../Assets/chatWeb.svg') no-repeat center,
-    radial-gradient(
-      at center, /* Set ellipse shape and center position */
-      #9D1F13,          /* Starting color */
-      #090909           /* Ending color */
-    );
+    var(--home-gradient);
     background-size: 150%, cover;
     background-position: right, center;
   display: flex;
@@ -29,8 +25,8 @@
   max-width: calc(33.333% - 10px); /* Avoids expanding too much */
   height: 70px;
   box-sizing: border-box;
-  background-color: $primaryColor;
-  color: $textColor;
+  background-color: var(--primary-color);
+  color: var(--text-color);
   @include flexbox
   
 }
@@ -41,7 +37,7 @@
   >div{
     width: 40px;
     height: 40px;
-    background-color: $textColor;
+    background-color: var(--text-color);
     border-radius: 50%;
   }
   

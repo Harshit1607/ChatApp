@@ -1,5 +1,5 @@
 import { act } from "react";
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group, New_Group_Created, Removed_From_Group, Create_Group_Success, Get_User_Request, Get_User_Failure, Get_User_Success } from "../actionTypes";
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group, New_Group_Created, Removed_From_Group, Create_Group_Success, Get_User_Request, Get_User_Failure, Get_User_Success, Change_Theme } from "../actionTypes";
 
 
 const initialState = {
@@ -7,6 +7,7 @@ const initialState = {
   allFriends: localStorage.getItem('allFriends') ? JSON.parse(localStorage.getItem('allFriends')) : '',
   searchUsers: localStorage.getItem('searchUsers') ? JSON.parse(localStorage.getItem('searchUsers')) : '',
   newUser: '',
+  theme: localStorage.getItem('theme') ? localStorage.getItem("theme") : 'og',
   loading: false,
   error: null,
 }
@@ -163,6 +164,12 @@ function homeReducer(state=initialState,action){
         newUser: action.payload.newUser,
         error: null,
         loading: false,
+      }
+    case Change_Theme:
+      localStorage.setItem("theme", action.payload);
+      return{
+        ...state,
+        theme: action.payload,
       }
     case All_Users_Failure:
     case All_Friends_Failure:

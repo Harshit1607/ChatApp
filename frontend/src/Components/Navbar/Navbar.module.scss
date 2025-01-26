@@ -1,5 +1,5 @@
 .main{
-  background-color: $navColor;
+  background-color: var(--nav-color);
   width: 5%;
   height: 100%;
   @include flexbox(column, space-between, center)
@@ -15,7 +15,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: $textColor;
+    background-color: var(--text-color);
     overflow: hidden;
     >img{
       object-fit: cover;

@@ -124,3 +124,5 @@ export const Get_Languages_Failure = 'Get_Languages_Failure'
 export const Translate_Text_Request = 'Translate_Text_Request'
 export const Translate_Text_Success = 'Translate_Text_Success'
 export const Translate_Text_Failure = 'Translate_Text_Failure'
+
+export const Change_Theme = 'Change_Theme'

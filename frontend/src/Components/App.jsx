@@ -20,6 +20,7 @@ function App() {
   const {user} = useSelector(state=>state.userReducer);
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {chats} = useSelector(state=>state.chatReducer);
+  const {theme} = useSelector(state=>state.homeReducer);
   const navigate = useNavigate();
   const dispatch= useDispatch()
   
@@ -34,7 +35,9 @@ function App() {
     }
   }, [])
 
-  
+  useEffect(()=>{
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme])
 
 
   return (

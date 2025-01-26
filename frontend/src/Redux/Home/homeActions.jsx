@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, Get_User_Failure, Get_User_Request, Get_User_Success, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups } from '../actionTypes';
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Change_Theme, Close_Search, Get_User_Failure, Get_User_Request, Get_User_Success, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -58,4 +58,9 @@ export const getPhoto = (id) => async (dispatch)=>{
   } catch (error) {
     console.log(error.message)
   }
+}
+
+export const setTheme = (theme)=>{
+  console.log("Called")
+  return{type: Change_Theme, payload: theme}
 }

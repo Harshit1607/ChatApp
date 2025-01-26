@@ -4,8 +4,8 @@
   min-height: 75px;
   @include flexbox;
   justify-content: space-evenly;
-  background-color: $tertiaryColor;
-  border-bottom: 2px solid rgba($textColor, 0.5);
+  background-color: var(--tertiary-color);
+  border-bottom: 2px solid var(--text-color); 
 
   > div{
     height: 70%;
@@ -19,7 +19,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: $textColor;
+    background-color: var(--text-color);
     overflow: hidden;
     >img{
       width: 100%;
@@ -44,7 +44,7 @@
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background-color: $primaryColor;
+    background-color: var(--primary-color);
     @include flexbox;
   }
 }

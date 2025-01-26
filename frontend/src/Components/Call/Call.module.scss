@@ -3,8 +3,8 @@
   width: 40%;
   height: 60%;
   @include flexbox(column, space-between);
-  background-color: $primaryColor;
-  color: $textColor;
+  background-color: var(--primary-color);
+  color: var(--text-color);
   .avBox{
     width: 90%;
     height: 40%;
@@ -21,8 +21,8 @@
     @include flexbox;
     justify-content: space-evenly;
     >button{
-      background-color: $textColor;
-      color: $primaryColor;
+      background-color: var(--text-color);
+      color: var(--primary-color);
       border: none;
     }
   }
@@ -34,8 +34,8 @@
   position: absolute;
   width: 40%;
   height: 60%;
-  background-color: $primaryColor;
-  color: $textColor;
+  background-color: var(--primary-color);
+  color: var(--text-color);
   @include flexbox(column, end);
   .acceptReject{
     width: 100%;

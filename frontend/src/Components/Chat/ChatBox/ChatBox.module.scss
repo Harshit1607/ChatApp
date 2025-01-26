@@ -12,23 +12,23 @@
     left: 30%;
     overflow: scroll;
     scrollbar-width: none;
-    background-color: $primaryColor;
-    color: $textColor;
+    background-color: var(--primary-color);
+    color: var(--text-color);
     @include flexbox(column, space-around);
     >select{
       border-radius: 20px;
-      background-color: $textColor;
-      color: $primaryColor;
+      background-color: var(--text-color);
+      color: var(--primary-color);
       width: 80%;
       height: 20%;
       >option{
-        color: $primaryColor;
+        color: var(--primary-color);
       }
     }
     >button{
       border-radius: 10px;
-      background-color: $textColor;
-      color: $primaryColor;
+      background-color: var(--text-color);
+      color: var(--primary-color);
       width: 60%;
       height: 20%;
       
@@ -40,8 +40,8 @@
     height: 40%;
     top: 30%;
     left: 30%;
-    background-color: $primaryColor;
-    color: $textColor;
+    background-color: var(--primary-color);
+    color: var(--text-color);
     @include flexbox(column, space-around);
     font-size: 1.4rem;
     >div{
@@ -69,7 +69,7 @@
     text-align: center;
     margin: 10px 0;
     font-size: 1.4rem;
-    color: $textColor;
+    color: var(--text-color);
     font-weight: bold;
   }
 }

@@ -1,7 +1,7 @@
 .main{
   width: 100vw;
   height: 100vh;
-  background-color: $primaryColor;
+  background-color: var(--primary-color);
   @include flexbox;
   overflow:hidden;
   
@@ -30,11 +30,11 @@
 
 .left, .right{
   height: 100%;
-  color: $textColor;
+  color: var(--text-color);
 }
 
 .left {
-  background-color: $spiderRed;
+  background-color: var(--spider-red);
   position: relative;
   width: 34%;
   border-radius: 20px;
@@ -76,9 +76,9 @@
     >input{
       max-width: 100%;
       min-width: 100%;
-      border: 0.5px solid $textColor;
-      background-color: $primaryColor;
-      color: $textColor;
+      border: 0.5px solid var(--text-color);
+      background-color: var(--primary-color);
+      color: var(--text-color);
       height: 49%;
       border-radius: 10px;
       padding-left: 5%;
@@ -100,13 +100,13 @@
       font-size: 1.1rem;
       padding: 4% 0;
       border: none;
-      background-color: $spiderRed;
-      color: $textColor;
+      background-color: var(--spider-red);
+      color: var(--text-color);
       border-radius: 10px;
     }
     button:hover{
-      background-color: $textColor;
-      color: $spiderRed;
+      background-color: var(--text-color);
+      color: var(--spider-red);
     }
   }
 

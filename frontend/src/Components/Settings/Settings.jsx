@@ -3,9 +3,14 @@ import styles from './Settings.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { changePhoto, deletePhoto, logout, newAboutme } from '../../Redux/User/userActions';
+import { setTheme } from '../../Redux/Home/homeActions';
 const Settings = () => {
   const { user } = useSelector(state => state.userReducer);
+  const {theme } = useSelector(state=>state.homeReducer);
 
+  const themeValues = [{name: 'mm', bc: "radial-gradient(at center, #9D1F13,#090909 )", spiderman: "Miles Morales", desc: "Red And Black"}
+                      ,{name: 'og', bc: "radial-gradient(at center, #9F0707,#03022A,#010011 )", spiderman: "Spiderman", desc: "Red And Blue"}, 
+                      {name: 'gw', bc: "radial-gradient(at center, #E26BA5,#FEFEFE )", spiderman: "Gwen", desc: "Pink And White"}]
   const [image, setImage] = useState();
   const [userAbout, setuserAbout] = useState(user?.about);
   const [edit, setEdit] = useState(false);
@@ -83,27 +88,23 @@ const Settings = () => {
         </div>
       </div>
       <div className={styles.themes}>
-        <div className={styles.themeBox}>
-          <div className={styles.theme}>
-            <div><button></button></div>
-          </div>
-          <span></span>
-          <span></span>
-        </div>
-        <div className={styles.themeBox}>
-        <div className={styles.theme}>
-            <div><button></button></div>
-          </div>
-          <span></span>
-          <span></span>
-        </div>
-        <div className={styles.themeBox}>
-        <div className={styles.theme}>
-            <div><button></button></div>
-          </div>
-          <span></span>
-          <span></span>
-        </div>
+        
+          {themeValues.map(each=>{
+            console.log(each)
+            return(
+              <div className={styles.themeBox} >
+                <div className={styles.theme} style={{background: each.bc}}>
+                  <div ><button style={{background: each.bc}} onClick={()=>{
+                      if (theme !== each.name) {  // Only dispatch if current theme is different
+                        dispatch(setTheme(each.name))
+                      }
+                    }}></button></div>
+                </div>
+                <span>{each.spiderman}</span>
+                <span>{each.desc}</span>
+              </div>
+            )
+          })}
       </div>
       <div className={styles.cut} onClick={()=>navigate('/home')}>X</div>
     </div>
