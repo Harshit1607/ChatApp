@@ -2,23 +2,31 @@ export const webrtcSocket = (io) => {
   io.on('connection', (socket) => {
     console.log('Socket connected for WebRTC:', socket.id);
 
-    socket.on('sendOffer', ({ offer, recipient, user, audio }) => {
+     // Send offer
+     socket.on('sendOffer', ({ offer, recipient, user, audio }) => {
       if (!offer || !recipient || !user) {
         console.error('Invalid data for sendOffer');
         return;
       }
-      
       socket.to(recipient).emit('receiveOffer', { offer, sender: user, audioOnly: audio });
-    
     });
 
-    socket.on('sendAnswer', ({ answer, sender, offer }) => {
+    // Send answer
+    socket.on('sendAnswer', ({ answer, sender }) => {
       if (!answer || !sender) {
-        console.error('Invalid data for callAccepted');
+        console.error('Invalid data for sendAnswer');
         return;
       }
-      console.log(`Call accepted by recipient, sending answer to ${sender._id}`);
-      socket.to(sender._id).emit('receiveAnswer', { answer, offer });
+      socket.to(sender).emit('receiveAnswer', { answer });
+    });
+
+    // ICE Candidate exchange
+    socket.on('sendCandidate', ({ candidate, recipient }) => {
+      if (!candidate || !recipient) {
+        console.error('Invalid data for sendCandidate');
+        return;
+      }
+      socket.to(recipient).emit('receiveCandidate', { candidate });
     });
 
     // When the recipient rejects the call
@@ -31,14 +39,6 @@ export const webrtcSocket = (io) => {
       socket.to(sender._id).emit('callRejected');
     });
 
-    socket.on('sendCandidate', ( ({ candidate, recipient } ) => {
-      if (!candidate || !recipient) {
-        console.error('Invalid data for sendCandidate');
-        return;
-      }
-      console.log(`ICE Candidate sent to ${recipient}`);
-      socket.to(recipient).emit('receiveCandidate', { candidate });
-    }));
 
     socket.on('endCall', ({ recipient }) => {
       if (!recipient) {
