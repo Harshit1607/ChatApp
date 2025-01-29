@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import singleTick from '../../../Assets/singleTick.svg'
 import doubleTick from '../../../Assets/doubleTick.png'
 import { getLanguages } from '../../../Redux/Translation/translationActions'
+import { deleteForMe } from '../../../Redux/Chat/chatActions'
 
 const SingleChat = ({chat, visible, setVisibleChatId, index, chatOptions, setChatOptions }) => {
   const {user} = useSelector(state=>state.userReducer);
@@ -94,10 +95,11 @@ const handleOptions = (e)=>{
             }
           </div>
       </div>
-      <div className={styles.chatOption} ref={chatOptionRef} style={{visibility: chatOptions && user._id !== chat.message.sentBy[0] ? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%"}}>
-        <button onClick={()=>{dispatch(getLanguages(chat.message.message))
+      <div className={styles.chatOption} ref={chatOptionRef} style={{visibility: chatOptions ? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%"}}>
+        <button style={{visibility: user._id !== chat.message.sentBy[0] ? "" : "hidden"}}  onClick={()=>{dispatch(getLanguages(chat.message.message))
                               setChatOptions(chatOptions ? null : chat._id)
         }}>Translate</button>
+        <button onClick={()=>dispatch(deleteForMe(chat._id, user._id))}>Delete for me</button>
       </div>
       </div>
       <div className={user._id  === chat.message.sentBy[0] ? styles.usertriangle :  styles.triangle}></div>

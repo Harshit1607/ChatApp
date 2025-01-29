@@ -95,3 +95,17 @@ export const viewChat = async ({ group, user }) => {
     throw error;
   }
 };
+
+export const deleteForMe = async (req, res)=>{
+  const {chat, user} = req.body;
+  try {
+    await Chat.updateOne(
+      {_id: chat },
+      { $pull: { Users: user } }
+    );
+
+    res.status(200).json(chat);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}

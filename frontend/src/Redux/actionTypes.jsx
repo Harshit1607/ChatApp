@@ -126,3 +126,7 @@ export const Translate_Text_Success = 'Translate_Text_Success'
 export const Translate_Text_Failure = 'Translate_Text_Failure'
 
 export const Change_Theme = 'Change_Theme'
+
+export const Delete_ForMe_Request = 'Delete_ForMe_Request'
+export const Delete_ForMe_Success = 'Delete_ForMe_Success'
+export const Delete_ForMe_Failure = 'Delete_ForMe_Failure'

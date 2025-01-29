@@ -45,7 +45,7 @@ const ChatBox = () => {
       <div className={styles.chatbox}>
       {groupChat && chats && chats.length > 0
           ? chats
-              .filter((chat) => chat.Group[0] === groupChat._id)
+              .filter((chat) => chat.Group[0] === groupChat._id&& chat.Users.includes(user._id))
               .map((chat, index) => (
                 <React.Fragment key={chat._id}>
                   <SingleChat chat={chat} visible={visibleChatId === chat._id} // Check if this chat is currently visible

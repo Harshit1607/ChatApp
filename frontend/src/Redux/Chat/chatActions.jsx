@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Load_Chat_Failure, Load_Chat_Request, Load_Chat_Success, New_Chat_Failure, New_Chat_Request, New_Chat_Success } from '../actionTypes';
+import { Delete_ForMe_Failure, Delete_ForMe_Request, Delete_ForMe_Success, Load_Chat_Failure, Load_Chat_Request, Load_Chat_Success, New_Chat_Failure, New_Chat_Request, New_Chat_Success } from '../actionTypes';
 import { sendNewChat } from '../../Socket/ChatSocket';
 
 
@@ -22,4 +22,14 @@ export const newChat = (text, user, group) => async (dispatch)=>{
 
   sendNewChat(text, user, group); // Emit the new chat message via socket
   
+}
+
+export const deleteForMe = (chat, user)=> async (dispatch)=>{
+  dispatch({type: Delete_ForMe_Request});
+  try {
+    const result = await axios.post(`${API_URL}chat/delete`,{chat, user});
+    dispatch({type: Delete_ForMe_Success, payload: result.data})
+  } catch (error) {
+    dispatch({type: Delete_ForMe_Failure, error: error.message})
+  }
 }
