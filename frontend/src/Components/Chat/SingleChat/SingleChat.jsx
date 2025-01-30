@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import singleTick from '../../../Assets/singleTick.svg'
 import doubleTick from '../../../Assets/doubleTick.png'
 import { getLanguages } from '../../../Redux/Translation/translationActions'
-import { deleteForMe } from '../../../Redux/Chat/chatActions'
+import { deleteForAll, deleteForMe } from '../../../Redux/Chat/chatActions'
 
 const SingleChat = ({chat, visible, setVisibleChatId, index, chatOptions, setChatOptions }) => {
   const {user} = useSelector(state=>state.userReducer);
@@ -100,6 +100,7 @@ const handleOptions = (e)=>{
                               setChatOptions(chatOptions ? null : chat._id)
         }}>Translate</button>
         <button onClick={()=>dispatch(deleteForMe(chat._id, user._id))}>Delete for me</button>
+        <button style={{display: user._id === chat.message.sentBy[0] ? "" : "none"}}  onClick={()=>dispatch(deleteForAll(chat._id, user._id))}>Delete For All</button>
       </div>
       </div>
       <div className={user._id  === chat.message.sentBy[0] ? styles.usertriangle :  styles.triangle}></div>

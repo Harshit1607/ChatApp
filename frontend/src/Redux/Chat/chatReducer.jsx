@@ -1,4 +1,4 @@
-import { Delete_ForMe_Failure, Delete_ForMe_Request, Delete_ForMe_Success, Load_Chat_Failure, Load_Chat_Request, Load_Chat_Success, New_Chat_Failure, New_Chat_Request, New_Chat_Success, Stop_Typing, Typing, View_Chat_Success } from "../actionTypes";
+import { Delete_ForAll_Failure, Delete_ForAll_Request, Delete_ForAll_Success, Delete_ForMe_Failure, Delete_ForMe_Request, Delete_ForMe_Success, Load_Chat_Failure, Load_Chat_Request, Load_Chat_Success, New_Chat_Failure, New_Chat_Request, New_Chat_Success, Stop_Typing, Typing, View_Chat_Success } from "../actionTypes";
 
 
 const initialState = {
@@ -13,6 +13,7 @@ function chatReducer(state=initialState,action){
     case Load_Chat_Request:
     case New_Chat_Request:
     case Delete_ForMe_Request:
+    case Delete_ForAll_Request:
       return{
         ...state,
         loading: true,
@@ -75,9 +76,19 @@ function chatReducer(state=initialState,action){
         loading: false,
         error: null,
       }
+    case Delete_ForAll_Success:
+      const removedChatsAll = state.chats.filter(chat=>chat._id !== action.payload.chat);
+      sessionStorage.setItem('chats', JSON.stringify(removedChatsAll));
+      return{
+        ...state,
+        chats: removedChatsAll,
+        loading: false,
+        error: null,
+      }
     case Load_Chat_Failure:
     case New_Chat_Failure:
     case Delete_ForMe_Failure:
+    case Delete_ForAll_Failure:
       return{
         ...state,
         loading:false,

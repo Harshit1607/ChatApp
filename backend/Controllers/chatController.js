@@ -1,5 +1,6 @@
 import Group from '../models/groups.js'
 import Chat from '../models/chats.js'
+import { getIo } from '../Socket/socket.js';
 
 export const getChats = async (req,res)=>{
   const {group, user} = req.body;
@@ -105,6 +106,24 @@ export const deleteForMe = async (req, res)=>{
     );
 
     res.status(200).json(chat);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
+export const deleteForAll = async (req, res)=>{
+  const {chat, user} = req.body;
+  try {
+    const deleteChat = await Chat.findById(chat);
+    const extraUsers = deleteChat.Users;
+    await Chat.deleteOne({ _id: chat });
+    const io = getIo();
+    extraUsers.forEach(other=>{
+      if(user !== other){
+        io.to(other.toString()).emit("DeleteChat", {chat});
+      }
+    })
+    res.status(200).json({chat});
   } catch (error) {
     res.status(500).json(error);
   }

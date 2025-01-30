@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch } from "react-redux"
 import {useNavigate} from 'react-router-dom';
 import socket from "./Socket.jsx";
-import { Call_Rejected, ICE_Candidate_Received, New_Admin, New_Chat_Success, New_Group_Created, Recieved_Answer, Recieved_Offer, Removed_From_Group, Set_Description_Success, Stop_Typing, Typing, Updated_Group, View_Chat_Success } from '../Redux/actionTypes.jsx';
+import { Call_Rejected, Delete_ForAll_Success, ICE_Candidate_Received, New_Admin, New_Chat_Success, New_Group_Created, Recieved_Answer, Recieved_Offer, Removed_From_Group, Set_Description_Success, Stop_Typing, Typing, Updated_Group, View_Chat_Success } from '../Redux/actionTypes.jsx';
 import { otherStopTyping, otherTyping } from './ChatSocket.jsx';
 import { storePeer } from '../Redux/Call/callActions.jsx';
 
@@ -60,6 +60,11 @@ const GlobalSocket = () => {
     dispatch({type: Set_Description_Success, payload: {desc, id}});
   }
   socket.on("Description", handleDescription);
+
+  const handleDeleteChat = ({chat})=>{
+    dispatch({type: Delete_ForAll_Success, payload: {chat}})
+  }
+  socket.on("DeleteChat", handleDeleteChat);
     return () => {
       socket.off("viewChat", handleViewChat); 
       socket.off("new message", handleNewChat);
