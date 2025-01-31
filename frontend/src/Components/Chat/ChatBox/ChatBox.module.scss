@@ -15,6 +15,11 @@
     background-color: var(--primary-color);
     color: var(--text-color);
     @include flexbox(column, space-around);
+    .cut{
+      position: absolute;
+      right: 5%;
+      top:5%;
+    }
     >select{
       border-radius: 20px;
       background-color: var(--text-color);
@@ -44,6 +49,11 @@
     color: var(--text-color);
     @include flexbox(column, space-around);
     font-size: 1.4rem;
+    .cut{
+      position: absolute;
+      right: 5%;
+      top:5%;
+    }
     >div{
       width: 90%;
       @include flexbox(row, start, center);

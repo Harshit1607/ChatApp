@@ -5,7 +5,7 @@ import { loadChats } from '../../../Redux/Chat/chatActions';
 import SingleChat from '../SingleChat/SingleChat';
 import { otherStopTyping, otherTyping, viewChat } from '../../../Socket/ChatSocket';
 import spider from '../../../Assets/redSpider.svg'
-import { translateText } from '../../../Redux/Translation/translationActions';
+import { closeTranslation, translateText } from '../../../Redux/Translation/translationActions';
 
 const ChatBox = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
@@ -45,13 +45,13 @@ const ChatBox = () => {
       <div className={styles.chatbox}>
       {groupChat && chats && chats.length > 0
           ? chats
-              .filter((chat) => chat.Group[0] === groupChat._id&& chat.Users.includes(user._id))
+              .filter((chat) => chat.Group[0] === groupChat._id && chat.Users.includes(user._id))
               .map((chat, index) => (
                 <React.Fragment key={chat._id}>
                   <SingleChat chat={chat} visible={visibleChatId === chat._id} // Check if this chat is currently visible
                     setVisibleChatId={setVisibleChatId} index={index} chatOptions={chatOptions === chat._id}
                     setChatOptions={setChatOptions}/>
-                  {isNewDay(chat, chats.filter((chat) => chat.Group[0] === groupChat._id)[index + 1]) && (
+                  {isNewDay(chat, chats.filter((chat) => chat.Group[0] === groupChat._id && chat.Users.includes(user._id))[index + 1]) && (
                     <div className={styles.dateSeparator}>
                       {new Date(chat.createdAt).toLocaleDateString(undefined, {
                         weekday: 'long',
@@ -73,6 +73,7 @@ const ChatBox = () => {
       </div>
       {isTranslating && languages && (
         <div className={styles.translationBox}>
+          <div className={styles.cut} onClick={()=>dispatch(closeTranslation())}>X</div>
           <select
             value={selectedLang?.code || ""} // Use the code of the selected language or an empty string
             onChange={handleTranslateLanguage}
@@ -91,7 +92,8 @@ const ChatBox = () => {
       )}
       {
         translatedText && 
-        <div className={styles.translatedBox}>
+        <div className={styles.translatedBox} onClick={()=>dispatch(closeTranslation())}>
+          <div className={styles.cut}>X</div>
           <div>
             <span>Orignal: </span>
             <span>{toTranslate}</span>

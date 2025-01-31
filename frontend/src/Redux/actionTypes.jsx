@@ -134,3 +134,5 @@ export const Delete_ForMe_Failure = 'Delete_ForMe_Failure'
 export const Delete_ForAll_Request = 'Delete_ForAll_Request'
 export const Delete_ForAll_Success = 'Delete_ForAll_Success'
 export const Delete_ForAll_Failure = 'Delete_ForAll_Failure'
+
+export const Translation_Box_Close = "Translation_Box_Close"

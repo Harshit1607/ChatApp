@@ -1,4 +1,4 @@
-import { Get_Languages_Failure, Get_Languages_Request, Get_Languages_Success, Translate_Text_Failure, Translate_Text_Request, Translate_Text_Success } from "../actionTypes";
+import { Get_Languages_Failure, Get_Languages_Request, Get_Languages_Success, Translate_Text_Failure, Translate_Text_Request, Translate_Text_Success, Translation_Box_Close } from "../actionTypes";
 
 const initialState = {
   loading: false,
@@ -35,6 +35,13 @@ function translationReducer(state = initialState, action){
         loading: false,
         isTranslating: false,
         translatedText: action.payload.translatedText,
+      }
+    case Translation_Box_Close:
+      return{
+        ...state,
+        isTranslating: false,
+        toTranslate: null,
+        translatedText: null,
       }
     case Get_Languages_Failure:
     case Translate_Text_Failure:

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Get_Languages_Failure, Get_Languages_Request, Get_Languages_Success, Translate_Text_Failure, Translate_Text_Request, Translate_Text_Success } from '../actionTypes'
+import { Get_Languages_Failure, Get_Languages_Request, Get_Languages_Success, Translate_Text_Failure, Translate_Text_Request, Translate_Text_Success, Translation_Box_Close } from '../actionTypes'
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -26,3 +26,7 @@ export const translateText = (text, code)=> async(dispatch)=>{
     dispatch({type: Translate_Text_Failure, payload: error.message});
   }
 }
+
+export const closeTranslation = ()=>(
+  {type: Translation_Box_Close}
+)
