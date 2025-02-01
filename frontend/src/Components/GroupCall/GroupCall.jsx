@@ -126,14 +126,6 @@ const GroupCall = () => {
       ];
     });
   });
-
-  useEffect(() => {
-    if (daily && localSessionId) {
-      const participants = daily.participants();
-      const local = participants[localSessionId];
-      setLocalParticipant(local);
-    }
-  }, [daily, localSessionId]);
   
   const toggleAudio = () => {
     if (daily) {
@@ -161,6 +153,30 @@ const GroupCall = () => {
       )
     );
   });
+
+  // Update the local participant useEffect to properly handle track updates
+  useEffect(() => {
+    if (daily && localSessionId) {
+      const updateLocalParticipant = () => {
+        const participants = daily.participants();
+        const local = participants[localSessionId];
+        if (local?.tracks?.video?.state === 'playable') {
+          setLocalParticipant(local);
+        }
+      };
+
+      updateLocalParticipant();
+      // Listen for track updates
+      daily.on('track-started', updateLocalParticipant);
+      daily.on('track-stopped', updateLocalParticipant);
+
+      return () => {
+        daily.off('track-started', updateLocalParticipant);
+        daily.off('track-stopped', updateLocalParticipant);
+      };
+    }
+  }, [daily, localSessionId]);
+
   
   
 
@@ -296,71 +312,27 @@ const GroupCall = () => {
       <div className={styles.videoWrapper}>
         {localSessionId && (
           <div>
-            {/* <h3>Me</h3> */}
-            <video
-              autoPlay
-              playsInline
-              muted
-              ref={(videoElement) => {
-                if (videoElement && localParticipant?.tracks?.video?.state === 'playable') {
-                  const videoTrack = localParticipant.tracks.video.persistentTrack;
-                  if (videoTrack) {
-                    videoElement.srcObject = new MediaStream([videoTrack]);
-                  }
-                }
-              }}
-              style={{ width: '100%', height: '100%', backgroundColor: 'black' }}
-            />
-            <audio
-              autoPlay
-              playsInline
-              ref={(audioElement) => {
-                if (audioElement) {
-                  const localParticipant = daily.participants()?.[localSessionId];
-                  const audioTrack = localParticipant?.tracks?.audio?.track;
-                  audioElement.srcObject = audioTrack ? new MediaStream([audioTrack]) : null;
-                }
-              }}
+            <DailyVideo
+                  sessionId={localSessionId}
+                  automirror
+                  muted
+                  className={styles.video}
             />
           </div>
         )}
     
   
-        {participantIds.map((id) => {
-          if (id === localSessionId) return null;
-          const participant = participants.find(p => p.session_id === id);
-          const videoTrack = participant?.tracks?.video?.track;
-          const audioTrack = participant?.tracks?.audio?.persistentTrack;
-          
-          if (videoTrack) {
-            return (
-              <div key={id}>
-                {/* <h3>Participant</h3> */}
-                <video
-                  autoPlay
-                  playsInline
-                  ref={(videoElement) => {
-                    if (videoElement) {
-                      videoElement.srcObject = videoTrack ? new MediaStream([videoTrack]) : null;
-                    }
-                  }}
-                  style={{ width: '100%', height: '100%', backgroundColor: 'black' }}
-                ></video>
-                <audio
-                  autoPlay
-                  playsInline
-                  ref={(audioElement) => {
-                    if (audioElement && audioTrack) {
-                      audioElement.srcObject = new MediaStream([audioTrack]);
-                    } else if (audioElement) {
-                      audioElement.srcObject = null;
-                    }
-                  }}
-                />
-              </div>
-            );
-          }
-        })}
+    {participantIds.map((id) => {
+              if (id === localSessionId) return null;
+              return (
+                <div key={id} className={styles.videoContainer}>
+                  <DailyVideo
+                    sessionId={id}
+                    className={styles.video}
+                  />
+                </div>
+              );
+    })}
 
     </div>
     <div className={styles.controls}>
