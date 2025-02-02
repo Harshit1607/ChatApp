@@ -14,7 +14,9 @@ import GroupProfile from './Profile/GroupProfile/GroupProfile';
 import UserProfile from './Profile/UserProfile/UserProfile';
 import GroupCall from './GroupCall/GroupCall';
 import { DailyProvider,} from '@daily-co/daily-react';
-
+import mm from '../Assets/mmCursor.png';
+import og from '../Assets/ogcursor.png';
+import gw from '../Assets/gwcursor.png';
 
 function App() {
   const {user} = useSelector(state=>state.userReducer);
@@ -35,9 +37,19 @@ function App() {
     }
   }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-  }, [theme])
+    let cursorUrl = og;
+    if (theme === 'mm') cursorUrl = mm;
+    else if (theme === 'gw') cursorUrl = gw;
+    try {
+      // Try setting the cursor with proper URL formatting
+      const cursorStyle = `url('${cursorUrl}') 16 16, auto`;
+      document.body.style.cursor = cursorStyle;
+    } catch (error) {
+      console.error('Error setting cursor:', error);
+    }
+  }, [theme]);
 
 
   return (

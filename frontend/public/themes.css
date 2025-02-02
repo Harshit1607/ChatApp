@@ -6,6 +6,12 @@
   --nav-color: #151515;
   --text-color: #E0E0E0;
   --spider-red: #9D1F13;
+  --home-gradient: radial-gradient(
+    at center, /* Set ellipse shape and center position */
+    #9D1F13,          /* Starting color */
+    #090909           /* Ending color */
+  );
+  --cursor: url('/ogcursor.png');
 }
 
 [data-theme="mm"] {
@@ -20,13 +26,14 @@
     #9D1F13,          /* Starting color */
     #090909           /* Ending color */
   );
+  --cursor: url("/spiderCursor.png");
 }
 
 [data-theme="og"] {
-  --primary-color: #181818;
+  --primary-color: #151515;
   --secondary-color: #232323;
   --tertiary-color: #090909;
-  --nav-color: #151515;
+  --nav-color: #181818;
   --text-color: #E0E0E0;
   --spider-red: #9D1F13;
   --home-gradient: radial-gradient(
@@ -35,6 +42,7 @@
     #03022A,
     #010011           /* Ending color */
   );
+  --cursor: url("/ogcursor.png");
 }
 
 html[data-theme="gw"] {
@@ -50,5 +58,6 @@ html[data-theme="gw"] {
               /* Starting color */
     #FEFEFE           /* Ending color */
   );
+  --cursor: url("/gwcursor.png");
 }
 
