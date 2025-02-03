@@ -3,6 +3,10 @@
   @include flexbox(row-reverse);
   justify-content: start;
   align-items: end;
+  .otherProfile{
+    height: 100%;
+    @include flexbox;
+  }
 }
 .userMain{
   width: 100%;

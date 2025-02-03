@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styles from'./SingleChat.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import singleTick from '../../../Assets/singleTick.svg'
+import singleTick from '../../../Assets/singleTick1.svg'
 import doubleTick from '../../../Assets/doubleTick.png'
 import { getLanguages } from '../../../Redux/Translation/translationActions'
 import { deleteForAll, deleteForMe } from '../../../Redux/Chat/chatActions'
@@ -11,7 +11,7 @@ const SingleChat = ({chat, visible, setVisibleChatId, index, chatOptions, setCha
   const {groupChat} = useSelector(state=>state.groupReducer);
   const dispatch = useDispatch();
   const {isTranslating} = useSelector(state=>state.translationReducer);
-
+  
   function convertTo24HourFormat(dateString) {
     const date = new Date(dateString);
 
@@ -78,7 +78,6 @@ const handleOptions = (e)=>{
             {
               chat.message.viewedBy.filter(each=>each !== user._id).map(each=>{
                 return(
-                  
                   <span>{groupChat.UserDetails.find(e => e._id === each).name}</span>
                 )
                 })
@@ -104,7 +103,11 @@ const handleOptions = (e)=>{
       </div>
       </div>
       <div className={user._id  === chat.message.sentBy[0] ? styles.usertriangle :  styles.triangle}></div>
-      
+      {groupChat.isGroup && user._id !== chat.message.sentBy[0] && (
+        <div className={styles.otherProfile}>
+          {groupChat.UserDetails.find(each => each._id === chat.message.sentBy[0])?.name}
+        </div>
+      )}
     </div>
   )
 }
