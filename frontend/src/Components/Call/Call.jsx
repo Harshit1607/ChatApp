@@ -3,6 +3,8 @@ import styles from './Call.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import socket from '../../Socket/Socket';
 import { startCall, handleRejection, handleReceiveOffer, handleReceiveAnswer, handleReceiveCandidate, handleCallEnd, handleRecievedAudio, handleRecievedVideo, handleAccept, handleReject, handleMuteAudio, handleEndCall, handleStopVideo } from '../../Redux/Call/callActions';
+import mic from '../../Assets/mic.svg';
+import video1 from '../../Assets/video1.svg';
 
 const Call = () => {
   const { groupChat } = useSelector((state) => state.groupReducer);
@@ -135,30 +137,32 @@ const Call = () => {
           audio?
           <>
             <div className={styles.avBox}>
-              {/* <span>{sender? sender.name : user.name}</span> */}
+              {console.log(localVideoRef)}
+              <span>{user.name}</span>
               <audio ref={localVideoRef} autoPlay ></audio>
             </div>
             <div className={styles.avBox}>
-              {/* <span>{sender? sender.name : null}</span> */}
+              {/* <span>{sender.name}</span> */}
               <audio ref={remoteVideoRef} autoPlay></audio>
             </div>
           </>
           :
           <>
           <div className={styles.avBox}>
-          {/* <span>{sender? sender.name : user.name}</span> */}
+          <span>{user.name}</span>
           <video ref={localVideoRef} autoPlay playsInline muted ></video>
           </div>
           <div className={styles.avBox}>
+          {/* <span>{sender.name}</span> */}
           <video ref={remoteVideoRef} autoPlay playsInline ></video>
           </div>
           </>
         }
           
           <div className={styles.control}>
-            <button onClick={()=>handleMuteAudio(localVideoRef, sender, groupChat, user)}>MA</button>
-            <button onClick={()=>handleEndCall(peerConnection, localVideoRef, remoteVideoRef, sender, groupChat, user, dispatch)}>E</button>
-            <button onClick={()=>handleStopVideo(localVideoRef, sender, groupChat, user)}>MV</button>
+            <button onClick={()=>handleMuteAudio(localVideoRef, sender, groupChat, user)}  ><img src={mic} /></button>
+            <button onClick={()=>handleEndCall(peerConnection, localVideoRef, remoteVideoRef, sender, groupChat, user, dispatch)}>End</button>
+            <button onClick={()=>handleStopVideo(localVideoRef, sender, groupChat, user)}  ><img src={video1} /></button>
           </div>
         </div>
       ) : incoming && offer ? (

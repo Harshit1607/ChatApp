@@ -60,7 +60,7 @@ export const startCall = async (groupChat, localVideoRef, remoteVideoRef, user, 
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
 
-    socket.emit('sendOffer', { offer, recipient, user: user._id, audio });
+    socket.emit('sendOffer', { offer, recipient, user: {id: user._id, name: user.name}, audio });
     dispatch(storePeer(peerConnection));
   } catch (error) {
     console.error('Error starting call:', error);
@@ -99,7 +99,7 @@ export const handleAccept = async (offer, remoteVideoRef, sender, audio, localVi
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
         console.log("Sending candidate:", event.candidate);
-        socket.emit('sendCandidate', { candidate: event.candidate, recipient: sender });
+        socket.emit('sendCandidate', { candidate: event.candidate, recipient: sender.id });
       } else {
         console.log("All ICE candidates have been sent.");
       }
@@ -109,7 +109,7 @@ export const handleAccept = async (offer, remoteVideoRef, sender, audio, localVi
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
 
-    socket.emit('sendAnswer', { answer, sender });
+    socket.emit('sendAnswer', { answer, sender: sender.id });
     dispatch(storePeer(peerConnection));
   } catch (error) {
     console.error('Error accepting call:', error);
@@ -199,7 +199,7 @@ export const handleEndCall = (peerConnection, localVideoRef, remoteVideoRef, sen
 
     // Notify the other party
     if(sender) {
-      socket.emit('endCall', { recipient: sender._id });
+      socket.emit('endCall', { recipient: sender.id });
     } else {
       const recipient = groupChat.Users.find((each) => each !== user._id);
       socket.emit('endCall', { recipient });
@@ -252,7 +252,7 @@ export const handleRecievedVideo =  (data, remoteVideoRef) => {
 }
 
 export const handleReject = (sender, dispatch) => {
-  socket.emit('callRejected', { sender });
+  socket.emit('callRejected', { sender: sender.id });
   dispatch(clearOffer());
 };
 
@@ -267,7 +267,7 @@ export const handleStopVideo = (localVideoRef, sender, groupChat, user)=>{
       // Notify the receiver about the video state
       if(sender){
         socket.emit('videoStop', {
-          recipient: sender._id,
+          recipient: sender.id,
           isStopped: isStopped, // True if stopped, false if started
         });
       }else{
@@ -291,7 +291,7 @@ export const handleStopVideo = (localVideoRef, sender, groupChat, user)=>{
       // Notify the receiver about the mute/unmute state
       if(sender){
         socket.emit('audioMute', {
-          recipient: sender._id,
+          recipient: sender.id,
           isMuted: isMuted, // True if muted, false if unmuted
         });
       }else{

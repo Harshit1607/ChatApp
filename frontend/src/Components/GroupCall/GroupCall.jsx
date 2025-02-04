@@ -10,6 +10,8 @@ import {
   DailyVideo,
   useDailyEvent
 } from '@daily-co/daily-react';
+import mic from '../../Assets/mic.svg';
+import video1 from '../../Assets/video1.svg';
 
 const GroupCall = () => {
   const [callInstance, setCallInstance] = useState(null);
@@ -337,10 +339,10 @@ const GroupCall = () => {
     </div>
     <div className={styles.controls}>
       <button onClick={toggleAudio}>
-        {!isAudioMuted ? "Unmute" : "Mute"} Audio
+       <img src={mic} />
       </button>
       <button onClick={toggleVideo}>
-        {!isVideoPaused ? "Resume Video" : "Pause Video"}
+        <img src={video1} />
       </button>
       <button onClick={handleLeaveCall}>End Call</button>
     </div>
