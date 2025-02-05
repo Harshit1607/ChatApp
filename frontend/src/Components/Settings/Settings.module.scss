@@ -93,6 +93,11 @@
             background-color: transparent;
             font-size: 1.4rem;
             border: none;
+            >img{
+              width: 100%;
+              height: 100%;
+              color: white
+            }
           }
           .charCount {
             position: absolute;
@@ -154,6 +159,7 @@
             border: none;
             border-radius: 50% ;
             background-color: var(--nav-color);
+
           }
         }
       }  

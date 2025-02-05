@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import options from '../../../Assets/3Dots.png'
 import { changeGroupPhoto, leaveGroup, makeAdmin, newDesc } from '../../../Redux/Group/groupActions';
+import pencil from '../../../Assets/pencil.svg'
+import done from '../../../Assets/singleTickWhite.svg'
 
 const GroupProfile = () => {
 
@@ -104,13 +106,13 @@ const GroupProfile = () => {
               <span>Group Description</span>
               <textarea type="text" maxLength="200" value={desc} onChange={handleGroupDescription} disabled={!edit} />
               <span className={styles.charCount}>{`${desc.length}/200`}</span>
-              {!edit ? <button className={styles.descButton} onClick={()=>{setEdit(true)}}>Edit</button>
+              {!edit ? <button className={styles.descButton} onClick={()=>{setEdit(true)}}><img src={pencil}/></button>
               : <button className={styles.descButton} onClick={()=>{
                 if(desc !== groupChat.description){
                   dispatch(newDesc(groupChat._id, desc, user._id))
                 }
                 setEdit(false)
-                }}>Done</button>}
+                }}><img src={done}/></button>}
             </div>
         </div>
         <div className={styles.leave}>

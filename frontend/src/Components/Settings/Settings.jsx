@@ -7,6 +7,8 @@ import { setTheme } from '../../Redux/Home/homeActions';
 import mm from '../../Assets/mm.png'
 import gw from '../../Assets/gwen.png'
 import og from '../../Assets/spidermansitting.png'
+import pencil from '../../Assets/pencil.svg'
+import done from '../../Assets/singleTickWhite.svg'
 const Settings = () => {
   const { user } = useSelector(state => state.userReducer);
   const {theme } = useSelector(state=>state.homeReducer);
@@ -87,11 +89,11 @@ const Settings = () => {
             <div>
               <textarea maxLength={50} value={userAbout} onChange={handleNewAbout} disabled={!edit}/>
               <span className={styles.charCount}>{`${userAbout.length}/50`}</span>
-              {!edit ? <button onClick={()=>{setEdit(true)}}>E</button> : <button onClick={()=>{
+              {!edit ? <button onClick={()=>{setEdit(true)}}><img src={pencil}/></button> : <button onClick={()=>{
                 if(userAbout !== user.about){
                   dispatch(newAboutme(user._id, userAbout))
                 } 
-                setEdit(false)}}>D</button>}
+                setEdit(false)}}><img src={done}/></button>}
             </div>
             
           </div>
