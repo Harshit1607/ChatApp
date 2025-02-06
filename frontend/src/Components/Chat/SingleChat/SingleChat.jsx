@@ -2,13 +2,16 @@ import React, { useState, useRef, useEffect } from 'react'
 import styles from'./SingleChat.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import singleTick from '../../../Assets/singleTick1.svg'
-import doubleTick from '../../../Assets/doubleTick.png'
+import doubleTick from '../../../Assets/doubleTick.svg'
+import singleTickWhite from '../../../Assets/singleTickWhite.svg'
+import doubleTickWhite from '../../../Assets/doubleTickWhite.svg'
 import { getLanguages } from '../../../Redux/Translation/translationActions'
 import { deleteForAll, deleteForMe } from '../../../Redux/Chat/chatActions'
 
 const SingleChat = ({chat, visible, setVisibleChatId, index, chatOptions, setChatOptions }) => {
   const {user} = useSelector(state=>state.userReducer);
   const {groupChat} = useSelector(state=>state.groupReducer);
+  const {theme} = useSelector(state=>state.homeReducer);
   const dispatch = useDispatch();
   const {isTranslating} = useSelector(state=>state.translationReducer);
   
@@ -67,8 +70,8 @@ const handleOptions = (e)=>{
           <div onClick={handleToggle}>
             {user._id === chat.message.sentBy[0]
               ? chat.message.viewedBy.length === chat.Users.length
-                ? <img src={doubleTick} alt="" />
-                : <img src={singleTick} alt="" />
+                ? <img src={theme === 'gw'?doubleTick: doubleTickWhite} alt="" />
+                : <img src={theme === 'gw'?singleTick: singleTickWhite} alt="" />
               : null}
           </div>
         </div>
