@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styles from'./SingleChat.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import singleTick from '../../../Assets/singleTick1.svg'
+import singleTick from '../../../Assets/singleTick.svg'
 import doubleTick from '../../../Assets/doubleTick.svg'
 import singleTickWhite from '../../../Assets/singleTickWhite.svg'
 import doubleTickWhite from '../../../Assets/doubleTickWhite.svg'

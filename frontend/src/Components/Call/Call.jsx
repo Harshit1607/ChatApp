@@ -5,6 +5,9 @@ import socket from '../../Socket/Socket';
 import { startCall, handleRejection, handleReceiveOffer, handleReceiveAnswer, handleReceiveCandidate, handleCallEnd, handleRecievedAudio, handleRecievedVideo, handleAccept, handleReject, handleMuteAudio, handleEndCall, handleStopVideo } from '../../Redux/Call/callActions';
 import mic from '../../Assets/mic.svg';
 import video1 from '../../Assets/video1.svg';
+import micCut from '../../Assets/micCut.svg';
+import videoCut from '../../Assets/videoCut.svg';
+import callIcon from '../../Assets/call.svg';
 
 const Call = () => {
   const { groupChat } = useSelector((state) => state.groupReducer);
@@ -18,9 +21,15 @@ const Call = () => {
   const remoteVideoRef = useRef(null);
   const pendingCandidates = useRef([]); // Ref to store ICE candidates if peerConnection is not ready
 
+  const [mute, setMute] = useState(false);
+  const [vid, setVid] = useState(false);
+
   useEffect(() => {
     console.log(incoming)
     if (call && !offer) {
+      if(audio){
+        setVid(true);
+      }
       startCall(groupChat, localVideoRef, remoteVideoRef, user, audio, dispatch);
     }
   }, [call, incoming]);
@@ -29,9 +38,9 @@ const Call = () => {
     
     const handleAudioMute = (data) => handleRecievedAudio(data, remoteVideoRef);
     const handleVideoStop = (data) => handleRecievedVideo(data, remoteVideoRef);
-    const handleEndCall = () => handleCallEnd(peerConnection, localVideoRef, remoteVideoRef, sender, groupChat, user, dispatch);
+    const handleEndCall = () => handleCallEnd(peerConnection, localVideoRef, remoteVideoRef, dispatch);
     const handleCallRejected = () => handleRejection();
-    const handleOffer = (data) => handleReceiveOffer(data, dispatch);
+    const handleOffer = (data) => handleReceiveOffer(data, dispatch, setVid);
     const handleAnswer = (data) => handleReceiveAnswer(data, peerConnection, groupChat, user, dispatch);
     const handleCandidate = (data) => handleReceiveCandidate(data, peerConnection, pendingCandidates, dispatch);
   
@@ -139,7 +148,7 @@ const Call = () => {
             <div className={styles.avBox}>
               {console.log(localVideoRef)}
               <span>{user.name}</span>
-              <audio ref={localVideoRef} autoPlay ></audio>
+              <audio ref={localVideoRef} autoPlay muted ></audio>
             </div>
             <div className={styles.avBox}>
               {/* <span>{sender.name}</span> */}
@@ -160,9 +169,9 @@ const Call = () => {
         }
           
           <div className={styles.control}>
-            <button onClick={()=>handleMuteAudio(localVideoRef, sender, groupChat, user)}  ><img src={mic} /></button>
+            <button onClick={()=>{setMute(!mute);handleMuteAudio(localVideoRef, sender, groupChat, user)}} style={{ opacity: mute ? '0.5' : '1' }}  ><img src={mute? micCut: mic} /></button>
             <button onClick={()=>handleEndCall(peerConnection, localVideoRef, remoteVideoRef, sender, groupChat, user, dispatch)}>End</button>
-            <button onClick={()=>handleStopVideo(localVideoRef, sender, groupChat, user)}  ><img src={video1} /></button>
+            <button onClick={()=>{setVid(!vid);handleStopVideo(localVideoRef, sender, groupChat, user)}} style={{ opacity: vid ? '0.5' : '1' }} ><img src={vid? videoCut:video1} /></button>
           </div>
         </div>
       ) : incoming && offer ? (
@@ -182,8 +191,8 @@ const Call = () => {
             <span>{sender? sender.name : null}</span>
           </div>
           <div className={styles.acceptReject}>
-            <button onClick={()=>handleReject(sender, dispatch)}>R</button>
-            <button onClick={()=>handleAccept(offer, remoteVideoRef, sender, audio, localVideoRef, dispatch)}>A</button>
+            <button onClick={()=>handleReject(sender, dispatch)}><img src={callIcon}/></button>
+            <button onClick={()=>handleAccept(offer, remoteVideoRef, sender, audio, localVideoRef, dispatch)}><img src={callIcon}/></button>
           </div>
         </div>
       ) : null}

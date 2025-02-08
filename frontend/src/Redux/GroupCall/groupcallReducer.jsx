@@ -1,4 +1,4 @@
-import { Make_Group_Call, Make_Group_Incoming, Save_Room } from "../actionTypes"
+import { End_Group_Call, Make_Group_Call, Make_Group_Incoming, Save_Room } from "../actionTypes"
 
 const initialState = {
   groupCall: false,
@@ -21,6 +21,12 @@ function groupcallReducer(state=initialState, action){
       return{
         ...state,
         room: action.payload
+      }
+    case End_Group_Call:
+      return{
+        ...state,
+        groupCall: false,
+        groupCallIncoming: false,
       }
     default:
       return state

@@ -2,7 +2,7 @@ import styles from './GroupCall.module.scss';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import socket from '../../Socket/Socket';
-import { makeGroupCall, makeGroupIncoming } from '../../Redux/GroupCall/groupcallActions';
+import { endCall, makeGroupCall, makeGroupIncoming } from '../../Redux/GroupCall/groupcallActions';
 import { 
   useDaily,
   useLocalSessionId,
@@ -12,7 +12,9 @@ import {
 } from '@daily-co/daily-react';
 import mic from '../../Assets/mic.svg';
 import video1 from '../../Assets/video1.svg';
-
+import micCut from '../../Assets/micCut.svg';
+import videoCut from '../../Assets/videoCut.svg';
+import callIcon from '../../Assets/call.svg';
 const GroupCall = () => {
   const [callInstance, setCallInstance] = useState(null);
   const [roomToken, setRoomToken] = useState(null);
@@ -131,14 +133,14 @@ const GroupCall = () => {
   
   const toggleAudio = () => {
     if (daily) {
-      daily.setLocalAudio(!isAudioMuted);
+      daily.setLocalAudio(isAudioMuted);
       setIsAudioMuted(!isAudioMuted);
     }
   };
   
   const toggleVideo = () => {
     if (daily) {
-      daily.setLocalVideo(!isVideoPaused);
+      daily.setLocalVideo(isVideoPaused);
       setIsVideoPaused(!isVideoPaused);
     }
   };
@@ -185,11 +187,15 @@ const GroupCall = () => {
   useDailyEvent('participant-left', (event) => {
     console.log('Participant left:', event);
     const { participant } = event;
-  
     // Remove participant from the state
     setParticipants((prevParticipants) =>
       prevParticipants.filter((p) => p.session_id !== participant.session_id)
     );
+    if(participants.size == 1){
+      socket.emit("DeleteCallRoom", {roomUrl, roomToken});
+      dispatch(endCall());
+      
+    }
   });
   
 
@@ -240,7 +246,7 @@ const GroupCall = () => {
     if (daily) {
       daily.leave();
     }
-    dispatch(makeGroupIncoming(false));
+    dispatch(endCall());
   };
 
   // Position management for draggable window
@@ -338,11 +344,11 @@ const GroupCall = () => {
 
     </div>
     <div className={styles.controls}>
-      <button onClick={toggleAudio}>
-       <img src={mic} />
+      <button onClick={()=>{toggleAudio()}} style={{ opacity: isAudioMuted ? '0.5' : '1' }}>
+       <img src={isAudioMuted? micCut :mic} />
       </button>
-      <button onClick={toggleVideo}>
-        <img src={video1} />
+      <button onClick={()=>{toggleVideo()}} style={{ opacity: isVideoPaused ? '0.5' : '1' }}>
+        <img src={isVideoPaused? videoCut :video1} />
       </button>
       <button onClick={handleLeaveCall}>End Call</button>
     </div>
@@ -363,8 +369,8 @@ const GroupCall = () => {
           <span>Incoming Call</span>
         </div>
         <div className={styles.acceptReject}>
-          <button onClick={handleReject}>Reject</button>
-          <button onClick={handleAccept}>Accept</button>
+          <button onClick={handleReject}><img src={callIcon}/></button>
+          <button onClick={handleAccept}><img src={callIcon}/></button>
         </div>
       </div>)
       : null}

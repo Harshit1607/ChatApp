@@ -44,7 +44,7 @@
       aspect-ratio: 1/1;
       font-size: 16px;
       color: white;
-      background-color: #007bff;
+      background-color: var(--spider-red);
       border: none;
       cursor: pointer;
       border-radius: 50%;
@@ -53,9 +53,6 @@
         height: 100%;
       }
 
-      &:hover {
-        background-color: #0056b3;
-      }
 
       &:active {
         transform: scale(0.98);
@@ -93,7 +90,7 @@
       border: none;
       cursor: pointer;
       color: white;
-
+      @include flexbox;
       &:first-child {
         background-color: red;
 
@@ -108,6 +105,10 @@
         &:hover {
           background-color: darkgreen;
         }
+      }
+      >img{
+        height: 80%;
+        width: 80%;
       }
     }
   }

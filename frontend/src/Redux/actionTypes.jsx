@@ -136,3 +136,5 @@ export const Delete_ForAll_Success = 'Delete_ForAll_Success'
 export const Delete_ForAll_Failure = 'Delete_ForAll_Failure'
 
 export const Translation_Box_Close = "Translation_Box_Close"
+
+export const End_Group_Call = 'End_Group_Call'

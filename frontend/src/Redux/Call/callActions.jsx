@@ -127,7 +127,7 @@ export const handleReceiveCandidate = async ({ candidate }, peerConnection) => {
   }
 };
 
-export const handleCallEnd = (peerConnection, localVideoRef, remoteVideoRef, recipient) => {
+export const handleCallEnd = (peerConnection, localVideoRef, remoteVideoRef, dispatch) => {
   if (peerConnection) peerConnection.close();
 
   if (localVideoRef.current?.srcObject) {
@@ -139,17 +139,20 @@ export const handleCallEnd = (peerConnection, localVideoRef, remoteVideoRef, rec
     remoteVideoRef.current.srcObject = null;
   }
 
-  if (recipient) socket.emit('endCall', { recipient });
+  dispatch(clearOffer());
+
+  
 };
 
 export const handleRejection = () => {
     return{ type: Call_Rejected };
 };
 
-export const handleReceiveOffer = ({ offer, sender, audioOnly }, dispatch) => {
+export const handleReceiveOffer = ({ offer, sender, audioOnly }, dispatch, setVid) => {
   if (offer && offer.sdp && (offer.type === 'offer' || offer.type === 'answer')) {
     console.log("offer received");
     if(audioOnly) {
+      setVid(true);
       dispatch(onlyAudio());
     }
     // Dispatch makeIncoming action
@@ -182,7 +185,7 @@ export const handleEndCall = (peerConnection, localVideoRef, remoteVideoRef, sen
     // Close the peer connection
     if (peerConnection) {
       peerConnection.close();
-      dispatch(storePeer(null)); // Fixed: Use dispatch instead of direct call
+      dispatch(clearOffer())
     }
 
     // Stop all local media tracks
