@@ -200,6 +200,9 @@ const GroupCall = () => {
   
 
   useEffect(() => {
+    if(daily){
+      console.log("Local audio track state:", daily.localAudio());
+    }
     console.log("Participants:", participants);
   }, [participants]);
 

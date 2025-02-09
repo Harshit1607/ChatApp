@@ -137,4 +137,6 @@ export const Delete_ForAll_Failure = 'Delete_ForAll_Failure'
 
 export const Translation_Box_Close = "Translation_Box_Close"
 
+export const Get_Latest_Chat = 'End_Group_Call'
+
 export const End_Group_Call = 'End_Group_Call'

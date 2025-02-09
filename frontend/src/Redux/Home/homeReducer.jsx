@@ -1,5 +1,5 @@
 import { act } from "react";
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group, New_Group_Created, Removed_From_Group, Create_Group_Success, Get_User_Request, Get_User_Failure, Get_User_Success, Change_Theme } from "../actionTypes";
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group, New_Group_Created, Removed_From_Group, Create_Group_Success, Get_User_Request, Get_User_Failure, Get_User_Success, Change_Theme, Get_Latest_Chat } from "../actionTypes";
 
 
 const initialState = {
@@ -8,6 +8,7 @@ const initialState = {
   searchUsers: localStorage.getItem('searchUsers') ? JSON.parse(localStorage.getItem('searchUsers')) : '',
   newUser: '',
   theme: localStorage.getItem('theme') ? localStorage.getItem("theme") : 'og',
+  latestChat: [],
   loading: false,
   error: null,
 }
@@ -61,13 +62,13 @@ function homeReducer(state=initialState,action){
         allFriends: newGroupSuccess
       }
     case Sort_Groups:
-      if(!sessionStorage.getItem('chats')){
+      if(!state.latestChat){
         return{
           ...state,
         }
       }else {
        // Retrieve and parse chats from sessionStorage
-          const chats = JSON.parse(sessionStorage.getItem('chats'));
+          const chats = state.latestChat;
 
           // Sort the chats by createdAt (most recent first)
           const sortedChats = [...chats].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -171,6 +172,14 @@ function homeReducer(state=initialState,action){
         ...state,
         theme: action.payload,
       }
+    case Get_Latest_Chat:
+      const newChat = action.payload;
+      const updatedChats = state.latestChat.filter(chat => chat.Group[0] !== newChat.Group[0]);
+
+      return {
+        ...state,
+        latestChat: [...updatedChats, newChat], // Add the new chat after filtering out the old one
+      };
     case All_Users_Failure:
     case All_Friends_Failure:
     case Search_Users_Failure:

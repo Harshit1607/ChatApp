@@ -123,7 +123,6 @@ const Settings = () => {
                   <div><button style={{background: each.bc}} onClick={()=>{
                       if (theme !== each.name) {  // Only dispatch if current theme is different
                         dispatch(setTheme(each.name))
-
                       }
                       setPreview(null)
                     }}></button></div>

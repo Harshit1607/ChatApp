@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './SingleConvo.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { openGroup } from '../../../Redux/Group/groupActions'
-import { getLatestChat, onLatestChat } from '../../../Socket/ChatSocket'
+import { getLatestChat } from '../../../Socket/ChatSocket'
 import spidermanFace from '../../../Assets/spidermanFace.svg'
 import { leaveGroup } from '../../../Socket/GroupSocket'
 import { getPhoto } from '../../../Redux/Home/homeActions'
@@ -12,27 +12,28 @@ const SngleConvo = ({single}) => {
   const {user} = useSelector(state=>state.userReducer);
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {chats} = useSelector(state=>state.chatReducer);
+  const {latestChat} = useSelector(state=>state.homeReducer);
   const [message, setMessage] = useState("")
   const [profile, setProfile] = useState(""); // State to store the profile URL
   const dispatch = useDispatch();
 
-  useEffect(()=>{
-    const fetchProfile = async () => {
-      let otherUserId;
+  // useEffect(()=>{
+  //   const fetchProfile = async () => {
+  //     let otherUserId;
       
-      if (!single.isGroup) {
-        const otherUser = single.Users.find(u => u !== user._id);
-        otherUserId = otherUser;
-      } else {
-        otherUserId = single._id;
-      }
-      // Wait for the dispatch to resolve and update the profile state
-      // const photo = await dispatch(getPhoto(otherUserId));
-      // setProfile(photo);
-    };
+  //     if (!single.isGroup) {
+  //       const otherUser = single.Users.find(u => u !== user._id);
+  //       otherUserId = otherUser;
+  //     } else {
+  //       otherUserId = single._id;
+  //     }
+  //     // Wait for the dispatch to resolve and update the profile state
+  //     // const photo = await dispatch(getPhoto(otherUserId));
+  //     // setProfile(photo);
+  //   };
 
-    fetchProfile();
-  }, [single])
+  //   fetchProfile();
+  // }, [single])
 
   const findName = () => {
     let name;
@@ -49,18 +50,16 @@ const SngleConvo = ({single}) => {
   }, [chats?.length]);
 
   useEffect(()=>{
-
-    const cleanup = onLatestChat((latestMessage) => {
-      if(latestMessage.Group[0] === single._id){
-        setMessage(latestMessage);
-      }
-      return;
-    });
-
-    return () => {
-      cleanup(); // Clean up the listener on unmount
-    };
-  })
+    console.log(latestChat)
+    if(latestChat.length > 0){
+      const newChat = latestChat.find(each=>each.Group[0] === single._id);
+    if(newChat){
+      setMessage(newChat);
+    }
+    
+    }
+    
+  }, [latestChat])
 
   const sentBy = (id) =>{
     const sent = single.UserDetails.find(each => each._id === id);
