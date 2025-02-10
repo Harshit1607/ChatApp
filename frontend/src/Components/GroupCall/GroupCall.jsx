@@ -2,7 +2,7 @@ import styles from './GroupCall.module.scss';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import socket from '../../Socket/Socket';
-import { endCall, makeGroupCall, makeGroupIncoming } from '../../Redux/GroupCall/groupcallActions';
+import { audioGroupCall, endCall, makeGroupCall, makeGroupIncoming } from '../../Redux/GroupCall/groupcallActions';
 import { 
   useDaily,
   useLocalSessionId,
@@ -22,7 +22,7 @@ const GroupCall = () => {
   const daily = useDaily();
   const [participants, setParticipants] = useState([]); // To hold remote participants
   // Redux state selectors
-  const { groupCall, groupCallIncoming } = useSelector(state => state.groupcallReducer);
+  const { groupCall, groupCallIncoming, groupAudio } = useSelector(state => state.groupcallReducer);
   const { groupChat } = useSelector(state => state.groupReducer);
   const { user } = useSelector(state => state.userReducer);
   const dispatch = useDispatch();
@@ -48,7 +48,11 @@ const GroupCall = () => {
       console.log('Successfully joined room');
   
       // After joining, request camera and microphone access
-      daily.setLocalVideo(true);
+      if (!groupAudio) {
+        daily.setLocalVideo(true);
+      } else {
+        daily.setLocalVideo(false); // Ensure video remains off
+      }
       daily.setLocalAudio(true);
       console.log('Camera and microphone enabled');
   
@@ -82,16 +86,19 @@ const GroupCall = () => {
       joinRoom(url, token)
     }
 
-  const handleIncomingGroupCall = async ({roomName, token, url}) => {
+  const handleIncomingGroupCall = async ({roomName, token, url, audio}) => {
     setRoomToken(token);
     setRoomUrl(url);
     dispatch(makeGroupIncoming());
+    if(audio){
+      dispatch(audioGroupCall());
+    }
   };
 
 
 
   const startCall = () =>{
-    socket.emit('initiate-group-call', {group: groupChat.Users, user: user._id});
+    socket.emit('initiate-group-call', {group: groupChat.Users, user: user._id, audio: groupAudio});
   }
 
   const handleAccept = async () => {

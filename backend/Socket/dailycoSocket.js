@@ -84,19 +84,20 @@ export const dailycoSocket = (io) => {
       console.log('Socket connected:', socket.id);
 
       // Handle group call initiation
-        socket.on('initiate-group-call', async ({group, user}) => {
+        socket.on('initiate-group-call', async ({group, user, audio}) => {
           try {
             // Create a new room
             const room = await createRoom();
             
             // Generate a token for the room
             const token = await createMeetingToken(room.name);
-
+            
             // Emit room details to initiator
             socket.emit('group-call-initiated', {
               roomName: room.name,
               token,
-              url: room.url,
+              url: room.url
+              
             });
 
             // Notify other participants
@@ -108,6 +109,7 @@ export const dailycoSocket = (io) => {
                 token,
                 url: room.url,
                 initiator: user,
+                audio
               });
 }
 

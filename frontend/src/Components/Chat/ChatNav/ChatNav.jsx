@@ -7,7 +7,7 @@ import cross from '../../../Assets/cross.svg'
 import { closeChat } from '../../../Redux/Group/groupActions';
 import socket from '../../../Socket/Socket';
 import { makeCall, onlyAudio } from '../../../Redux/Call/callActions';
-import { makeGroupCall } from '../../../Redux/GroupCall/groupcallActions';
+import { audioGroupCall, makeGroupCall } from '../../../Redux/GroupCall/groupcallActions';
 import { useNavigate } from 'react-router-dom';
 import { getPhoto, getSingleUser } from '../../../Redux/Home/homeActions';
 
@@ -96,6 +96,7 @@ const ChatNav = () => {
         <div className={styles.callBox}>
           <div onClick={() => {
               if (groupChat.isGroup) {
+                dispatch(audioGroupCall());
                 dispatch(makeGroupCall());
               } else {
                 dispatch(onlyAudio());
