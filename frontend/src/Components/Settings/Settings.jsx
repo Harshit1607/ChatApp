@@ -9,6 +9,7 @@ import gw from '../../Assets/gwen.png'
 import og from '../../Assets/spidermansitting.png'
 import pencil from '../../Assets/pencil.svg'
 import done from '../../Assets/singleTickWhite.svg'
+
 const Settings = () => {
   const { user } = useSelector(state => state.userReducer);
   const {theme } = useSelector(state=>state.homeReducer);

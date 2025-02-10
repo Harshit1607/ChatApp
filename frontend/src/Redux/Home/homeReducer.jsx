@@ -8,7 +8,7 @@ const initialState = {
   searchUsers: localStorage.getItem('searchUsers') ? JSON.parse(localStorage.getItem('searchUsers')) : '',
   newUser: '',
   theme: localStorage.getItem('theme') ? localStorage.getItem("theme") : 'og',
-  latestChat: [],
+  latestChat: sessionStorage.getItem('latestChat')? JSON.parse(sessionStorage.getItem('latestChat')):[],
   loading: false,
   error: null,
 }
@@ -174,12 +174,16 @@ function homeReducer(state=initialState,action){
       }
     case Get_Latest_Chat:
       const newChat = action.payload;
-      const updatedChats = state.latestChat.filter(chat => chat.Group[0] !== newChat.Group[0]);
-
-      return {
-        ...state,
-        latestChat: [...updatedChats, newChat], // Add the new chat after filtering out the old one
-      };
+      if(newChat){
+        const updatedChats = state.latestChat.filter(chat => chat.Group[0] !== newChat.Group[0]);
+        sessionStorage.setItem('latestChat', JSON.stringify([...updatedChats, newChat]));
+        return {
+          ...state,
+          latestChat: [...updatedChats, newChat], // Add the new chat after filtering out the old one
+        };
+      }
+      return state;
+      
     case All_Users_Failure:
     case All_Friends_Failure:
     case Search_Users_Failure:

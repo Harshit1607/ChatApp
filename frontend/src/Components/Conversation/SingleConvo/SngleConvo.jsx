@@ -50,13 +50,11 @@ const SngleConvo = ({single}) => {
   }, [chats?.length]);
 
   useEffect(()=>{
-    console.log(latestChat)
     if(latestChat.length > 0){
       const newChat = latestChat.find(each=>each.Group[0] === single._id);
     if(newChat){
       setMessage(newChat);
     }
-    
     }
     
   }, [latestChat])

@@ -27,6 +27,7 @@ function groupcallReducer(state=initialState, action){
         ...state,
         groupCall: false,
         groupCallIncoming: false,
+        room: null,
       }
     default:
       return state

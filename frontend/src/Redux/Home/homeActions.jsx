@@ -61,6 +61,5 @@ export const getPhoto = (id) => async (dispatch)=>{
 }
 
 export const setTheme = (theme)=>{
-  console.log("Called")
   return{type: Change_Theme, payload: theme}
 }

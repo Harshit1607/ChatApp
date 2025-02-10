@@ -48,8 +48,8 @@ const GroupCall = () => {
       console.log('Successfully joined room');
   
       // After joining, request camera and microphone access
-      await daily.setLocalVideo(true);
-      await daily.setLocalAudio(true);
+      daily.setLocalVideo(true);
+      daily.setLocalAudio(true);
       console.log('Camera and microphone enabled');
   
     } catch (error) {
@@ -323,6 +323,17 @@ const GroupCall = () => {
       <div className={styles.videoWrapper}>
         {localSessionId && (
           <div>
+            <audio
+              autoPlay
+              playsInline
+              ref={(audioElement) => {
+                if (audioElement) {
+                  const localParticipant = daily.participants()?.[localSessionId];
+                  const audioTrack = localParticipant?.tracks?.audio?.track;
+                  audioElement.srcObject = audioTrack ? new MediaStream([audioTrack]) : null;
+                }
+              }}
+              />
             <DailyVideo
                   sessionId={localSessionId}
                   automirror
@@ -335,8 +346,22 @@ const GroupCall = () => {
   
     {participantIds.map((id) => {
               if (id === localSessionId) return null;
+              const participant = participants.find(p => p.session_id === id);
+         
+              const audioTrack = participant?.tracks?.audio?.persistentTrack;
               return (
                 <div key={id} className={styles.videoContainer}>
+                  <audio
+                  autoPlay
+                  playsInline
+                  ref={(audioElement) => {
+                    if (audioElement && audioTrack) {
+                      audioElement.srcObject = new MediaStream([audioTrack]);
+                    } else if (audioElement) {
+                      audioElement.srcObject = null;
+                    }
+                  }}
+                />
                   <DailyVideo
                     sessionId={id}
                     className={styles.video}
