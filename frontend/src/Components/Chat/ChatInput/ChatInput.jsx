@@ -5,10 +5,12 @@ import { newChat } from '../../../Redux/Chat/chatActions'
 import send from '../../../Assets/send.svg'
 import { Debouncing } from '../../../Utils/Debouncing'
 import { stopTyping, typingIndi } from '../../../Socket/ChatSocket'
+import sendGw from '../../../Assets/sendGw.svg'
 
 const ChatInput = () => {
   const {user} = useSelector(state=>state.userReducer);
   const {groupChat} = useSelector(state=>state.groupReducer);
+  const {theme} = useSelector(state=>state.homeReducer);
   const [text, setText] = useState("")
   const [typing, setTyping] = useState(false)
   const dispatch = useDispatch();
@@ -55,7 +57,7 @@ const ChatInput = () => {
     <div className={styles.main}>
       <input type="text" value={text} onChange={(e)=>handleInput(e)} onKeyDown={handleKeyDown} placeholder='Enter you message...'/>
       <div onClick={handleClick}>
-        <img src={send} />
+        <img src={theme === 'gw'? sendGw:send} />
       </div>
     </div>
   )

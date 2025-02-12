@@ -30,10 +30,10 @@
 }
 
 [data-theme="og"] {
-  --primary-color: #151515;
+  --primary-color: #181818;
   --secondary-color: #232323;
-  --tertiary-color: #090909;
-  --nav-color: #181818;
+  --tertiary-color: #151515;
+  --nav-color: #090909;
   --text-color: #E0E0E0;
   --spider-red: #9D1F13;
   --home-gradient: radial-gradient(
@@ -47,15 +47,15 @@
 
 html[data-theme="gw"] {
   --primary-color: #F7F7F7;
-  --secondary-color: #D0D0D0;
-  --tertiary-color: #E26BA5;
-  --nav-color: #f2489a;
+  --secondary-color: #dedddd;
+  --tertiary-color: #ff9dcc;
+  --nav-color: #fa68af;
   --text-color: #252523;
   --spider-red: #37f5f5;
   --home-gradient: radial-gradient(
     at center,
-    #E26BA5, /* Set ellipse shape and center position */
-              /* Starting color */
+     /* Set ellipse shape and center position */
+    #f6b1d2,         /* Starting color */
     #FEFEFE           /* Ending color */
   );
   --cursor: url("/gwcursor.png");

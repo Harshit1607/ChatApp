@@ -5,12 +5,14 @@ import { loadChats } from '../../../Redux/Chat/chatActions';
 import SingleChat from '../SingleChat/SingleChat';
 import { otherStopTyping, otherTyping, viewChat } from '../../../Socket/ChatSocket';
 import spider from '../../../Assets/redSpider.svg'
+import gwspider from '../../../Assets/blueSpider.svg'
 import { closeTranslation, translateText } from '../../../Redux/Translation/translationActions';
 
 const ChatBox = () => {
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {user} = useSelector(state=>state.userReducer);
   const {chats, typing} = useSelector(state=>state.chatReducer);
+  const {theme} = useSelector(state=>state.homeReducer);
   const {languages, isTranslating, toTranslate, translatedText} = useSelector(state=>state.translationReducer);
 
   const [selectedLang, setSelectedLang] = useState("");
@@ -66,10 +68,10 @@ const ChatBox = () => {
           : null}
       </div>
       <div style={{"display": !typing? "none" : ""}} className={styles.typingIndicator}>
-          <img src={spider} alt="" />
-          <img src={spider} alt="" />
-          <img src={spider} alt="" />
-          <img src={spider} alt="" />
+          <img src={theme === 'gw'? gwspider: spider} alt="" />
+          <img src={theme === 'gw'? gwspider: spider} alt="" />
+          <img src={theme === 'gw'? gwspider: spider} alt="" />
+          <img src={theme === 'gw'? gwspider: spider} alt="" />
       </div>
       {isTranslating && languages && (
         <div className={styles.translationBox}>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { openGroup } from '../../../Redux/Group/groupActions'
 import { getLatestChat } from '../../../Socket/ChatSocket'
 import spidermanFace from '../../../Assets/spidermanFace.svg'
+import gwenFace from '../../../Assets/gwenFace.png'
 import { leaveGroup } from '../../../Socket/GroupSocket'
 import { getPhoto } from '../../../Redux/Home/homeActions'
 
@@ -12,7 +13,7 @@ const SngleConvo = ({single}) => {
   const {user} = useSelector(state=>state.userReducer);
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {chats} = useSelector(state=>state.chatReducer);
-  const {latestChat} = useSelector(state=>state.homeReducer);
+  const {latestChat, theme} = useSelector(state=>state.homeReducer);
   const [message, setMessage] = useState("")
   const [profile, setProfile] = useState(""); // State to store the profile URL
   const dispatch = useDispatch();
@@ -100,7 +101,7 @@ const SngleConvo = ({single}) => {
       </div>
       <div className={styles.others}>
         <div>
-          {message && !message.message.viewedBy.includes(user._id) && (groupChat ? (message.Group !== groupChat._id) : true) ? <img src={spidermanFace} /> : null}
+          {message && !message.message.viewedBy.includes(user._id) && (groupChat ? (message.Group !== groupChat._id) : true) ? <img src={theme === 'gw'? gwenFace: spidermanFace} /> : null}
         </div>
         <span>{message && message.createdAt ? formatDateTime(message.createdAt) : ""}</span>
       </div>

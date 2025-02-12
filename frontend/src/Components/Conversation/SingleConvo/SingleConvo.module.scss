@@ -41,10 +41,14 @@
   @include flexbox(column, space-between);
   font-size: 0.8rem;
   > div{
-    width: 15px;
-    height: 15px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background-color: var(--primary-color);
+    background-color: none;
     @include flexbox;
+    >img{
+      width: 120%;
+      height: 120%;
+    }
   }
 }
