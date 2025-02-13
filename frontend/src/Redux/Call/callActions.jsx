@@ -1,6 +1,6 @@
 import axios from 'axios'
 import socket from '../../Socket/Socket';
-import { Auido_Only, Call_Rejected, Clear_Offer, Make__Call, Make__Incoming, Recieved_Offer, Sotre_Candidate, Sotre_Peer } from '../actionTypes';
+import { Auido_Only, Call_Rejected, Clear_Offer, Make__Call, Make__Incoming, Recieved_Offer, Set_Call_Receiver, Sotre_Candidate, Sotre_Peer } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -22,6 +22,10 @@ export const storeCandidate = (candidate)=>{
 
 export const clearOffer = ()=>{
   return{type: Clear_Offer}
+}
+
+export const setReciever = (name)=>{
+  return{type: Set_Call_Receiver, payload: name}
 }
 
 export const onlyAudio = ()=>{

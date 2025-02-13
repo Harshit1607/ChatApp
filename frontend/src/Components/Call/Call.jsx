@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styles from './Call.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import socket from '../../Socket/Socket';
-import { startCall, handleRejection, handleReceiveOffer, handleReceiveAnswer, handleReceiveCandidate, handleCallEnd, handleRecievedAudio, handleRecievedVideo, handleAccept, handleReject, handleMuteAudio, handleEndCall, handleStopVideo } from '../../Redux/Call/callActions';
+import { startCall, handleRejection, handleReceiveOffer, handleReceiveAnswer, handleReceiveCandidate, handleCallEnd, handleRecievedAudio, handleRecievedVideo, handleAccept, handleReject, handleMuteAudio, handleEndCall, handleStopVideo, setReciever } from '../../Redux/Call/callActions';
 import mic from '../../Assets/mic.svg';
 import video1 from '../../Assets/video1.svg';
 import micCut from '../../Assets/micCut.svg';
@@ -12,7 +12,7 @@ import callIcon from '../../Assets/call.svg';
 const Call = () => {
   const { groupChat } = useSelector((state) => state.groupReducer);
   const { user } = useSelector((state) => state.userReducer);
-  const { call, incoming, peerConnection, offer, sender, audio } = useSelector(
+  const { call, incoming, peerConnection, offer, sender, audio, reciever } = useSelector(
     (state) => state.callReducer
   );
 
@@ -30,6 +30,7 @@ const Call = () => {
       if(audio){
         setVid(true);
       }
+      dispatch(setReciever(groupChat.UserDetails.find((each) => each !== user._id).name))
       startCall(groupChat, localVideoRef, remoteVideoRef, user, audio, dispatch);
     }
   }, [call, incoming]);
@@ -158,11 +159,12 @@ const Call = () => {
           :
           <>
           <div className={styles.avBox}>
+            {console.log(reciever)}
           <span>{user.name}</span>
           <video ref={localVideoRef} autoPlay playsInline muted ></video>
           </div>
           <div className={styles.avBox}>
-          {/* <span>{sender.name}</span> */}
+          <span>{reciever? reciever : sender && sender.name}</span>
           <video ref={remoteVideoRef} autoPlay playsInline ></video>
           </div>
           </>

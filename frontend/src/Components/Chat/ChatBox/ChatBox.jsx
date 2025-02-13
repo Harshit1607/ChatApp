@@ -18,7 +18,7 @@ const ChatBox = () => {
   const [selectedLang, setSelectedLang] = useState("");
   const [visibleChatId, setVisibleChatId] = useState(null);
   const [chatOptions, setChatOptions] = useState(null);
-  
+
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(loadChats(groupChat, user));
@@ -40,7 +40,6 @@ const ChatBox = () => {
   const submitTranslateLang = ()=>{
     dispatch(translateText(toTranslate, selectedLang.code));
   }
-
 
   return (
     <div className={styles.main}>

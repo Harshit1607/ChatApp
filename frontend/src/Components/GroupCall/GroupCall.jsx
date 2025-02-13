@@ -43,7 +43,8 @@ const GroupCall = () => {
       // First, let's join the room without explicitly enabling media
       await daily.join({ 
         url, 
-        token
+        token,
+        userName: user.name
       });
       console.log('Successfully joined room');
   
@@ -267,6 +268,7 @@ const GroupCall = () => {
 
   useEffect(() => {
     if (participants.size === 0) {
+      daily.destroy();
       cleanupRoom();
     }
   }, [participants]);
@@ -347,14 +349,16 @@ const GroupCall = () => {
                   muted
                   className={styles.video}
             />
+            <span>{user.name}</span>
           </div>
         )}
     
   
     {participantIds.map((id) => {
               if (id === localSessionId) return null;
+              console.log(participants.userName)
               const participant = participants.find(p => p.session_id === id);
-         
+              console.log("hihih" + participants.find(p => p.session_id === id))
               const audioTrack = participant?.tracks?.audio?.persistentTrack;
               return (
                 <div key={id} className={styles.videoContainer}>
@@ -373,6 +377,7 @@ const GroupCall = () => {
                     sessionId={id}
                     className={styles.video}
                   />
+                  <span>{participant.userName}</span>
                 </div>
               );
     })}
