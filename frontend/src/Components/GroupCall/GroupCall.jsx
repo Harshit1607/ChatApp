@@ -32,6 +32,7 @@ const GroupCall = () => {
   const [isAudioMuted, setIsAudioMuted] = useState(false); // Tracks audio mute state
   const [isVideoPaused, setIsVideoPaused] = useState(false); // Tracks video pause state
   const [localParticipant, setLocalParticipant] = useState(null);
+  const [sender, setSender] = useState(null);
 
   const joinRoom = async (url, token) => {
     try {
@@ -73,33 +74,32 @@ const GroupCall = () => {
   }, [groupCall]);
 
   useEffect(()=>{
-    socket.on('group-call-initiated', handleInitiatedGroupCall)
-    socket.on('incoming-group-call', handleIncomingGroupCall);
+    socket.on('group-call-initiated', handleInitiatedGroupCall);
+    socket.on('incoming-group-call', handleIncomingGroupCall); 
     return ()=>{
-      socket.off('group-call-initiated', handleInitiatedGroupCall)          
+      socket.off('group-call-initiated', handleInitiatedGroupCall);          
       socket.off('incoming-group-call', handleIncomingGroupCall);
     }
   })
 
-    const handleInitiatedGroupCall = async ({roomName, token, url})=>{
-      setRoomToken(token);
-      setRoomUrl(url);
-      joinRoom(url, token)
-    }
-
-  const handleIncomingGroupCall = async ({roomName, token, url, audio}) => {
+  const handleInitiatedGroupCall = async ({roomName, token, url})=>{
     setRoomToken(token);
     setRoomUrl(url);
+    joinRoom(url, token);
+  }
+
+  const handleIncomingGroupCall = async ({roomName, token, url, audio, sender: s}) => {
+    setRoomToken(token);
+    setRoomUrl(url);
+    setSender(s);
     dispatch(makeGroupIncoming());
     if(audio){
       dispatch(audioGroupCall());
     }
   };
 
-
-
   const startCall = () =>{
-    socket.emit('initiate-group-call', {group: groupChat.Users, user: user._id, audio: groupAudio});
+    socket.emit('initiate-group-call', {group: groupChat.Users, user: user._id, audio: groupAudio, sender: groupChat.name});
   }
 
   const handleAccept = async () => {
@@ -214,41 +214,6 @@ const GroupCall = () => {
     console.log("Participants:", participants);
   }, [participants]);
 
-  
-//   useEffect(() => {
-//     console.log("Daily instance:", daily);
-//     if (daily) {
-//       const participants = daily.participants();
-//       console.log("Daily participants:", participants);
-  
-//       const localParticipant = participants?.[daily.localSessionId];
-//       if (localParticipant) {
-//         console.log("Local participant:", localParticipant);
-  
-//         // Log track states and types
-//         Object.entries(localParticipant.tracks).forEach(([type, track]) => {
-//           console.log(`Track ${type}:`, track.state, track.track);
-//         });
-  
-//         // Set the local stream if available
-//         const videoTrack = localParticipant.tracks.video?.track;
-//         const audioTrack = localParticipant.tracks.audio?.track;
-  
-//         if (videoTrack || audioTrack) {
-//           console.log("Setting local stream with available tracks.");
-//           setLocalStream({
-//             video: videoTrack,
-//             audio: audioTrack,
-//           });
-//         } else {
-//           console.warn("No tracks available for the local participant.");
-//         }
-//       } else {
-//         console.warn("Local participant not found.");
-//       }
-//     }
-//   }, [daily]);
-
   const handleReject = ()=>{
 
   }
@@ -318,51 +283,49 @@ const GroupCall = () => {
     <>
       {groupCall ? (
         <div
-        className={styles.main}
-        draggable
-        onDragStart={onDragStart}
-        onDrag={onDrag}
-        onDragEnd={onDragEnd}
-        style={{
-          position: "absolute",
-          top: position.y,
-          left: position.x,
-        }}
-      >
-      <div className={styles.videoWrapper}>
-        {localSessionId && (
-          <div>
-            <audio
-              autoPlay
-              playsInline
-              ref={(audioElement) => {
-                if (audioElement) {
-                  const localParticipant = daily.participants()?.[localSessionId];
-                  const audioTrack = localParticipant?.tracks?.audio?.track;
-                  audioElement.srcObject = audioTrack ? new MediaStream([audioTrack]) : null;
-                }
-              }}
+          className={styles.main}
+          draggable
+          onDragStart={onDragStart}
+          onDrag={onDrag}
+          onDragEnd={onDragEnd}
+          style={{
+            position: "absolute",
+            top: position.y,
+            left: position.x,
+          }}
+        >
+        <div className={styles.videoWrapper}>
+          {localSessionId && (
+            <div>
+              <audio
+                autoPlay
+                playsInline
+                ref={(audioElement) => {
+                  if (audioElement) {
+                    const localParticipant = daily.participants()?.[localSessionId];
+                    const audioTrack = localParticipant?.tracks?.audio?.track;
+                    audioElement.srcObject = audioTrack ? new MediaStream([audioTrack]) : null;
+                  }
+                }}
               />
-            <DailyVideo
-                  sessionId={localSessionId}
-                  automirror
-                  muted
-                  className={styles.video}
-            />
-            <span>{user.name}</span>
-          </div>
-        )}
+              <DailyVideo
+                sessionId={localSessionId}
+                automirror
+                muted
+                className={styles.video}
+              />
+              <span>{user.name}</span>
+            </div>
+          )}
     
   
-    {participantIds.map((id) => {
-              if (id === localSessionId) return null;
-              console.log(participants.userName)
-              const participant = participants.find(p => p.session_id === id);
-              console.log("hihih" + participants.find(p => p.session_id === id))
-              const audioTrack = participant?.tracks?.audio?.persistentTrack;
-              return (
-                <div key={id} className={styles.videoContainer}>
-                  <audio
+          {participantIds.map((id) => {
+            if (id === localSessionId) return null;
+            const participant = participants.find(p => p.session_id === id);
+            const audioTrack = participant?.tracks?.audio?.persistentTrack;
+            return (
+              <div key={id} className={styles.videoContainer}>
+                <audio
                   autoPlay
                   playsInline
                   ref={(audioElement) => {
@@ -373,14 +336,14 @@ const GroupCall = () => {
                     }
                   }}
                 />
-                  <DailyVideo
-                    sessionId={id}
-                    className={styles.video}
-                  />
-                  <span>{participant.userName}</span>
-                </div>
-              );
-    })}
+                <DailyVideo
+                  sessionId={id}
+                  className={styles.video}
+                />
+                <span>{participant.user_name}</span>
+              </div>
+            );
+          })}
 
     </div>
     <div className={styles.controls}>
@@ -407,6 +370,7 @@ const GroupCall = () => {
         }}>
         <div className={styles.info}>
           <span>Incoming Call</span>
+          <span>{sender}</span>
         </div>
         <div className={styles.acceptReject}>
           <button onClick={handleReject}><img src={callIcon}/></button>
