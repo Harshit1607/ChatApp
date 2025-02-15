@@ -28,6 +28,10 @@
       min-height: 30%;
       max-width: 45%;
       max-height: 90%;
+      video{
+        max-width: fit-content;
+        max-height: fit-content;
+      }
     }
   }
 

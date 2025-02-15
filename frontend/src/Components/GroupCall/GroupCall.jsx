@@ -16,7 +16,7 @@ import micCut from '../../Assets/micCut.svg';
 import videoCut from '../../Assets/videoCut.svg';
 import callIcon from '../../Assets/call.svg';
 const GroupCall = () => {
-  const [callInstance, setCallInstance] = useState(null);
+  const [callInstance, setCallInstance] = useState(false);
   const [roomToken, setRoomToken] = useState(null);
   const [roomUrl, setRoomUrl] = useState(null);
   const daily = useDaily();
@@ -48,6 +48,8 @@ const GroupCall = () => {
         userName: user.name
       });
       console.log('Successfully joined room');
+
+      setCallInstance(true);
   
       // After joining, request camera and microphone access
       if (!groupAudio) {
@@ -199,12 +201,20 @@ const GroupCall = () => {
     setParticipants((prevParticipants) =>
       prevParticipants.filter((p) => p.session_id !== participant.session_id)
     );
-    if(participants.size == 1){
-      socket.emit("DeleteCallRoom", {roomUrl, roomToken});
-      dispatch(endCall());
-      
+    if(participants.length === 1){
+      daily.destroy();
+      cleanupRoom()
     }
   });
+
+  useEffect(() => {
+    if (participants.length === 0 && daily && callInstance) {
+      console.log(roomToken, roomUrl)
+      console.log('Room is empty. Cleaning up...');
+      daily.destroy();
+      cleanupRoom();
+    }
+  }, [participants]);
   
 
   useEffect(() => {
@@ -214,14 +224,15 @@ const GroupCall = () => {
     console.log("Participants:", participants);
   }, [participants]);
 
-  const handleReject = ()=>{
-
-  }
+  const handleReject = () => {
+    dispatch(endCall());
+  };
 
   const handleLeaveCall = () => {
     if (daily) {
       daily.leave();
     }
+    setCallInstance(false)
     dispatch(endCall());
   };
 
@@ -231,17 +242,12 @@ const GroupCall = () => {
     y: window.innerHeight / 2 - 225,
   });
 
-  useEffect(() => {
-    if (participants.size === 0) {
-      daily.destroy();
-      cleanupRoom();
-    }
-  }, [participants]);
   const cleanupRoom = async () => {
     console.log('Room is empty. Cleaning up...');
     try {
+      setCallInstance(false);
       socket.emit("DeleteCallRoom", {roomUrl, roomToken});
-    
+      dispatch(endCall());
     } catch (error) {
       console.error('Error during room cleanup:', error);
     }
