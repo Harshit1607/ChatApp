@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import styles from './Home.module.scss'
@@ -12,9 +12,11 @@ import Group from '../Group/Group'
 const Home = () => {
   const { user } = useSelector(state => state.userReducer)
   const { searchUsers, allFriends } = useSelector((state) => state.homeReducer);
-  const { makeGroup } = useSelector((state) => state.groupReducer);
+  const { makeGroup, groupChat } = useSelector((state) => state.groupReducer);
   const {chats} = useSelector(state=>state.chatReducer);
   const dispatch = useDispatch()
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
   useEffect(()=>{
     dispatch(getAllFriends(user));
   },[user])
@@ -24,15 +26,33 @@ const Home = () => {
       dispatch(sortGroups())
     }
   }, [user, chats?.length])
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   // Directly check if the user exists in Redux or localStorage
   const isAuth = user || localStorage.getItem('user')
 
   return (
     isAuth ? (
       <div className={styles.home}>
-        <Navbar />
-        <ConversationHome />
-        <ChatHome />
+       {windowWidth > 1024 && (
+        <>
+          <Navbar />
+          <ConversationHome />
+          <ChatHome />
+        </>
+      )}
+      {windowWidth <= 1024 && !groupChat && (
+        <>
+          <Navbar />
+          <ConversationHome />
+        </>
+      )}
+      {windowWidth <= 1024 && groupChat && <ChatHome />}
       {searchUsers && searchUsers.length > 0 ? <Search /> : null}
       {makeGroup ? <Group/> : null}
       </div>

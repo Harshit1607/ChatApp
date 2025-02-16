@@ -11,4 +11,10 @@
     var(--home-gradient);
   background-size: 150%, cover; /* Ensures all layers fit the container */
   background-position: right, center; /* Aligns everything centrally */
+  @media (max-width: $desktop) {
+    width: 65%;
+  }
+  @media (max-width: $laptop) {
+    width: 100%;
+  }
 }

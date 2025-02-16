@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './Navbar.module.scss'
 import web from '../../Assets/web.svg'
 import spiderWeb from '../../Assets/Settings.svg'
@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 const Navbar = () => {
   const {user} = useSelector(state=>state.userReducer);
   const navigate = useNavigate();
+
   return (
     <div className={styles.main}>
       <div className={styles.pfp}>

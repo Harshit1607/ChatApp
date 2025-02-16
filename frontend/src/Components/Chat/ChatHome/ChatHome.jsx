@@ -11,6 +11,7 @@ const ChatHome = () => {
   const { user } = useSelector(state => state.userReducer);
   const [isOpen, setIsOpen] = useState(false); // Initialize with false
 
+
   useEffect(() => {
     setIsOpen(groupChat !== null); // Update isOpen based on groupChat
     if(groupChat && !groupChat.isGroup){
@@ -18,9 +19,9 @@ const ChatHome = () => {
       checkUser(otherUser._id);
     }
   }, [groupChat]);
-
+  
   return (
-    <div className={styles.main}>
+    <div className={styles.main} >
       {isOpen && groupChat ? (
         <>
           <ChatNav />

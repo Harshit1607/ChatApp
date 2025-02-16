@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import SingleConvo from '../SingleConvo/SngleConvo'
 import styles from './ConversationHome.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
@@ -29,7 +29,7 @@ const ConversationHome = () => {
     dispatch(getAllUsers());
   }
   return (
-    <div className={styles.main}>
+    <div className={styles.main} >
       <div className={styles.heading}>
         <span>Conversations</span>
       </div>

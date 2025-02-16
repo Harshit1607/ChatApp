@@ -2,8 +2,16 @@
   background-color: var(--nav-color);
   width: 5%;
   height: 100%;
-  @include flexbox(column, space-between, center)
-
+  @include flexbox(column, space-between, center);
+  @media (max-width: $laptop) {
+    width: 10%;
+  }
+  @media (max-width: $tablet) {
+    width: 15%;
+  }
+  @media (max-width: $mobile) {
+    width: 20%;
+  }
 }
 .pfp{
   width: 100%;
