@@ -77,8 +77,11 @@ const Settings = () => {
           <div className={styles.photo}>
             {user.profile && <img src={user.profile} alt="Pfp" />}
           </div>
-          <button onClick={handleChangePhoto}>Change Photo <input ref={fileInputRef} type='file'accept="image/*" onChange={handleNewImage}/></button>
-          <button onClick={()=>{dispatch(deletePhoto(user._id))}}>Delete Photo</button>
+          <div>
+            <button onClick={handleChangePhoto}>Change Photo <input ref={fileInputRef} type='file'accept="image/*" onChange={handleNewImage}/></button>
+            <button onClick={()=>{dispatch(deletePhoto(user._id))}}>Delete Photo</button>
+          </div>
+          
         </div>
         <div className={styles.userInfo}>
           <div>

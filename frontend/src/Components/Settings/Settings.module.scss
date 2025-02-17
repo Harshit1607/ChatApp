@@ -1,9 +1,17 @@
+
+
 .main{
   width: 100vw;
   height: 100vh;
   @include flexbox(column, space-evenly, center);
   background-color: var(--tertiary-color);
+  overflow-y: hidden;
   // position: relative;
+ @media (max-width: $laptop) {
+  min-height: 160vh;
+  justify-content: center;
+  overflow-y: hidden;
+ }
 
   .preview{
     position: fixed;
@@ -20,6 +28,7 @@
     right: 20px;
     position: fixed;
   }
+  
   .info{
     width: 90%;
     height: 45%;
@@ -34,8 +43,10 @@
     }
     .profile{
       .photo{
-        aspect-ratio: 1 / 1; // Ensures the height is equal to the width
-        width: 60%;
+        
+        width: 65%;
+        aspect-ratio: 1 / 1; // Ensures the height is equal to the width  
+        height: 55%;
         border-radius: 50%;
         background-color: var(--nav-color);
         overflow: hidden;
@@ -45,22 +56,30 @@
           height: 100%;
         }
       }
-      >button{
+      >div{
+        @include flexbox(column, space-between);
+        height: 35%;
         width: 100%;
-        height: 15%;
-        background-color: #397DCF;
-        font-size: 1.2rem;
-        border: none;
-        border-radius: 10px;
-        color: white;
-        >input{
-          display: none;
-        }
-        &:last-of-type{
-          background-color: #7B93B0;
+        >button{
+          width: 100%;
+          height: 45%;
+          background-color: #397DCF;
+          font-size: 1.2rem;
+          border: none;
+          border-radius: 10px;
+          color: white;
+          >input{
+            display: none;
+          }
+          &:last-of-type{
+            background-color: #7B93B0;
+          }
         }
       }
+      
     }
+    
+   
   
     .userInfo{
       color: white;
@@ -175,4 +194,68 @@
       }
     }
   }
+  @media (max-width: $laptop) {
+    .info{
+      @include flexbox(column, space-between, center);
+      min-height: 80vh;
+      >div{
+        width: 90%;
+        height: 45%;
+        &:last-child{
+          height: 10%;
+        }
+      }
+    
+    .profile {
+      display: flex;
+      @include flexbox(column);
+      gap: 20px; /* Adds spacing between elements */
+  
+      .photo {
+        width: 30%; /* Reduce profile picture size */
+      }
+      >div{
+        @include flexbox(row, space-between);
+        >button {
+          width: 40%; /* Each button takes 40% width */
+          padding: 3% 0; /* Adjust button height */
+          @include flexbox;
+        }
+      }
+      
+    }
+    .userInfo{
+      >div{
+        >div{
+          >button{
+            @include flexbox(row, end);
+            >img{
+              width: 40%;
+              height: 40%;
+            }
+          }
+        }
+      }
+    }
+    .logout{
+      height: 100%;
+      @include flexbox;
+        >button{
+          height: 80%;
+        }
+    }
+  }
+    .themes{
+      min-height: 80vh;
+      @include flexbox(column, space-around);
+      .themeBox{
+        height: 30%;
+        width: 90%;
+        .theme{
+          background-image: none !important;
+        }
+      }
+    }
+  }
 }
+
