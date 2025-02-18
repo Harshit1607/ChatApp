@@ -5,6 +5,9 @@
   justify-content: end;
   background-color: var(--tertiary-color);
   position: relative;
+  @media (max-width: $tablet) {
+    justify-content: center;
+  }
 
   .cut{
     top: 20px;
@@ -100,6 +103,54 @@
       >div{
         width: 100%;
         height: 90%;
+      }
+    }
+  }
+  @media (max-width: $laptop) {
+    .topLeft{
+      
+      width: 60%;
+    }
+    .bottomLeft{
+      width: 60%;
+    }
+  }
+  @media (max-width: $tablet) {
+    .topLeft{
+      clip-path: polygon(90% 0, 0 40%, 0 0);
+      width: 80%;
+    }
+    .bottomLeft{
+      clip-path: polygon(100% 40%, 100% 0, 25% 0);
+      width: 80%;
+      right: 0;
+      top:0;
+      left:20%;
+    }
+    .right{
+      width: 90%;
+    }
+  }
+  @media (max-width: $mobile){
+    .right{
+      gap: 10px;
+      .mainInfo{
+        height: 30%;
+      }
+      .extraInfo{
+        height: 15%;
+        width: 40%;
+        @include flexbox(column-reverse);
+        >div{
+          width: 100%;
+          height: 40%;
+          @include flexbox(column);
+          &:last-child{
+            height: 60%;
+            width: 100%;
+            @include flexbox(row, space-around);
+          }
+        }
       }
     }
   }
