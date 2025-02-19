@@ -197,7 +197,7 @@
             font-size: 1.2rem;
             &:first-child{
               max-width: fit-content;
-              width: 5%;
+              width:10%;
               @include flexbox;
               >div{
                 height: 100%;
@@ -247,5 +247,45 @@
       }
     }
 
+  }
+  @media (max-width: $tablet) {
+    min-height: 200vh;
+    @include flexbox(column);
+    .left{
+      background-color: var(--tertiary-color);
+      width: 100%;
+      min-height: 100vh;
+      .info{
+        .profile{
+          width: 80%;
+        }
+        .description{
+          .descButton{
+            width: 30%;
+          }
+        }
+      }
+      .leave{
+        width: 40%;
+        >button{
+          width: 80%;
+          border-radius: 5px;
+          @include flexbox;
+        }
+      }
+    }
+    .right{
+      width: 100%;
+      min-height: 100vh;
+      .members{
+        >div{
+          .memberInfo{
+            >div{
+              &:first-child{width: 15%;}
+            }
+          }
+        }
+      }
+    }
   }
 }
