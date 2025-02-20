@@ -54,7 +54,8 @@
   max-width: calc(33.333% - 10px); /* Avoids expanding too much */
   height: 70px;
   box-sizing: border-box;
-  background-color: rgba(var(--secondary-color), 0.8);
+  background-color: var(--secondary-color);
+  opacity: 0.8;
   color: var(--text-color);
   @include flexbox
   
@@ -90,4 +91,24 @@
     color: var(--text-color);
     background-color: var(--primary-color);
   }
+}
+
+@media (max-width: $laptop) {
+  
+  .single, .include{
+    flex: 1 1 calc(50% - 10px); /* 3 columns layout */
+    min-width: calc(50% - 10px); /* Ensures proper column size */
+    max-width: calc(50% - 10px); /* Avoids expanding too much */
+  }
+}
+
+@media (max-width: $tablet) {
+  .Users{
+    @include flexbox(column, start, start);
+    flex-wrap: nowrap;
+    .single{
+      min-width: 100%;
+    }
+  }
+  
 }
