@@ -47,3 +47,23 @@
   height: 100%;
   @include flexbox(column, space-evenly, start);
 }
+
+@media (max-width: $laptop) {
+  
+  .single{
+    flex: 1 1 calc(50% - 10px); /* 3 columns layout */
+    min-width: calc(50% - 10px); /* Ensures proper column size */
+    max-width: calc(50% - 10px); /* Avoids expanding too much */
+  }
+}
+
+@media (max-width: $tablet) {
+  .main{
+    @include flexbox(column, start, start);
+    flex-wrap: nowrap; 
+  }
+    .single{
+      min-width: 100%;
+      max-height: 20%;
+    }
+}
