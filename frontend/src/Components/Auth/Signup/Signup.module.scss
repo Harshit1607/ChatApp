@@ -12,6 +12,15 @@
   position: fixed;
   top:5%;
   left:-10%;
+  @media (max-width: $tablet) {
+    width: 80%;
+    height: 60%;
+    top: -2%;
+    left: 10%;
+  }
+  @media (max-width: $mobile) {
+    width: 90%;
+  }
 }
 
 .authContainer{
@@ -26,6 +35,9 @@
   //   0 0 45px 5px rgba(217,217,217,0.05) ;
   border-radius: 20px;
   overflow:hidden;
+  @media (max-width: $tablet) {
+    @include flexbox(column);
+  }
 }
 
 .left, .right{
@@ -130,4 +142,25 @@
 
 }
 
+@media (max-width: $tablet) {
+  .left{
+    width: 90%;
+    height: 55%;
+  }
+  .right{
+    width: 90%;
+    height: 45%;
+    .heading{
+      width: 100%;
+    }
+    .infoContainer{
+      height: 40%;
+      width: 100%;
+    }
+    .submit{
+      height: 15%;
+      width: 100%;
+    }
+  }
+}
 

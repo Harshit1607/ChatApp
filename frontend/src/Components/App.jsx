@@ -27,8 +27,8 @@ function App() {
   const dispatch= useDispatch()
   
   useEffect(()=>{
-    if(user){
-      navigate('/home');
+    if(!user){
+      navigate('/');
     }
   },[])
   useEffect(()=>{

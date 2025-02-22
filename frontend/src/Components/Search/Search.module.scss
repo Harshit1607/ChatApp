@@ -62,8 +62,8 @@
     @include flexbox(column, start, start);
     flex-wrap: nowrap; 
   }
-    .single{
-      min-width: 100%;
-      max-height: 20%;
-    }
+  .single{
+    min-width: 100%;
+    max-height: 20%;
+  }
 }
