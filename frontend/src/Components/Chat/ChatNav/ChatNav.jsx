@@ -19,27 +19,7 @@ const ChatNav = () => {
   const navigate = useNavigate()
 
   const [status, setStatus] = useState("")
-  const [lastSeen, setLastSeen] = useState("")
-  const [profile, setProfile] = useState();
-
-  useEffect(()=>{
-      const fetchProfile = async () => {
-        let otherUserId;
-        
-        if (!groupChat.isGroup) {
-          const otherUser = groupChat.Users.find(u => u !== user._id);
-          otherUserId = otherUser;
-        } else {
-          otherUserId = groupChat._id;
-        }
-  
-        // Wait for the dispatch to resolve and update the profile state
-        // const photo = await dispatch(getPhoto(otherUserId));
-        // setProfile(photo);
-      };
-  
-      fetchProfile();
-    }, [groupChat])
+  const [lastSeen, setLastSeen] = useState("");
   
 
   const findName = () => {
@@ -83,7 +63,7 @@ const ChatNav = () => {
               navigate("/userProfile");
             }
           }}>
-            {profile && <img src={profile} alt=''/>}
+            {groupChat && groupChat.profile && <img src={groupChat.profile} alt=''/>}
           </div>
         </div>
         <div className={styles.info}>

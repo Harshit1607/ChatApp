@@ -14,27 +14,9 @@ const SngleConvo = ({single}) => {
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {chats} = useSelector(state=>state.chatReducer);
   const {latestChat, theme} = useSelector(state=>state.homeReducer);
-  const [message, setMessage] = useState("")
-  const [profile, setProfile] = useState(""); // State to store the profile URL
+  const [message, setMessage] = useState("");
+  
   const dispatch = useDispatch();
-
-  // useEffect(()=>{
-  //   const fetchProfile = async () => {
-  //     let otherUserId;
-      
-  //     if (!single.isGroup) {
-  //       const otherUser = single.Users.find(u => u !== user._id);
-  //       otherUserId = otherUser;
-  //     } else {
-  //       otherUserId = single._id;
-  //     }
-  //     // Wait for the dispatch to resolve and update the profile state
-  //     // const photo = await dispatch(getPhoto(otherUserId));
-  //     // setProfile(photo);
-  //   };
-
-  //   fetchProfile();
-  // }, [single])
 
   const findName = () => {
     let name;
@@ -44,6 +26,16 @@ const SngleConvo = ({single}) => {
       }
     });
     return name; // returns the found name
+  };
+
+  const findProfile = () => {
+    let profile;
+    single.UserDetails.forEach(each => {
+      if (each._id != user._id) {
+        profile = each.profile;
+      }
+    });
+    return profile; // returns the found name
   };
 
   useEffect(() => {
@@ -65,6 +57,7 @@ const SngleConvo = ({single}) => {
   return sent ? sent.name : undefined;
   }
   const name = !single.isGroup && single.name === "" ? findName() : single.name;
+  const profile = !single.isGroup && single.profile === "" ? findProfile() : single.profile;
   const handleClick = () =>{
     if(groupChat){
       leaveGroup(groupChat._id)

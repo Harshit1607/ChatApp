@@ -47,18 +47,19 @@ const Settings = () => {
     fileInputRef.current.click(); // Programmatically trigger the input
   }
 
-  const handleNewImage = (e)=>{
-    const file = e.target.files[0];  // Get the file from input
+  const handleNewImage = (e) => {
+    const file = e.target.files[0];  
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64Image = reader.result; // This gives the base64 encoded image
-        setImage(base64Image); // Update the state with the base64 image
-        dispatch(changePhoto(base64Image, user._id)); // Dispatch action to update the profile photo
+        const base64Image = reader.result; // Base64 encoded image
+        setImage(base64Image);
+        // Send image to backend
+        dispatch(changePhoto(base64Image, user._id));
       };
-      reader.readAsDataURL(file); // Convert image to base64 string
+      reader.readAsDataURL(file); // Convert image to base64
     }
-  }
+  };
 
   const handleLogout = ()=>{
     navigate('/');
