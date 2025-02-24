@@ -52,9 +52,6 @@ export const getProfile = async (req, res) => {
         profile = group.profile;
       }
     }
-
-    
-
     // Respond with the profile or a 404 if not found
     if (profile) {
       return res.status(200).json(profile);
@@ -67,10 +64,15 @@ export const getProfile = async (req, res) => {
   }
 };
 
+export const findUser = async (id)=>{
+  const newUser = await User.findById(id);
+  return newUser;
+}
+
 export const getUser = async (req, res)=>{
   const {id} =req.body;
   try {
-    const newUser = await User.findById(id)
+    const newUser = await findUser(id);
     res.status(200).json({newUser});
   } catch (error) {
     res.status(500).json({ error: 'Failed to Update' });

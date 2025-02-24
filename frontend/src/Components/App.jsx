@@ -28,7 +28,7 @@ function App() {
   
   useEffect(()=>{
     if(!user){
-      navigate('/');
+      navigate('/login');
     }
   },[])
   useEffect(()=>{

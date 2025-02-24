@@ -8,13 +8,13 @@ import gwenFace from '../../../Assets/gwenFace.png'
 import { leaveGroup } from '../../../Socket/GroupSocket'
 import { getPhoto } from '../../../Redux/Home/homeActions'
 
-
 const SngleConvo = ({single}) => {
   const {user} = useSelector(state=>state.userReducer);
   const {groupChat} = useSelector(state=>state.groupReducer);
   const {chats} = useSelector(state=>state.chatReducer);
   const {latestChat, theme} = useSelector(state=>state.homeReducer);
   const [message, setMessage] = useState("");
+  const [profile, setProfile] = useState("");
   
   const dispatch = useDispatch();
 
@@ -28,15 +28,27 @@ const SngleConvo = ({single}) => {
     return name; // returns the found name
   };
 
+  useEffect(()=>{
+    if(!profile){
+      if(!single.isGroup){
+        findProfile();
+      }else{
+        setProfile(single.profile);
+      }
+    }
+
+  }, [])
   const findProfile = () => {
-    let profile;
-    single.UserDetails.forEach(each => {
+    single.UserDetails.forEach(async (each) => {
       if (each._id != user._id) {
-        profile = each.profile;
+        const newProfile = await dispatch(getPhoto(each._id));
+        setProfile(newProfile);
       }
     });
-    return profile; // returns the found name
+    
   };
+
+  
 
   useEffect(() => {
     getLatestChat(single._id);
@@ -57,7 +69,7 @@ const SngleConvo = ({single}) => {
   return sent ? sent.name : undefined;
   }
   const name = !single.isGroup && single.name === "" ? findName() : single.name;
-  const profile = !single.isGroup && single.profile === "" ? findProfile() : single.profile;
+  
   const handleClick = () =>{
     if(groupChat){
       leaveGroup(groupChat._id)

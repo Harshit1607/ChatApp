@@ -20,6 +20,7 @@ const ChatNav = () => {
 
   const [status, setStatus] = useState("")
   const [lastSeen, setLastSeen] = useState("");
+  const [profile, setProfile] = useState("");
   
 
   const findName = () => {
@@ -46,6 +47,23 @@ const ChatNav = () => {
    }
   })
 
+  useEffect(()=>{
+        if(!groupChat.isGroup){
+          findProfile();
+        }else{
+          setProfile(groupChat.profile);
+        }
+    }, [groupChat])
+    const findProfile = () => {
+      groupChat.UserDetails.forEach(async (each) => {
+        if (each._id != user._id) {
+          const newProfile = await dispatch(getPhoto(each._id));
+          setProfile(newProfile);
+        }
+      });
+      
+    };
+
   
   
   const name = !groupChat.isGroup && groupChat.name === "" ? findName() : groupChat.name;
@@ -63,7 +81,7 @@ const ChatNav = () => {
               navigate("/userProfile");
             }
           }}>
-            {groupChat && groupChat.profile && <img src={groupChat.profile} alt=''/>}
+            {profile && <img src={profile} alt=''/>}
           </div>
         </div>
         <div className={styles.info}>

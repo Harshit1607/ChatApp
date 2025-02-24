@@ -63,3 +63,4 @@ export const getPhoto = (id) => async (dispatch)=>{
 export const setTheme = (theme)=>{
   return{type: Change_Theme, payload: theme}
 }
+
