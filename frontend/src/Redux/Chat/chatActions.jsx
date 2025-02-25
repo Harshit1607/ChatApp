@@ -17,10 +17,10 @@ export const loadChats = (group, user) => async (dispatch)=>{
   }
 }
 
-export const newChat = (text, user, group) => async (dispatch)=>{
+export const newChat = (text, user, group, isMedia=false) => async (dispatch)=>{
   dispatch({type: New_Chat_Request})
 
-  sendNewChat(text, user, group); // Emit the new chat message via socket
+  sendNewChat(text, user, group, isMedia); // Emit the new chat message via socket
   
 }
 

@@ -17,7 +17,7 @@ const Settings = () => {
   const themeValues = [{name: 'mm', bc: "radial-gradient(at center, #9D1F13,#090909 )", img: mm, spiderman: "Miles Morales", desc: "Red And Black"}
                       ,{name: 'og', bc: "radial-gradient(at center, #9F0707,#03022A,#010011 )", img: og, spiderman: "Spiderman", desc: "Red And Blue"}, 
                       {name: 'gw', bc: "radial-gradient(at center, #E26BA5,#FEFEFE )", img: gw, spiderman: "Gwen", desc: "Pink And White"}]
-  const [image, setImage] = useState();
+  
   const [userAbout, setuserAbout] = useState(user?.about);
   const [edit, setEdit] = useState(false);
   const [preview, setPreview] = useState(null);
@@ -53,7 +53,6 @@ const Settings = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64Image = reader.result; // Base64 encoded image
-        setImage(base64Image);
         // Send image to backend
         dispatch(changePhoto(base64Image, user._id));
       };

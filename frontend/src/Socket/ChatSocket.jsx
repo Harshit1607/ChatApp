@@ -1,8 +1,8 @@
 import socket from "./Socket";
 
 // Function to send a new chat message via socket
-export const sendNewChat = (text, user, group) => {
-  socket.emit('newChat', { text, user, group });
+export const sendNewChat = (text, user, group, isMedia) => {
+  socket.emit('newChat', { text, user, group,isMedia });
 };
 
 

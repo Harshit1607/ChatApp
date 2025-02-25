@@ -9,10 +9,10 @@ export const chatSocket = (io) =>{
     console.log('Socket connected:', socket.id);
   
     // Handle the 'newChat' event
-    socket.on('newChat', async ({ text, user, group }) => {
+    socket.on('newChat', async ({ text, user, group, isMedia }) => {
       try {
         // Call the newChat controller function to save the new chat
-        const newChatData = await createNewChat({ text, user, group });
+        const newChatData = await createNewChat({ text, user, group, isMedia });
 
         const GroupData = await getGroup(group);
         

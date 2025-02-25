@@ -1,6 +1,8 @@
 import Group from '../models/groups.js'
 import Chat from '../models/chats.js'
 import { getIo } from '../Socket/socket.js';
+import { getBucket } from '../config/firebaseAdmin.js';
+import { v4 as uuidv4 } from "uuid";
 
 export const getChats = async (req,res)=>{
   const {group, user} = req.body;
@@ -17,11 +19,48 @@ export const getChats = async (req,res)=>{
   }
 }
 
+const mediaChat = async (image, userId)=>{
+  // Get Firebase bucket
+  const bucket = await getBucket();
+  if (!bucket) {
+    throw new Error("Storage system not available");
+  }
+
+  // Validate image data
+  if (!image.startsWith('data:image')) {
+    throw new Error("Invalid image format");
+  }
+
+  // Extract base64 data
+  const base64Data = image.split(';base64,').pop();
+  const buffer = Buffer.from(base64Data, 'base64');
+
+  // Generate unique filename
+  const filename = `profile_images/${userId}-${uuidv4()}.png`;
+  const file = bucket.file(filename);
+
+  // Upload new image
+  await file.save(buffer, {
+    metadata: {
+      contentType: 'image/png',
+      cacheControl: 'public, max-age=31536000' // Cache for 1 year
+    },
+    resumable: false
+  });
+
+  // Generate signed URL with longer expiration
+  const [url] = await file.getSignedUrl({
+    action: 'read',
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
+  });
+  return url;
+}
+
 export const newChat = async (req, res) => {
-  const { text, user, group } = req.body;
+  const { text, user, group, isMedia } = req.body;
 
   try {
-    const newChat = await createNewChat({ text, user, group });
+    const newChat = await createNewChat({ text, user, group, isMedia });
     res.status(200).json({ newChat });
   } catch (error) {
     console.error(error);
@@ -29,15 +68,21 @@ export const newChat = async (req, res) => {
   }
 };
 
-export const createNewChat = async ({ text, user, group }) => {
+export const createNewChat = async ({ text, user, group, isMedia }) => {
   // Validate the input
   if (!text || !user || !group) {
     throw new Error("Invalid input data");
   }
 
   const GroupData = await Group.findById(group)
+
+  let chatData;
   // Create the chat object
-  const chatData = {
+
+  if(isMedia){
+    text = await mediaChat(text, user);
+  }
+  chatData = {
     message: {
       message: text,
       sentBy: user,
@@ -45,6 +90,7 @@ export const createNewChat = async ({ text, user, group }) => {
     },
     Users: GroupData.Users || [], // Ensure Users is an array
     Group: group,
+    isMedia: isMedia,
   };
 
   // Save the new chat

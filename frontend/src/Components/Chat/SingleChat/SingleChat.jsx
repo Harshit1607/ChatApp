@@ -64,7 +64,7 @@ const handleOptions = (e)=>{
   return (
     <div className={user._id  === chat.message.sentBy[0] ? styles.userMain :  styles.main}>
       <div className={user._id  === chat.message.sentBy[0] ? styles.userChat :  styles.chat} onContextMenu={handleOptions}>
-        <span>{chat.message.message}</span>
+        {chat.isMedia ? <img src={chat.message.message}/>:<span>{chat.message.message}</span>}
         <div>
           <span>{convertTo24HourFormat(chat.createdAt)}</span>
           <div onClick={handleToggle}>

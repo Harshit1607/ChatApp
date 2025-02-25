@@ -23,6 +23,11 @@
   border-radius: 10px;
   border-bottom-left-radius: 0px;
   position: relative;
+  >img{
+    height: 225px;
+    width: 250px;
+    object-fit: cover;
+  }
   >span{
     padding: 5px;
   }
@@ -60,6 +65,12 @@
   border-radius: 10px;
   border-top-right-radius: 0px;
   position: relative;
+  
+  >img{
+    height: 225px;
+    width: 250px;
+    object-fit: cover;
+  }
   >span{
     padding: 5px;
   }
@@ -113,4 +124,15 @@
   height: 0;
   border-right: 10px solid transparent;
   border-top: 10px solid var(--secondary-color);
+}
+
+@media (max-width: $tablet) {
+  .userChat > img {
+    height: 150px;
+    width: 175px;
+  }
+  .chat > img {
+    height: 150px;
+    width: 175px;
+  }
 }

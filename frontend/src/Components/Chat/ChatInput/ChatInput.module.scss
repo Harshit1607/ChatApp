@@ -32,6 +32,18 @@
     border-radius: 50%;
     @include flexbox;
     font-size: 1rem;
+    @include flexbox;
+    >img{
+      cursor: pointer;
+    }
+    >input{
+      display: none;
+    }
+    &:first-of-type{
+      >img{
+        height: 75%;
+      }
+    }
   }
   
 }

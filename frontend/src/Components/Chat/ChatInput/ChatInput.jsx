@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styles from './ChatInput.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { newChat } from '../../../Redux/Chat/chatActions'
@@ -6,6 +6,9 @@ import send from '../../../Assets/send.svg'
 import { Debouncing } from '../../../Utils/Debouncing'
 import { stopTyping, typingIndi } from '../../../Socket/ChatSocket'
 import sendGw from '../../../Assets/sendGw.svg'
+import attachDark from '../../../Assets/attachDark.svg'
+import attachLight from '../../../Assets/attachLight.svg'
+
 
 const ChatInput = () => {
   const {user} = useSelector(state=>state.userReducer);
@@ -14,6 +17,8 @@ const ChatInput = () => {
   const [text, setText] = useState("")
   const [typing, setTyping] = useState(false)
   const dispatch = useDispatch();
+
+  const fileInputRef = useRef(null);
 
   const handleInput = (e)=>{
     const value = e.target.value
@@ -52,10 +57,31 @@ const ChatInput = () => {
     }
   }
 
+  const handleChangePhoto = ()=>{
+      fileInputRef.current.click(); // Programmatically trigger the input
+    }
+  
+    const handleNewImage = (e) => {
+      const file = e.target.files[0];  
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Image = reader.result; // Base64 encoded image
+          // Send image to backend
+          dispatch(newChat(base64Image, user._id, groupChat._id, true));
+        };
+        reader.readAsDataURL(file); // Convert image to base64
+      }
+    };
+
   
   return (
     <div className={styles.main}>
       <input type="text" value={text} onChange={(e)=>handleInput(e)} onKeyDown={handleKeyDown} placeholder='Enter you message...'/>
+      <div onClick={handleChangePhoto}>
+        <input ref={fileInputRef} type='file'accept="image/*" onChange={handleNewImage}/>
+        <img src={theme === 'gw'? attachDark:attachLight}/>
+      </div>
       <div onClick={handleClick}>
         <img src={theme === 'gw'? sendGw:send} />
       </div>
