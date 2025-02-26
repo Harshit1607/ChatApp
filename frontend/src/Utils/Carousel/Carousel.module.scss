@@ -1,0 +1,68 @@
+// Variables for reusable colors, sizes, etc.
+$carousel-button-size: 40px;
+$carousel-button-color: rgb(52, 52, 52);
+$carousel-button-hover-color: rgba(238, 238, 238, 1);
+$carousel-button-bg: rgba(238, 238, 238, 0.7);
+
+// Mixins for commonly used styles
+@mixin carousel-button-styles {
+  position: absolute;
+  top: 35%;
+  width: $carousel-button-size;
+  height: $carousel-button-size;
+  border-radius: 50%;
+  color: $carousel-button-color;
+  background-color: $carousel-button-bg;
+  border: none;
+
+  &:hover {
+    background-color: $carousel-button-hover-color;
+  }
+}
+
+// Main container styles
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, Opera
+  }
+
+  scrollbar-width: none; // Firefox
+}
+
+// Carousel styles
+.carousel {
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 50px;
+  scroll-behavior: smooth;
+  overflow-x: auto;
+  height: fit-content;
+  
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, Opera
+  }
+}
+
+// Carousel buttons
+.carouselButton {
+  @include carousel-button-styles;
+}
+
+.carouselButtonLeft {
+  left: 0;
+}
+
+.carouselButtonRight {
+  right: 10%;
+}

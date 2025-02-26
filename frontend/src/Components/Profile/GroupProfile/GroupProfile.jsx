@@ -8,11 +8,13 @@ import pencil from '../../../Assets/pencil.svg'
 import done from '../../../Assets/singleTickWhite.svg'
 import exit from '../../../Assets/exit.svg'
 import { getSingleUser } from '../../../Redux/Home/homeActions';
+import Carousel from '../../../Utils/Carousel/Carousel';
 
 const GroupProfile = () => {
 
   const {groupChat} = useSelector(state=>state.groupReducer);
   const { user } = useSelector(state => state.userReducer);
+  const {chats} = useSelector(state=>state.chatReducer);
 
   const [image, setImage] = useState();
   const [option, setOption] = useState(false);
@@ -124,7 +126,17 @@ const GroupProfile = () => {
       <div className={styles.right}>
         <div className={styles.media}>
           <span>Media</span>
-          <div></div>
+          <Carousel length={5} >
+          {groupChat && chats && chats.length > 0
+          ? chats
+              .filter((chat) => chat.Group[0] === groupChat._id && chat.Users.includes(user._id) && chat.isMedia)
+              .map((chat, index) => (
+                  <img src={chat.message.message}/>
+              ))
+          : null}
+            
+          </Carousel>
+          
         </div>
         <div className={styles.members}>
           <div>
@@ -136,7 +148,6 @@ const GroupProfile = () => {
                   <div className={styles.memberInfo} key={index}>
                     <div>
                       <div>{each.profile && <img src={each.profile} alt="" />}</div>
-                      
                     </div>
                     <div>
                       <span>{each._id === user._id? "You":each.name}</span>
