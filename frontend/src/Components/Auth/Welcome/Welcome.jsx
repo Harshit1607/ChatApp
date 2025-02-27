@@ -5,8 +5,15 @@ import { useNavigate } from 'react-router-dom'
 import spider from '../../../Assets/spiderCursor.png'
 
 const Welcome = () => {
+  const {user} = useSelector(state=>state.userReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(user){
+      navigate('/home');
+    }
+  }, [user])
 
  
 
