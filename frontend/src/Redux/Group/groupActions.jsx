@@ -54,6 +54,17 @@ export const changeGroupPhoto = (image, group)=> async (dispatch)=>{
   }
 }
 
+export const deleteGroupPhoto = (group)=> async (dispatch)=>{
+  dispatch({type: Change_GroupPhoto_Request});
+  try {
+    const result = await axios.post(`${API_URL}group/deleteprofile`, {group});
+    
+    dispatch({type: Change_GroupPhoto_Success, payload: result.data});
+  } catch (error) {
+    dispatch({type: Change_GroupPhoto_Failure, error: error.message});
+  }
+}
+
 export const leaveGroup = (user, group, newUser=null) => async (dispatch) =>{
   dispatch({type: Leave_Group_Request})
   try {

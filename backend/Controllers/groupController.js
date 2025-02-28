@@ -2,7 +2,8 @@ import Group from '../models/groups.js'
 import Chat from '../models/chats.js'
 import User from'../models/user.js'
 import { getIo } from '../Socket/socket.js';
-import mongoose from 'mongoose';
+import {getBucket} from '../config/firebaseAdmin.js';
+import { v4 as uuidv4 } from "uuid";
 
 export const openGroup = async (req, res) => {
   const { user, other, group } = req.body;
@@ -81,6 +82,24 @@ export const getGroup = async(group)=>{
   return GroupData;
 }
 
+const deleteOldProfilePhoto = async (bucket, oldPhotoUrl) => {
+  if (!oldPhotoUrl) return;
+  
+  try {
+    const filename = `profile_images/${extractFilenameFromUrl(oldPhotoUrl)}`;
+    const file = bucket.file(filename);
+    const [exists] = await file.exists();
+    
+    if (exists) {
+      await file.delete();
+      console.log('Old profile photo deleted successfully');
+    }
+  } catch (error) {
+    console.error('Error deleting old profile photo:', error);
+    // Don't throw error here as this is a cleanup operation
+  }
+};
+
 export const changeGroupPhoto = async (req, res) => {
   const { image, group } = req.body;
 
@@ -89,16 +108,58 @@ export const changeGroupPhoto = async (req, res) => {
       return res.status(400).json({ error: 'Image and id are required' });
     }
 
-    // Assuming the image is already a base64 string from the frontend
-    const groupChat = await Group.findOneAndUpdate(
-      { _id: group },
-      { $set: { profile: image } },
-      { new: true }
-    );
+    let groupChat = await Group.findById(group);
 
-    if (!groupChat) {
-      return res.status(404).json({ message: "Group doesn't exist" });
+    // Get Firebase bucket
+    const bucket = await getBucket();
+    if (!bucket) {
+      return res.status(500).json({ error: "Storage system not available" });
     }
+
+    // Validate image data
+    if (!image.startsWith('data:image')) {
+      return res.status(400).json({ error: "Invalid image format" });
+    }
+
+    // Extract base64 data
+    const base64Data = image.split(';base64,').pop();
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    // Generate unique filename
+    const filename = `profile_images/${group}-${uuidv4()}.png`;
+    const file = bucket.file(filename);
+
+    // Upload new image
+    await file.save(buffer, {
+      metadata: {
+        contentType: 'image/png',
+        cacheControl: 'public, max-age=31536000' // Cache for 1 year
+      },
+      resumable: false
+    });
+
+    // Generate signed URL with longer expiration
+    const [url] = await file.getSignedUrl({
+      action: 'read',
+      expires: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    // Delete old profile photo if exists
+    if (groupChat.profile) {
+      await deleteOldProfilePhoto(bucket, groupChat.profile);
+    }
+
+    // Update user profile in database
+    groupChat = await Group.findByIdAndUpdate(
+      group,
+      { 
+        $set: { 
+          profile: url,
+          profileUpdatedAt: new Date()
+        } 
+      },
+      { new: true, runValidators: true }
+    );
 
     res.status(200).json({ groupChat });
   } catch (error) {
@@ -106,6 +167,51 @@ export const changeGroupPhoto = async (req, res) => {
     res.status(500).json({ error: 'Failed to update photo' });
   }
 };
+
+export const deleteGroupPhoto = async (req, res)=>{
+  const {group} = req.body;
+  try {
+    if (!group) {
+      return res.status(400).json({ error: "Group id is required" });
+    }
+
+    // Find user
+    let groupChat = await Group.findById(group);
+    if (!groupChat) {
+      return res.status(404).json({ error: "Group not found" });
+    }
+
+    // Check if user has a profile photo
+    if (!groupChat.profile) {
+      return res.status(400).json({ error: "No profile photo to delete" });
+    }
+
+    // Get Firebase bucket
+    const bucket = await getBucket();
+    if (!bucket) {
+      return res.status(500).json({ error: "Storage system not available" });
+    }
+
+    // Delete photo from storage
+    await deleteOldProfilePhoto(bucket, groupChat.profile);
+
+    // Update user in database
+    groupChat = await Group.findByIdAndUpdate(
+      group,
+      { 
+        $set: { 
+          profile: "",
+          profileUpdatedAt: new Date()
+        } 
+      },
+      { new: true }
+    );
+    res.status(200).json({ groupChat });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update photo' });
+  }
+}
 
 export const leaveGroup = async (req, res) =>{
   const {user, group, newUser} = req.body;

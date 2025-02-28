@@ -13,6 +13,7 @@
     left: 10%;
     @include flexbox(column, space-between, end);
     box-shadow: 0 0 10px 5px rgba(var(--primary-color), 0.25);
+    z-index: 10;
     >span{
       cursor: pointer;
     }
@@ -49,7 +50,7 @@
           position: absolute;
           top: 40%;
           left: 40%;
-          height: 60px;
+          height: 90px;
           width: 100px;
           background-color: white;
           box-shadow: 0 0 10px 5px rgba(var(--primary-color), 0.25);

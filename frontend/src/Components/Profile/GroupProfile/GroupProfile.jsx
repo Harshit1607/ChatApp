@@ -3,7 +3,7 @@ import styles from './GroupProfile.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import options from '../../../Assets/3Dots.png'
-import { changeGroupPhoto, leaveGroup, makeAdmin, newDesc } from '../../../Redux/Group/groupActions';
+import { changeGroupPhoto, deleteGroupPhoto, leaveGroup, makeAdmin, newDesc } from '../../../Redux/Group/groupActions';
 import pencil from '../../../Assets/pencil.svg'
 import done from '../../../Assets/singleTickWhite.svg'
 import exit from '../../../Assets/exit.svg'
@@ -100,6 +100,7 @@ const GroupProfile = () => {
                 {groupChat.profile && <img src={groupChat.profile} alt="" />}
                 <input ref={fileInputRef} type='file'accept="image/*" onChange={handleNewImage}/>
                 <div ref={ProfileOptionRef} className={styles.profileOptions} style={{'visibility': option? "" : "hidden"}}>
+                  {groupChat.profile && <button onClick={()=>dispatch(deleteGroupPhoto(groupChat._id))}>Delete Photo</button>}
                   <button onClick={handleChangePhoto}>Change Photo</button>
                   <button onClick={showImg}>View Photo</button>
                 </div>
