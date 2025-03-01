@@ -24,7 +24,9 @@ const UserProfile = () => {
       <div className={styles.right}>
         <div className={styles.mainInfo}>
           <div className={styles.profile}>
-            <div></div>
+            <div>
+              {newUser && newUser.profile && <img src={newUser.profile}/>}
+            </div>
           </div>
           <span>{newUser.name}</span>
           <span>{newUser.about}</span>
