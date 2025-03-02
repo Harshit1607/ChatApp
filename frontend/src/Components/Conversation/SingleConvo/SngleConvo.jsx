@@ -102,7 +102,7 @@ const SngleConvo = ({single}) => {
       </div>
       <div className={styles.info}>
         <span>{name}</span>
-        <span>{message ? `${message.message.sentBy[0]===user._id ? "You": (single.isGroup? sentBy(message.message.sentBy[0]): name)} : ${message.message.message}`  : null}</span>
+        <span>{message ? `${message.message.sentBy[0]===user._id ? "You": (single.isGroup? sentBy(message.message.sentBy[0]): name)} : ${message.isMedia? "Image": message.message.message}`  : null}</span>
       </div>
       <div className={styles.others}>
         <div>
