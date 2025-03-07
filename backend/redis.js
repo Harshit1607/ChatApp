@@ -1,10 +1,15 @@
 import Redis from 'ioredis';
 
-// Initialize Redis client
-const redisClient = new Redis({
-  host: process.env.REDIS_HOST ,
-  port: process.env.REDIS_PORT 
+const redisClient = new Redis(process.env.UPSTASH_REDIS_URL, {
+  tls: { rejectUnauthorized: false }, // Required for Upstash Redis
 });
 
-// Export Redis client
+redisClient.on('connect', () => {
+  console.log('✅ Upstash Redis connected successfully.');
+});
+
+redisClient.on('error', (err) => {
+  console.error('❌ Redis connection error:', err);
+});
+
 export { redisClient };

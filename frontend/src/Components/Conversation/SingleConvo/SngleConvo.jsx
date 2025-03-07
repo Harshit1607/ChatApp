@@ -77,21 +77,31 @@ const SngleConvo = ({single}) => {
     dispatch(openGroup(user, null, single));
   }
 
-  const formatDateTime =(timestamp)=> {
-    const now = Date.now();
-    const elapsed = now - timestamp; // Difference in milliseconds
-    const oneDay = 24 * 60 * 60 * 1000; // Milliseconds in 24 hours
-  
-    const dateObj = new Date(timestamp);
-  
+  const formatDateTime = (timestamp) => {
+    const dateObj = new Date(timestamp); // Convert ISO 8601 string to Date object
+    const now = new Date(); // Current time as Date object
+
+    const elapsed = now - dateObj; // Difference in milliseconds
+    const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
     if (elapsed > oneDay) {
-      // If more than 24 hours, return the date in a readable format
-      return dateObj.toLocaleDateString(); // Example: "12/31/2024" (MM/DD/YYYY format)
+        // If more than 24 hours, return date in "DD/MM/YYYY" format
+        return dateObj.toLocaleDateString(undefined, {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
     } else {
-      // If less than 24 hours, return the time in a readable format
-      return dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }); // Example: "12:45 PM"
+        // If less than 24 hours, return time in "hh:mm AM/PM" format
+        return dateObj.toLocaleTimeString(undefined, {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
     }
-  }
+};
+
+
 
   return (
     <div className={styles.main} onClick={handleClick} >
