@@ -59,6 +59,7 @@
 
 @media (max-width: $tablet) {
   .main{
+    width: 90%;
     @include flexbox(column, start, start);
     flex-wrap: nowrap; 
   }

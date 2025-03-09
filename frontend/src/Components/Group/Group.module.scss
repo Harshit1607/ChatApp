@@ -103,6 +103,9 @@
 }
 
 @media (max-width: $tablet) {
+  .main{
+    width: 90%;
+  }
   .Users{
     @include flexbox(column, start, start);
     flex-wrap: nowrap;
