@@ -1,7 +1,7 @@
 .main{
   width: 100%;
  
-  height: 80px;
+  height: 70px;
   gap:3%;
   background-color: var(--tertiary-color);
   box-shadow: inset 2px 2px 5px var(--text-color); /* Inner shadow on left and top */
@@ -22,7 +22,10 @@
       color: var(--text-color);
       opacity: 0.5;
     }
-    
+    @media (max-width: $tablet) {
+      max-width: 70%;
+      min-width: 70%;
+    }
   }
   >div{
     background-color: var(--tertiary-color);
@@ -41,7 +44,7 @@
     }
     &:first-of-type{
       >img{
-        height: 75%;
+        height: 60%;
       }
     }
   }

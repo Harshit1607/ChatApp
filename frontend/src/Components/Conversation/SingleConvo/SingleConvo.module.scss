@@ -6,7 +6,6 @@
   justify-content: space-evenly;
   background-color: var(--tertiary-color);
   border-bottom: 2px solid var(--text-color); 
-
   > div{
     height: 70%;
   }
@@ -16,8 +15,8 @@
   @include flexbox;
   // justify-content: start;
   > div{
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     background-color: var(--text-color);
     overflow: hidden;
@@ -31,15 +30,15 @@
 .info{
   width: 65%;
   @include flexbox(column, space-between, start);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   > span:first-child{
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 }
 .others{
   width: 15%;
   @include flexbox(column, space-between);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   > div{
     width: 24px;
     height: 24px;
@@ -47,8 +46,8 @@
     background-color: none;
     @include flexbox;
     >img{
-      width: 120%;
-      height: 120%;
+      width: 110%;
+      height: 110%;
     }
   }
 }

@@ -8,7 +8,7 @@ import spiderGroupBig from '../../../Assets/spiderGroupBig.svg'
 import { makeGroup } from '../../../Redux/Group/groupActions'
 
 const ConversationHome = () => {
-  const {allFriends, allUsers} = useSelector(state=>state.homeReducer);
+  const {allFriends} = useSelector(state=>state.homeReducer);
   const dispatch = useDispatch();
 
   const [isVisible, setIsVisible] = useState(false);
@@ -34,7 +34,7 @@ const ConversationHome = () => {
         <span>Conversations</span>
       </div>
       <div className={styles.searchBar}>
-        <input onChange={handleChange} placeholder='Search for users..'/>
+        <input onChange={handleChange} placeholder='Search for users...'/>
         <div onClick={handleGroup} onMouseEnter={()=>{setIsVisible(true)}} onMouseLeave={()=>{setIsVisible(false)}}>
           <img src={spiderGroupBig} alt="Grp" />
         </div>

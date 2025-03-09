@@ -1,6 +1,6 @@
 .main{
   width: 100%;
-  height: 85px;
+  height: 75px;
   min-height: 80px;
   @include flexbox;
   justify-content: center;
@@ -11,8 +11,6 @@
   width: 6%;
   @include flexbox;
   justify-content: start;
-
-  
 
   >div{
     width: 50px;
@@ -31,6 +29,11 @@
 .info{
   @include flexbox(column, space-between, start);
   width: 74%;
+  height: 50%;
+  font-size: x-small;
+  >span:first-child{
+    font-size: medium;
+  }
 }
 .callBox{
   width: 10%;
@@ -46,5 +49,14 @@
     &:last-child{
       background-color: var(--nav-color);
     }
+  }
+}
+
+@media (max-width: $tablet) {
+  .pfp{
+    width: 12%;
+  }
+  .info{
+    width: 68%;
   }
 }

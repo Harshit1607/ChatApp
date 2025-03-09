@@ -1,17 +1,16 @@
-
-
 .main{
   width: 100vw;
   height: 100vh;
   @include flexbox(column, space-evenly, center);
   background-color: var(--tertiary-color);
-  overflow-y: hidden;
-  // position: relative;
- @media (max-width: $laptop) {
-  min-height: 160vh;
-  justify-content: center;
-  overflow-y: hidden;
- }
+  overflow: hidden;
+  
+  @media (max-width: $laptop) {
+    min-height: 160vh;
+    width: 100vw;
+    justify-content: center;
+    overflow: hidden;
+  }
 
   .preview{
     position: fixed;
@@ -43,7 +42,6 @@
     }
     .profile{
       .photo{
-        
         width: 65%;
         aspect-ratio: 1 / 1; // Ensures the height is equal to the width  
         height: 55%;
@@ -78,15 +76,12 @@
       }
       
     }
-    
-   
-  
     .userInfo{
       color: white;
       >div{
         width: 100%;
         @include flexbox(column, center, start);
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         >div{
           @include flexbox;
           justify-content: space-between;
@@ -95,7 +90,7 @@
           height: 100%;
           position: relative;
           >textarea{
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             width: 85%;
             background-color: transparent;
             scrollbar-width: none;
@@ -112,7 +107,7 @@
             color: white;
             height: fit-content;
             background-color: transparent;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             border: none;
             >img{
               width: 100%;
@@ -196,6 +191,7 @@
   }
   @media (max-width: $laptop) {
     .info{
+      max-width: 90%;
       @include flexbox(column, space-between, center);
       min-height: 80vh;
       >div{
@@ -246,6 +242,7 @@
     }
   }
     .themes{
+      max-width: 90%;
       min-height: 80vh;
       @include flexbox(column, space-around);
       .themeBox{
@@ -253,9 +250,12 @@
         width: 90%;
         .theme{
           background-image: none !important;
+          >div{
+            height: 100%;
+            width: 30%;
+          }
         }
       }
     }
   }
 }
-

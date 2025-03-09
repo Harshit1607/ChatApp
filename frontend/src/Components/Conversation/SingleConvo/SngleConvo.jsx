@@ -101,8 +101,6 @@ const SngleConvo = ({single}) => {
     }
 };
 
-
-
   return (
     <div className={styles.main} onClick={handleClick} >
       <div className={styles.pfp}>

@@ -97,8 +97,8 @@ const handleOptions = (e)=>{
             }
           </div>
       </div>
-      <div className={styles.chatOption} ref={chatOptionRef} style={{visibility: chatOptions ? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%"}}>
-        <button style={{visibility: user._id !== chat.message.sentBy[0] ? "" : "hidden"}}  onClick={()=>{dispatch(getLanguages(chat.message.message))
+      <div className={styles.chatOption} ref={chatOptionRef} style={{visibility: chatOptions ? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%", left: user._id === chat.message.sentBy[0] ? "-200px": "auto", right: user._id === chat.message.sentBy[0]? "auto": "-200px"}}>
+        <button style={{display: user._id !== chat.message.sentBy[0] ? "" : "none"}}  onClick={()=>{dispatch(getLanguages(chat.message.message))
                               setChatOptions(chatOptions ? null : chat._id)
         }}>Translate</button>
         <button onClick={()=>dispatch(deleteForMe(chat._id, user._id))}>Delete for me</button>
