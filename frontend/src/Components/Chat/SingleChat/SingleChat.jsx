@@ -32,24 +32,29 @@ const chatOptionRef = useRef(null);
 useEffect(() => {
   const handleClickOutside = (event) => {
     if (
-      viewDetailsRef.current && 
+      viewDetailsRef.current &&
       !viewDetailsRef.current.contains(event.target)
     ) {
-      setVisibleChatId(null); // Close the viewDetails div when clicking outside
-    }else if( chatOptionRef.current && 
-      !chatOptionRef.current.contains(event.target)){
-        setChatOptions(null)
-      }
+      setVisibleChatId(null); // Close viewDetails
+    }
+
+    if (
+      chatOptions !== null && // Only check when chatOptions is open
+      chatOptionRef.current &&
+      !chatOptionRef.current.contains(event.target)
+    ) {
+      setChatOptions(null); // Close chatOptions
+    }
   };
 
-  // Attach the event listener
-  window.addEventListener('click', handleClickOutside);
+  // Attach event listener
+  window.addEventListener("click", handleClickOutside);
 
-  // Cleanup the event listener on component unmount
+  // Cleanup event listener on unmount
   return () => {
-    window.removeEventListener('click', handleClickOutside);
+    window.removeEventListener("click", handleClickOutside);
   };
-}, [visible]);
+}, [chatOptions, visible]);
 
 const handleToggle = (e) => {
   e.stopPropagation();

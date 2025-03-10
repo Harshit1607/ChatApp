@@ -259,3 +259,11 @@
     }
   }
 }
+
+@media (max-width: $tablet) {
+  .profile{
+    .photo{
+      width: 35%;
+    }
+  }
+}

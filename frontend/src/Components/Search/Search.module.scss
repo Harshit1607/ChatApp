@@ -60,6 +60,7 @@
 @media (max-width: $tablet) {
   .main{
     width: 90%;
+    left: 5%;
     @include flexbox(column, start, start);
     flex-wrap: nowrap; 
   }

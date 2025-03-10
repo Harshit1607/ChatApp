@@ -28,7 +28,7 @@
   }
 }
 .info{
-  width: 65%;
+  width: 60%;
   @include flexbox(column, space-between, start);
   font-size: 0.75rem;
   > span:first-child{
@@ -36,7 +36,7 @@
   }
 }
 .others{
-  width: 15%;
+  width: 20%;
   @include flexbox(column, space-between);
   font-size: 0.75rem;
   > div{
