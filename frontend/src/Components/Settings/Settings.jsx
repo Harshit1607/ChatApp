@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { changePhoto, deletePhoto, logout, newAboutme } from '../../Redux/User/userActions';
 import { setTheme } from '../../Redux/Home/homeActions';
-import mm from '../../Assets/mm.png'
-import gw from '../../Assets/gwen.png'
-import og from '../../Assets/spidermansitting.png'
+import mm from '../../Assets/mmCursorBig.png'
+import gw from '../../Assets/gwcursorBig.png'
+import og from '../../Assets/ogcursorBig.png'
 import pencil from '../../Assets/pencil.svg'
 import done from '../../Assets/singleTickWhite.svg'
 
@@ -120,12 +120,12 @@ const Settings = () => {
               <div className={styles.themeBox} >
                 <div className={styles.theme} style={{
                   background: `url(${each.img})`,
-                  backgroundSize: "contain",
+                  backgroundSize: "none",
                   backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center"
+                  backgroundPosition: "center",
                 }} onClick={()=>setPreview(each.bc)}>
                   <div><button style={{background: each.bc}} onClick={()=>{
-                      if (theme !== each.name) {  // Only dispatch if current theme is different
+                      if (theme !== each.name) {  
                         dispatch(setTheme(each.name))
                       }
                       setPreview(null)

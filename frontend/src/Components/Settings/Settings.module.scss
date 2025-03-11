@@ -2,7 +2,7 @@
   width: 100vw;
   height: 100vh;
   @include flexbox(column, space-evenly, center);
-  background-color: var(--tertiary-color);
+  background-color: var(--primary-color);
   overflow: hidden;
   
   @media (max-width: $laptop) {
@@ -167,16 +167,14 @@
           width: 25%;
           border-radius: 10px;
           border-bottom-right-radius: 0;
-          background-color: var(--tertiary-color);
+          background-color: var(--primary-color);
           @include flexbox;
           >button{
-            
             width: 80%;
             aspect-ratio: 1 / 1; // Ensures the height is equal to the width
             border: none;
             border-radius: 50% ;
             background-color: var(--nav-color);
-
           }
         }
       }  

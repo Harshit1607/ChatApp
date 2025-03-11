@@ -46,9 +46,9 @@
 }
 
 html[data-theme="gw"] {
-  --primary-color: #F7F7F7;
+  --primary-color: #ff9dcc;
   --secondary-color: #dedddd;
-  --tertiary-color: #ff9dcc;
+  --tertiary-color: #f2f2f2;
   --nav-color: #fa68af;
   --text-color: #252523;
   --spider-red: #37f5f5;
