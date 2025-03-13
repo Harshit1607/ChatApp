@@ -45,11 +45,11 @@
   color: var(--text-color);
   gap: 11%;
   .heading{
-    font-size: 8rem;
+    font-size: 7rem;
     margin-bottom: -15px;
   }
   >span{
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     text-align:start;
     max-width: 90%;
   }
@@ -59,9 +59,9 @@
     gap: 05%;
     >button{
       box-shadow: 0 0 5px var(--primary-color);
-      width: 40%;
-      font-size: 1.5rem;
-      padding: 20px 0;
+      width: 35%;
+      font-size: 1.4rem;
+      padding: 18px 0;
       border: none;
       background-color: var(--spider-red);
       color: var(--text-color);
@@ -78,6 +78,75 @@
   }
 }
 
+@media (max-width: $laptop) {
+  .backimg{
+    width: 50%;
+    height: 60%;
+    top:20%;
+    left:25%;
+  }
+  .left{
+    .heading{
+      font-size: 6rem;
+    }
+    >span{
+      font-size: 1rem;
+    }
+  }
+  .submit{
+    >button{
+      width: 40%;
+      font-size: 1.3rem;
+    }
+  }
+}
 
+@media (max-width: $tablet) {
+  .backimg{
+    width: 54%;
+    height: 60%;
+    top:20%;
+    left:23%;
+  }
+  .left{
+    .heading{
+      font-size: 5rem;
+    }
+    >span{
+      font-size: 1rem;
+    }
+  }
+  .submit{
+    width: 70%;
+    >button{
+      width: 40%;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+@media (max-width: $mobile) {
+  .backimg{
+    width: 60%;
+    height: 60%;
+    top:20%;
+    left:20%;
+  }
+  .left{
+    .heading{
+      font-size: 4.5rem;
+    }
+    >span{
+      font-size: 0.9rem;
+    }
+  }
+  .submit{
+    width: 80%;
+    >button{
+      width: 40%;
+      font-size: 1.2rem;
+    }
+  }
+}
 
 

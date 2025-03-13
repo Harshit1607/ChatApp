@@ -3,7 +3,7 @@
   height: 100vh;
   @include flexbox;
   justify-content: end;
-  background-color: var(--tertiary-color);
+  background-color: var(--primary-color);
   position: relative;
   @media (max-width: $tablet) {
     justify-content: center;

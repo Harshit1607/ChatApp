@@ -60,10 +60,10 @@ const Settings = () => {
     }
   };
 
-  const handleLogout = ()=>{
-    navigate('/');
+  const handleLogout = () => {
     dispatch(logout());
-  }
+    navigate('/');
+  };
 
   const handleNewAbout = (e)=>{
     const text = e.target.value;
@@ -123,12 +123,16 @@ const Settings = () => {
                   backgroundSize: "none",
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
-                }} onClick={()=>setPreview(each.bc)}>
-                  <div><button style={{background: each.bc}} onClick={()=>{
+                }} onClick={() => {
+                    setPreview(each.bc);
+                }}>
+                  <div><button style={{background: each.bc}} onClick={(e)=>{
+                    e.stopPropagation()
                       if (theme !== each.name) {  
                         dispatch(setTheme(each.name))
                       }
                       setPreview(null)
+                      
                     }}></button></div>
                 </div>
                 <span>{each.spiderman}</span>

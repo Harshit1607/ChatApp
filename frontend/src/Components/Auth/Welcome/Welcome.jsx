@@ -22,10 +22,11 @@ const Welcome = () => {
       <div className={styles.authContainer} >
         <div className={styles.left}>
           <span className={styles.heading}>Welcome!</span>
-          <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mauris diam, suscipit sed erat in, luctus eleifend dolor. Aenean eu purus
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mauris diam, suscipit sed erat in, luctus eleifend dolor. Aenean eu purus
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mauris diam, suscipit sed erat in, luctus eleifend dolor. Aenean eu purus
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam mauris diam, suscipit sed erat in, luctus eleifend dolor. Aenean eu purus
+          <span>Swing into action with our Spider-Man themed chat app! 🕸️ Experience the ultimate web-slinging adventure with three dynamic 
+            themes—OG Spider-Man, Miles Morales, and Spider-Gwen—while enjoying all the essential chat features, including personal chats, 
+            group conversations, and voice & video calls. Whether you're catching up with friends or making new connections, this app brings 
+            the thrill of the Spider-Verse to your fingertips. We hope you love it! If you have any feedback or suggestions, feel free to reach
+             out at hbareja.07@gmail.com. Now go on, web-head—start swinging! 🕷️💬
           </span>
           <div className={styles.submit}>
             <button onClick={()=>navigate('/signup')}>Signup</button>

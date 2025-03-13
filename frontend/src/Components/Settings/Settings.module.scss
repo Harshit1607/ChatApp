@@ -175,6 +175,7 @@
             border: none;
             border-radius: 50% ;
             background-color: var(--nav-color);
+            
           }
         }
       }  
@@ -259,6 +260,9 @@
 }
 
 @media (max-width: $tablet) {
+  .preview{
+    width: 80%;
+  }
   .profile{
     .photo{
       width: 35%;

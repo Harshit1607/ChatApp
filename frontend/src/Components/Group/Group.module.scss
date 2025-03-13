@@ -115,5 +115,15 @@
       max-height: 20%;
     }
   }
+  .name{
+    >input{
+      width: 80%;
+    }
+  }
+  .make{
+    >button{
+      width: 50%;
+    }
+  }
   
 }
