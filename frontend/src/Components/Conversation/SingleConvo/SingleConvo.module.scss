@@ -4,8 +4,8 @@
   min-height: 75px;
   @include flexbox;
   justify-content: space-evenly;
-  background-color: var(--tertiary-color);
-  border-bottom: 2px solid var(--text-color); 
+  background-color: var(--primary-color);
+  border-bottom: 2px solid var(--input-color); 
   > div{
     height: 70%;
   }

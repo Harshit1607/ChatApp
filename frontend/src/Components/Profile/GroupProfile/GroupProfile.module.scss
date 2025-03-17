@@ -4,6 +4,7 @@
   @include flexbox;
   background-color: var(--primary-color);
   position: relative;
+  overflow: hidden;
 
   .mainImg{
     width: 80%;
@@ -257,15 +258,17 @@
   @media (max-width: $tablet) {
     min-height: 200vh;
     @include flexbox(column);
+    overflow: hidden;
     .left{
-      background-color: var(--tertiary-color);
+      background-color: var(--primary-color);
       width: 100%;
       min-height: 100vh;
       .info{
         .profile{
-          width: 80%;
+          width: 60%;
         }
         .description{
+          background-color: var(--secondary-color);
           .descButton{
             width: 30%;
           }
@@ -282,6 +285,7 @@
     }
     .right{
       width: 100%;
+      
       min-height: 100vh;
       .members{
         >div{

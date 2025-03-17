@@ -1,5 +1,5 @@
 .main{
-  background-color: var(--tertiary-color);
+  background-color: var(--primary-color);
   width: 25%;
   height: 100%;
   @include flexbox(column, start, center);
@@ -42,7 +42,7 @@
     border-radius: 10px;
     padding:  0 10px;
     font-size: 1rem;
-    background-color: var(--text-color);
+    background-color: var(--input-color);
     color: var(--primary-color);
     &:focus{
       outline: none;

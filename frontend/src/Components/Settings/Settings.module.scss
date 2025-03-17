@@ -180,10 +180,11 @@
         }
       }  
       >span{
-        color: white;
+        color: var(--text-color);
+        opacity: 0.8;
         &:last-child{
           font-size: 0.8rem;
-          color: var(--text-color);
+          opacity: 1;
         }
       }
     }
@@ -248,7 +249,8 @@
         height: 30%;
         width: 90%;
         .theme{
-          background-image: none !important;
+          background-size: 25% !important;
+          background-position: 35% !important;
           >div{
             height: 100%;
             width: 30%;
