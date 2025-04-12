@@ -6,7 +6,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 dotenv.config();
 
-const serviceAccount = process.env.SERVICE_ACCOUNT;
+const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
 
 // Singleton pattern for Firebase initialization
 let firebaseApp;
