@@ -1,6 +1,8 @@
 import User from '../models/user.js'
 import Group from '../models/groups.js'
 import Chat from '../models/chats.js'
+import {getBucket} from '../config/firebaseAdmin.js';
+import { v4 as uuidv4 } from "uuid";
 
 export const sendAll = async (req, res)=>{
   try {
@@ -35,34 +37,74 @@ export const sendBySearch = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   const { id } = req.body;
+  console.log("Requested ID:", id);
 
   try {
-    let profile;
-    // Check User collection
+    let profileOwner = null;     // Either a User or Group document
+    let profileType = null;      // "user" or "group"
+
+    // Check if it's a User
     const user = await User.findById(id);
     if (user && user.profile) {
-      console.log(profile)
-      profile = user.profile;
+      profileOwner = user;
+      profileType = "user";
     }
 
-    // Check Group collection if no user profile found
-    if (!profile) {
+    // If not a User, check if it's a Group
+    if (!profileOwner) {
       const group = await Group.findById(id);
       if (group && group.profile) {
-        profile = group.profile;
+        profileOwner = group;
+        profileType = "group";
       }
     }
-    // Respond with the profile or a 404 if not found
-    if (profile) {
-      return res.status(200).json(profile);
-    } else {
+
+    if (!profileOwner) {
       return res.status(404).json({ error: "Profile not found" });
     }
+
+    const { profile, mediaExpiresAt } = profileOwner;
+
+    if (!profile) {
+      return res.status(404).json({ error: "Profile image not set" });
+    }
+
+    const bucket = await getBucket();
+    if (!bucket) return res.status(500).json({ error: "Storage bucket unavailable" });
+
+    const currentTime = Date.now();
+    const expirationTime = new Date(mediaExpiresAt).getTime();
+
+    // If expired or about to expire
+    if (expirationTime < currentTime) {
+      console.log("Profile signed URL expired. Regenerating...");
+
+      const file = bucket.file(`profile_images/${profile}`); // profile = filename
+      const newExpiresAt = Date.now() + 365 * 24 * 60 * 60 * 1000; // 1 year
+
+      const [newUrl] = await file.getSignedUrl({
+        action: 'read',
+        expires: newExpiresAt
+      });
+
+      // Update profile URL and expiration
+      profileOwner.profile = newUrl;
+      profileOwner.mediaExpiresAt = new Date(newExpiresAt);
+      await profileOwner.save();
+
+      return res.status(200).json(newUrl);
+    }
+
+    // If not expired, return existing signed URL
+    return res.status(200).json({ url: profile });
+
   } catch (error) {
-    console.error(error);
+    console.error("Error in getProfile:", error);
     res.status(500).json({ error: "Failed to get profile" });
   }
 };
+
+
 
 export const findUser = async (id)=>{
   const newUser = await User.findById(id);

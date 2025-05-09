@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
   password: {type: String, required: true},
   about: {type: String, default: "I Love Spiderman", maxlength: 50},
   profile: {type: String,},
-  Groups: {type: [mongoose.Schema.Types.ObjectId], ref: 'Group', default: []}
+  Groups: {type: [mongoose.Schema.Types.ObjectId], ref: 'Group', default: []},
+  mediaExpiresAt: { type: Date },
 }, { timestamps: true })
 
 export default  mongoose.model('User', userSchema);

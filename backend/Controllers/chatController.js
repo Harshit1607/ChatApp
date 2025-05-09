@@ -4,57 +4,99 @@ import { getIo } from '../Socket/socket.js';
 import { getBucket } from '../config/firebaseAdmin.js';
 import { v4 as uuidv4 } from "uuid";
 
-export const getChats = async (req,res)=>{
-  const {group, user} = req.body;
+// Function to get chats and regenerate expired media URLs
+export const getChats = async (req, res) => {
+  const { group, user } = req.body;
+
   try {
+    // Mark messages as viewed by user
     await Chat.updateMany(
-      { Group: group._id }, // Match the group
-      { $addToSet: { 'message.viewedBy': user._id } } // Add user to `viewedBy` only if not already present
+      { Group: group._id },
+      { $addToSet: { 'message.viewedBy': user._id } }
     );
-    const chats = await Chat.find({Group: group._id}).sort({ createdAt: -1 });
-    res.status(200).json({chats});
+
+    const chats = await Chat.find({ Group: group._id }).sort({ createdAt: -1 });
+
+    const bucket = await getBucket();
+    if (!bucket) {
+      return res.status(500).json({ error: "Storage system unavailable" });
+    }
+
+    for (let chat of chats) {
+      if (chat.isMedia && chat.message.message && chat.mediaExpiresAt) {
+        const now = Date.now();
+        const expiresAt = new Date(chat.mediaExpiresAt).getTime();
+
+        if (expiresAt < now) {
+          console.log("Signed URL expired, regenerating...");
+
+          // Extract filename from the URL stored in message.message
+          const url = new URL(chat.message.message);
+          const filename = decodeURIComponent(url.pathname.split('/').slice(-1)[0]);
+
+          const file = bucket.file(`chat_images/${filename}`);
+
+          const newExpiration = Date.now() + 365 * 24 * 60 * 60 * 1000;
+          const [newUrl] = await file.getSignedUrl({
+            action: 'read',
+            expires: newExpiration
+          });
+
+          // Update both message.message (mediaUrl) and expiration
+          chat.message.message = newUrl;
+          chat.mediaExpiresAt = new Date(newExpiration);
+          await chat.save();
+        }
+      }
+    }
+
+    res.status(200).json({ chats });
+
   } catch (error) {
-    console.log(error)
-    res.status(500).json({error: "Unable to load chats"});
+    console.error("Error fetching chats:", error);
+    res.status(500).json({ error: "Unable to load chats" });
   }
-}
+};
 
-const mediaChat = async (image, userId)=>{
-  // Get Firebase bucket
-  const bucket = await getBucket();
-  if (!bucket) {
-    throw new Error("Storage system not available");
+const mediaChat = async (image, userId) => {
+  try {
+    const bucket = await getBucket();
+    if (!bucket) throw new Error("Storage unavailable");
+
+    if (!image.startsWith('data:image')) throw new Error("Invalid image format");
+
+    const base64Data = image.split(';base64,').pop();
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    const filename = `${userId}-${uuidv4()}.png`;
+    const file = bucket.file(`chat_images/${filename}`);
+
+    await file.save(buffer, {
+      metadata: {
+        contentType: 'image/png',
+        cacheControl: 'public, max-age=31536000'
+      },
+      resumable: false
+    });
+
+    const expiresAt = Date.now() + 365 * 24 * 60 * 60 * 1000;
+    const [url] = await file.getSignedUrl({
+      action: 'read',
+      expires: expiresAt
+    });
+
+    // Return data in format compatible with your schema
+    return {
+      message: url, // Will be stored in message.message
+      mediaExpiresAt: new Date(expiresAt)
+    };
+
+  } catch (error) {
+    console.error("Media chat upload error:", error);
+    throw new Error("Failed to upload media chat");
   }
+};
 
-  // Validate image data
-  if (!image.startsWith('data:image')) {
-    throw new Error("Invalid image format");
-  }
-
-  // Extract base64 data
-  const base64Data = image.split(';base64,').pop();
-  const buffer = Buffer.from(base64Data, 'base64');
-
-  // Generate unique filename
-  const filename = `profile_images/${userId}-${uuidv4()}.png`;
-  const file = bucket.file(filename);
-
-  // Upload new image
-  await file.save(buffer, {
-    metadata: {
-      contentType: 'image/png',
-      cacheControl: 'public, max-age=31536000' // Cache for 1 year
-    },
-    resumable: false
-  });
-
-  // Generate signed URL with longer expiration
-  const [url] = await file.getSignedUrl({
-    action: 'read',
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
-  });
-  return url;
-}
 
 export const newChat = async (req, res) => {
   const { text, user, group, isMedia } = req.body;

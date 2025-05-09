@@ -87,7 +87,7 @@ const ChatNav = () => {
         <div className={styles.info}>
           <span>{name}</span>
           { groupChat.isGroup?
-            <span>{groupChat.UserDetails.map(each=>each.name).join(" ").substring(0,30)}</span>
+            <span>{groupChat.UserDetails.filter(user => groupChat.Users.includes(user._id.toString())).map(each=>each.name).join(" ").substring(0,30)}</span>
             :<span>{status==="online"? status : lastSeen ? `lastSeen: ${lastSeen}`: ""}</span>
           }
         </div>

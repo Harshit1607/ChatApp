@@ -144,7 +144,7 @@ const GroupProfile = () => {
             <span>{groupChat.Users.length} Members</span>
           </div>
           <div>
-            {groupChat.UserDetails.map((each, index)=>{
+            {groupChat.UserDetails.filter(user => groupChat.Users.includes(user._id.toString())).map((each, index)=>{
                 return(
                   <div className={styles.memberInfo} key={index}>
                     <div>

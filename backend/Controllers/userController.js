@@ -122,7 +122,7 @@ export const changePhoto = async (req, res) => {
       return res.status(400).json({ error: "User ID is required" });
     }
 
-    // Find user first to verify existence
+    // Find user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -135,46 +135,49 @@ export const changePhoto = async (req, res) => {
     }
 
     // Validate image data
-    if (!image.startsWith('data:image')) {
+    if (!image.startsWith("data:image")) {
       return res.status(400).json({ error: "Invalid image format" });
     }
 
-    // Extract base64 data
-    const base64Data = image.split(';base64,').pop();
-    const buffer = Buffer.from(base64Data, 'base64');
+    // Extract base64 data and convert to buffer
+    const base64Data = image.split(";base64,").pop();
+    const buffer = Buffer.from(base64Data, "base64");
 
-    // Generate unique filename
+    // Unique filename
     const filename = `profile_images/${userId}-${uuidv4()}.png`;
     const file = bucket.file(filename);
 
-    // Upload new image
+    // Upload image to Firebase Storage
     await file.save(buffer, {
       metadata: {
-        contentType: 'image/png',
-        cacheControl: 'public, max-age=31536000' // Cache for 1 year
+        contentType: "image/png",
+        cacheControl: "public, max-age=31536000", // 1 year
       },
-      resumable: false
+      resumable: false,
     });
 
-    // Generate signed URL with longer expiration
+    // Signed URL expires in 7 days
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
     const [url] = await file.getSignedUrl({
-      action: 'read',
-      expires: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
+      action: "read",
+      expires: expiresAt,
     });
 
-    // Delete old profile photo if exists
+    // Delete old profile image if present
     if (user.profile) {
       await deleteOldProfilePhoto(bucket, user.profile);
     }
 
-    // Update user profile in database
+    // Update user document
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { 
-        $set: { 
+      {
+        $set: {
           profile: url,
-          profileUpdatedAt: new Date()
-        } 
+          profileUpdatedAt: new Date(),
+          mediaExpiresAt: expiresAt,
+        },
       },
       { new: true, runValidators: true }
     );
@@ -182,24 +185,23 @@ export const changePhoto = async (req, res) => {
     res.status(200).json({
       message: "Profile photo updated successfully",
       user: updatedUser,
-      imageUrl: url
+      imageUrl: url,
     });
-
   } catch (error) {
     console.error("Profile photo update error:", {
       message: error.message,
       code: error.code,
-      stack: error.stack
+      stack: error.stack,
     });
 
-    // Return appropriate error message based on error type
-    const errorMessage = error.code === 'LIMIT_FILE_SIZE' 
-      ? "Image file is too large" 
-      : "Failed to update profile photo";
+    const errorMessage =
+      error.code === "LIMIT_FILE_SIZE"
+        ? "Image file is too large"
+        : "Failed to update profile photo";
 
     res.status(500).json({
       error: errorMessage,
-      details: error.message
+      details: error.message,
     });
   }
 };
@@ -208,61 +210,58 @@ export const deletePhoto = async (req, res) => {
   try {
     const { user: userId } = req.body;
 
-    // Input validation
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
     }
 
-    // Find user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if user has a profile photo
     if (!user.profile) {
       return res.status(400).json({ error: "No profile photo to delete" });
     }
 
-    // Get Firebase bucket
     const bucket = await getBucket();
     if (!bucket) {
       return res.status(500).json({ error: "Storage system not available" });
     }
 
-    // Delete photo from storage
+    // Delete image from Firebase
     await deleteOldProfilePhoto(bucket, user.profile);
 
-    // Update user in database
+    // Update user profile
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { 
-        $set: { 
+      {
+        $set: {
           profile: "",
-          profileUpdatedAt: new Date()
-        } 
+          profileUpdatedAt: new Date(),
+          mediaExpiresAt: null,
+        },
       },
       { new: true }
     );
 
     res.status(200).json({
       message: "Profile photo deleted successfully",
-      user: updatedUser
+      user: updatedUser,
     });
-
   } catch (error) {
     console.error("Profile photo deletion error:", {
       message: error.message,
       code: error.code,
-      stack: error.stack
+      stack: error.stack,
     });
 
     res.status(500).json({
       error: "Failed to delete profile photo",
-      details: error.message
+      details: error.message,
     });
   }
 };
+
 
 
 export const setAbout = async (req, res)=>{

@@ -10,7 +10,8 @@ const chatSchema = new mongoose.Schema({
   message: { type: messageSchema, required: true },
   Users: {type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: []},
   Group: {type: [mongoose.Schema.Types.ObjectId], ref: 'Group'},
-  isMedia: {type: Boolean, default: false}
+  isMedia: {type: Boolean, default: false},
+  mediaExpiresAt: { type: Date },
 }, { timestamps: true })
 
 export default  mongoose.model('Chat', chatSchema);

@@ -109,54 +109,50 @@ export const changeGroupPhoto = async (req, res) => {
     }
 
     let groupChat = await Group.findById(group);
+    if (!groupChat) {
+      return res.status(404).json({ error: "Group not found" });
+    }
 
-    // Get Firebase bucket
     const bucket = await getBucket();
     if (!bucket) {
       return res.status(500).json({ error: "Storage system not available" });
     }
 
-    // Validate image data
     if (!image.startsWith('data:image')) {
       return res.status(400).json({ error: "Invalid image format" });
     }
 
-    // Extract base64 data
     const base64Data = image.split(';base64,').pop();
     const buffer = Buffer.from(base64Data, 'base64');
-
-    // Generate unique filename
     const filename = `profile_images/${group}-${uuidv4()}.png`;
     const file = bucket.file(filename);
 
-    // Upload new image
     await file.save(buffer, {
       metadata: {
         contentType: 'image/png',
-        cacheControl: 'public, max-age=31536000' // Cache for 1 year
+        cacheControl: 'public, max-age=31536000'
       },
       resumable: false
     });
 
-    // Generate signed URL with longer expiration
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
     const [url] = await file.getSignedUrl({
       action: 'read',
-      expires: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
+      expires: expiresAt
     });
 
-    // Delete old profile photo if exists
     if (groupChat.profile) {
       await deleteOldProfilePhoto(bucket, groupChat.profile);
     }
 
-    // Update user profile in database
     groupChat = await Group.findByIdAndUpdate(
       group,
-      { 
-        $set: { 
+      {
+        $set: {
           profile: url,
+          mediaExpiresAt: expiresAt,
           profileUpdatedAt: new Date()
-        } 
+        }
       },
       { new: true, runValidators: true }
     );
@@ -168,50 +164,50 @@ export const changeGroupPhoto = async (req, res) => {
   }
 };
 
-export const deleteGroupPhoto = async (req, res)=>{
-  const {group} = req.body;
+
+export const deleteGroupPhoto = async (req, res) => {
+  const { group } = req.body;
+
   try {
     if (!group) {
       return res.status(400).json({ error: "Group id is required" });
     }
 
-    // Find user
     let groupChat = await Group.findById(group);
     if (!groupChat) {
       return res.status(404).json({ error: "Group not found" });
     }
 
-    // Check if user has a profile photo
     if (!groupChat.profile) {
       return res.status(400).json({ error: "No profile photo to delete" });
     }
 
-    // Get Firebase bucket
     const bucket = await getBucket();
     if (!bucket) {
       return res.status(500).json({ error: "Storage system not available" });
     }
 
-    // Delete photo from storage
     await deleteOldProfilePhoto(bucket, groupChat.profile);
 
-    // Update user in database
     groupChat = await Group.findByIdAndUpdate(
       group,
-      { 
-        $set: { 
+      {
+        $set: {
           profile: "",
+          mediaExpiresAt: null,
           profileUpdatedAt: new Date()
-        } 
+        }
       },
       { new: true }
     );
+
     res.status(200).json({ groupChat });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to update photo' });
+    res.status(500).json({ error: 'Failed to delete photo' });
   }
-}
+};
+
 
 export const leaveGroup = async (req, res) =>{
   const {user, group, newUser} = req.body;
@@ -232,9 +228,8 @@ export const leaveGroup = async (req, res) =>{
       await Group.deleteOne({_id: group})
       return res.status(200).json({ groupChat: null  });
     }
-    groupChat.UserDetails = groupChat.UserDetails.filter(userDetails => {
-      return userDetails._id.toString() !== id; // Ensure both _id and user are ObjectIds or strings
-    });
+
+    
     const users = groupChat.Users;
     const userDetails = groupChat.UserDetails;
 

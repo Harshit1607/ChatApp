@@ -8,6 +8,7 @@ const groupSchema = new mongoose.Schema({
   UserDetails:{type: Object, default:[]},
   profile: {type: String},
   description: {type: String, maxlength: 200},
+  mediaExpiresAt: { type: Date },
 }, { timestamps: true })
 
 export default  mongoose.model('Group', groupSchema);
