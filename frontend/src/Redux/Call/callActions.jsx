@@ -263,7 +263,8 @@ export const handleReject = (sender, dispatch) => {
   dispatch(clearOffer());
 };
 
-export const handleStopVideo = (localVideoRef, sender, groupChat, user)=>{
+export const handleStopVideo = (localVideoRef, sender, groupChat, user) => {
+  if (localVideoRef.current && localVideoRef.current.srcObject) {  // Check if localVideoRef is valid
     const stream = localVideoRef.current.srcObject; // Access the local media stream
     const videoTrack = stream.getVideoTracks()[0]; // Get the video track of the stream
 
@@ -272,12 +273,12 @@ export const handleStopVideo = (localVideoRef, sender, groupChat, user)=>{
       videoTrack.enabled = isStopped; // Stop/Start the video track
 
       // Notify the receiver about the video state
-      if(sender){
+      if (sender) {
         socket.emit('videoStop', {
           recipient: sender.id,
           isStopped: isStopped, // True if stopped, false if started
         });
-      }else{
+      } else {
         const recipient = groupChat.Users.find((each) => each !== user._id);
         socket.emit('videoStop', {
           recipient,
@@ -285,7 +286,11 @@ export const handleStopVideo = (localVideoRef, sender, groupChat, user)=>{
         });
       }
     }
-  };
+  } else {
+    console.error('Local video ref or stream is not available.');
+  }
+};
+
   
  export const handleMuteAudio = (localVideoRef, sender, groupChat, user)=>{
     const stream = localVideoRef.current.srcObject; // Access the local media stream
