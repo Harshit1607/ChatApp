@@ -74,5 +74,8 @@
 @media (max-width: $tablet) {
   .main{
     width: 90%;
+    height: 90%;
+    top: 5% !important;
+    left: 5% !important;
   }
 }

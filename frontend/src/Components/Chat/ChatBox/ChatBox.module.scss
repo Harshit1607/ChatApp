@@ -147,8 +147,11 @@
 
 
 @media (max-width: $tablet) {
-  .translationBox, .translatedBox{
-    width: 80%;
-    height: 50%;
+  .main {
+    .translationBox, .translatedBox {
+      width: 80%;
+      height: 50%;
+      left: 10%;
+    }
   }
 }

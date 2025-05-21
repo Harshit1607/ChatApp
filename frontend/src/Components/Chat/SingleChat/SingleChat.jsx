@@ -86,7 +86,7 @@ const handleOptions = (e)=>{
             {
               chat.message.viewedBy.filter(each=>each !== user._id).map(each=>{
                 return(
-                  <span>{groupChat.UserDetails.find(e => e._id === each).name}</span>
+                  <span key={each}>{groupChat.UserDetails.find(e => e._id === each).name}</span>
                 )
                 })
             }
@@ -96,7 +96,7 @@ const handleOptions = (e)=>{
             {
               chat.Users.filter(each=> !chat.message.viewedBy.includes(each)).map(each=>{ 
                 return(
-                  <span>{groupChat.UserDetails.find(e => e._id === each).name}</span>
+                  <span key={each}>{groupChat.UserDetails.find(e => e._id === each).name}</span>
                 )
                 })
             }
