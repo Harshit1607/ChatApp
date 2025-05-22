@@ -13,7 +13,6 @@ import Settings from './Settings/Settings';
 import GroupProfile from './Profile/GroupProfile/GroupProfile';
 import UserProfile from './Profile/UserProfile/UserProfile';
 import GroupCall from './GroupCall/GroupCall';
-import { DailyProvider,} from '@daily-co/daily-react';
 import mm from '../Assets/mmCursor.png';
 import og from '../Assets/ogcursor.png';
 import gw from '../Assets/gwcursor.png';
@@ -65,9 +64,7 @@ function App() {
         <Route path='/userProfile' element={<UserProfile />}/>
       </Routes>
       <Call />
-      <DailyProvider>
-        <GroupCall />
-      </DailyProvider>
+      <GroupCall />
       
     </div>
   );

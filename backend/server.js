@@ -13,7 +13,7 @@ import { chatSocket } from './Socket/chatSocket.js';
 import { groupSocket } from './Socket/groupSocket.js';
 import { redisClient } from './redis.js'; // Import the Redis client
 import { webrtcSocket } from './Socket/webrtcSocket.js';
-import { dailycoSocket } from './Socket/dailycoSocket.js';
+import { hmsVideoSocket } from './Socket/dailycoSocket.js';
 
 
 dotenv.config();
@@ -46,7 +46,7 @@ const { server, io } = initSocketServer(app, corsOptions);
 groupSocket(io);
 chatSocket(io);
 webrtcSocket(io);
-dailycoSocket(io);
+hmsVideoSocket(io);
 
 // Export the server for listening later
 export { server, io };
