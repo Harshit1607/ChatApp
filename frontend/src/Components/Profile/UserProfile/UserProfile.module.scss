@@ -1,166 +1,159 @@
-.main{
-  width: 100vw;
-  height: 100vh;
+.main {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
   @include flexbox;
-  justify-content: end;
-  background-color: var(--primary-color);
-  position: relative;
-  @media (max-width: $tablet) {
-    justify-content: center;
-  }
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+}
 
-  .cut{
-    top: 20px;
-    right: 20px;
-    position: fixed;
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.content {
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  background: var(--nav-bg);
+  @include glass;
+  border-radius: 40px;
+  overflow-y: auto;
+  padding: 3rem;
+  box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  
+  &::-webkit-scrollbar { width: 0; }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  &:hover { background: rgba(255, 255, 255, 0.1); color: #e23636; }
+}
+
+.profileHero {
+  @include flexbox(column);
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 40px;
+  object-fit: cover;
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 10px 30px rgba(var(--primary-color), 0.3);
+}
+
+.avatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 40px;
+  background: var(--bg-color);
+  @include flexbox;
+  color: var(--text-secondary);
+  border: 4px dashed rgba(255, 255, 255, 0.1);
+}
+
+.statusBadge {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 30px;
+  height: 30px;
+  background: #44ff44;
+  border: 5px solid var(--nav-bg);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(68, 255, 68, 0.5);
+}
+
+.name { font-size: 2.2rem; font-weight: 900; color: white; margin: 0; letter-spacing: -1px; }
+.about { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.6; max-width: 300px; }
+
+.actionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.actionItem {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 20px;
+  border-radius: 20px;
+  @include flexbox(column);
+  gap: 10px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  
+  span { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  svg { color: var(--primary-color); }
+}
+
+.detailsSection {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  .detailItem {
+    .label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 1px; font-weight: 700; }
+    .value { font-size: 1.1rem; color: white; margin: 5px 0 0; font-weight: 600; }
   }
-  .topLeft{
-    position: fixed;
-    width: 40%;
-    height: 70%;
-    clip-path: polygon(0 0, 0% 100%, 80% 0);
-    background-color: var(--spider-red);
-    opacity: 0.75;
-    top: 0;
-    left: 0;
+}
+
+.mediaSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  
+  .sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .left { display: flex; align-items: center; gap: 10px; svg { color: var(--primary-color); } h3 { font-size: 1.2rem; margin: 0; } }
+    .count { font-size: 0.85rem; color: var(--text-secondary); font-weight: 700; }
   }
-  .bottomLeft{
-    position: fixed;
-    width: 40%;
-    height: 60%;
-    clip-path: polygon(0 0, 0% 100%, 50% 100%);
-    background-color: var(--spider-red);
-    opacity: 0.75;
-    bottom: 0;
-    left: 0;
-  }
-  .right{
-    width: 70%;
-    height: 100%;
-    @include flexbox(column);
-    gap: 5%;
-    .mainInfo{
-      height: 30%;
-      width: 40%;
-      font-size: 1.6rem;
-      @include flexbox(column, space-between);
-      .profile{
-        width: 80%;
-        height: 75%;
-        @include flexbox;
-        >div{
-          height: 100%;
-          border-radius: 50%;
-          aspect-ratio: 1/1;
-          background-color: #fff;
-          border-radius: 50%;
-          overflow: hidden;
-          >img{
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        }
-        
-      }
-      >span{
-        font-weight: bold;
-        &:last-child{
-          font-weight: normal;
-          font-size: 1rem;
-        }
-      }
-    }
-    .extraInfo{
-      width: 100%;
-      height: 10%;
-      @include flexbox(row, space-between);
-      >div{
-        width: 30%;
-        height: 100%;
-        @include flexbox(column, space-evenly, start);
-        gap: 10%;
-        >span{
-          &:first-child{
-            font-size: 1.4rem;
-            font-weight: bold;
-          }
-        }
-        &:last-child{
-          width: 20%;
-          @include flexbox(row, start);
-          >div{
-            background-color: var(--spider-red);
-            height: 50%;
-            @include flexbox;
-            border-radius: 10px;
-            aspect-ratio: 1/1;
-          }
-        }
-      }
-    }
-    .media{
-      width: 100%;
-      height: 25%;
-      @include flexbox(column);
-      align-items: start;
-      gap: 5%;
-      >span{
-        font-size: 1.4rem;
-      }
-      img{
-        width: 200px;
-        height: 200px;
-        object-fit: cover;
-      }
-    }
-  }
-  @media (max-width: $laptop) {
-    .topLeft{
-      
-      width: 60%;
-    }
-    .bottomLeft{
-      width: 60%;
-    }
-  }
-  @media (max-width: $tablet) {
-    .topLeft{
-      clip-path: polygon(90% 0, 0 40%, 0 0);
-      width: 80%;
-    }
-    .bottomLeft{
-      clip-path: polygon(100% 40%, 100% 0, 25% 0);
-      width: 80%;
-      right: 0;
-      top:0;
-      left:20%;
-    }
-    .right{
-      width: 90%;
-    }
-  }
-  @media (max-width: $mobile){
-    .right{
-      gap: 10px;
-      .mainInfo{
-        height: 30%;
-      }
-      .extraInfo{
-        height: 15%;
-        width: 40%;
-        @include flexbox(column-reverse);
-        >div{
-          width: 100%;
-          height: 40%;
-          @include flexbox(column);
-          &:last-child{
-            height: 60%;
-            width: 100%;
-            @include flexbox(row, space-around);
-          }
-        }
-      }
-    }
-  }
+}
+
+.mediaGrid {
+  border-radius: 24px;
+  overflow: hidden;
+  height: 200px;
+}
+
+.mediaImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.emptyMedia {
+  width: 100%;
+  height: 100%;
+  @include flexbox;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+  opacity: 0.5;
 }

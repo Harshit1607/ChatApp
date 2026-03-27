@@ -1,89 +1,120 @@
-import React, {useState, useEffect} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import styles from './Signup.module.scss'
-import { signup } from '../../../Redux/User/userActions'
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import spider from '../../../Assets/spiderMan1.png'
-import spiderSmall from '../../../Assets/spiderCursor.png'
+import { signup } from '../../../Redux/User/userActions'
+import styles from './Signup.module.scss'
 
 const Signup = () => {
-  const {user} = useSelector(state=>state.userReducer);
-  const dispatch = useDispatch();
-  const navigate = useNavigate()
+    const { user } = useSelector(state => state.userReducer);
+    const [formData, setFormData] = useState({ 
+        name: "", email: "", password: "", phone: "", about: "Hey there! I am using SpideyChat." 
+    })
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(user){
-      navigate('/home');
+    useEffect(() => {
+        if (user) navigate('/home');
+    }, [user]);
+
+    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    const handleSignup = (e) => {
+        e.preventDefault();
+        dispatch(signup(formData));
     }
-  },[user])
 
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [name, setName] = useState("");
-  const [pass, setPass] = useState("");
+    return (
+        <div className={styles.main}>
+            <div className={styles.spiderPattern} />
+            
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                className={styles.authContainer}
+            >
+                <div className={styles.left}>
+                    <motion.h2 
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        Join the Web!
+                    </motion.h2>
+                    <p>Every spider needs a team. Create your profile and start swinging through the multiverse.</p>
+                    <div className={styles.floatingIcon}>🕷️</div>
+                </div>
 
-  const handleEmail = (e) => {
-    const text = e.target.value;
-    setEmail(text);
-  };
+                <div className={styles.right}>
+                    <div className={styles.heading}>
+                        <h3>Signup</h3>
+                        <p>Already a wall-crawler? <span className={styles.link} onClick={() => navigate('/login')}>Login</span></p>
+                    </div>
 
-  const handleName = (e) => {
-    const text = e.target.value;
-    setName(text);
-  };
-
-  const handlePass = (e) => {
-    const text = e.target.value;
-    setPass(text);
-  };
-
-  const handlePhone = (e) => {
-    const text = e.target.value;
-    setPhone(text);
-  };
-
-  const handleContinue = () => {
-    const regex = /^$/;
-    if (regex.test(email) || regex.test(name) || regex.test(phone) || regex.test(pass)) {
-      alert("Enter valid details");
-      return;
-    }
-    dispatch(signup(name, email, phone, pass));
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleContinue(); // Trigger handleContinue when Enter is pressed
-    }
-  };
-
-  return (
-    <div className={styles.main} onKeyDown={handleKeyDown} tabIndex="0">
-      <div className={styles.authContainer} >
-        <div className={styles.left}>
-          <img src={spiderSmall} />
+                    <form className={styles.infoContainer} onSubmit={handleSignup}>
+                        <div className={styles.inputGroup}>
+                            <input 
+                                type="text" 
+                                name="name"
+                                value={formData.name} 
+                                onChange={handleChange} 
+                                placeholder='Full Name'
+                                required
+                            />
+                        </div>
+                        <div className={styles.inputGroup}>
+                            <input 
+                                type="email" 
+                                name="email"
+                                value={formData.email} 
+                                onChange={handleChange} 
+                                placeholder='Email Address'
+                                required
+                            />
+                        </div>
+                        <div className={styles.inputGroup}>
+                            <input 
+                                type="password" 
+                                name="password"
+                                value={formData.password} 
+                                onChange={handleChange} 
+                                placeholder='Password'
+                                required
+                            />
+                        </div>
+                        <div className={styles.inputGroup}>
+                            <input 
+                                type="text" 
+                                name="phone"
+                                value={formData.phone} 
+                                onChange={handleChange} 
+                                placeholder='Phone (Optional)'
+                            />
+                        </div>
+                        <div className={styles.inputGroup} style={{ gridColumn: '1 / -1' }}>
+                            <input 
+                                type="text" 
+                                name="about"
+                                value={formData.about} 
+                                onChange={handleChange} 
+                                placeholder='About you...'
+                            />
+                        </div>
+                        
+                        <div className={styles.submit} style={{ gridColumn: '1 / -1' }}>
+                            <motion.button 
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                type="submit"
+                            >
+                                Get Your Suit
+                            </motion.button>
+                        </div>
+                    </form>
+                </div>
+            </motion.div>
         </div>
-        <div className={styles.right}>
-          <div className={styles.heading}>
-            <span>Sign up</span>
-            <span>Already a user? <span onClick={()=>navigate('/login')}>Login instead</span></span>
-          </div>
-          <div className={styles.infoContainer}> 
-            <div>
-            <input type="text" placeholder='Enter your name...' onChange={handleName} value={name}/>
-            <input type="text" pattern="^\d{10}$" placeholder='Enter your phone no...' onChange={handlePhone} value={phone}/>
-            </div>
-            <input type="email" placeholder='Enter your email...' onChange={handleEmail} value={email}/>
-            <input type="text" placeholder='Enter your password...' onChange={handlePass} value={pass}/>
-          </div>
-          <div className={styles.submit}>
-            <button onClick={handleContinue}>Swing in</button>
-          </div>
-        </div>
-      </div>
-      <img className={styles.backimg} src={spider} />
-    </div>
-  )
+    )
 }
 
 export default Signup

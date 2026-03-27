@@ -34,7 +34,7 @@ function App() {
     if(user){
       joinUser(user._id)
     }
-  }, [])
+  }, [user])
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);

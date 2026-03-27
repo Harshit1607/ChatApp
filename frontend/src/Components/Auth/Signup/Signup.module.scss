@@ -1,167 +1,141 @@
-.main{
+.main {
   width: 100vw;
   height: 100vh;
-  background-color: var(--primary-color);
+  background: #000;
   @include flexbox;
-  overflow:hidden;
-  
-}
-.backimg{
-  width: 65%;
-  height: 90%;
-  position: fixed;
-  top:5%;
-  left:-10%;
-  @media (max-width: $tablet) {
-    width: 80%;
-    height: 60%;
-    top: -2%;
-    left: 10%;
-  }
-  @media (max-width: $mobile) {
-    width: 90%;
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 90% 80%, rgba(226, 54, 54, 0.1), transparent 40%);
+    z-index: 1;
   }
 }
 
-.authContainer{
-  
-  width: 98%;
-  height: 95%;
-  @include flexbox();
-  // box-shadow: 
-  //   inset 0 0 15px 3px rgba(217,217,217,0.1) ,
-  //   0 0 15px 5px rgba(217,217,217,0.1),
-  //   0 0 30px 5px rgba(217,217,217,0.075),  
-  //   0 0 45px 5px rgba(217,217,217,0.05) ;
-  border-radius: 20px;
-  overflow:hidden;
-  @media (max-width: $tablet) {
-    @include flexbox(column);
-    gap: 20px;
-  }
+.spiderPattern {
+  position: absolute;
+  inset: 0;
+  background: url('../../../Assets/chatWeb.svg');
+  background-size: 600px;
+  opacity: 0.15;
+  z-index: 0;
 }
 
-.left, .right{
-  height: 100%;
-  color: var(--text-color);
+.authContainer {
+  position: relative;
+  z-index: 10;
+  width: 90%;
+  max-width: 1000px;
+  background: var(--nav-bg);
+  @include glass;
+  border-radius: 40px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+
+  @media (max-width: $tablet) {
+    flex-direction: column;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
 }
 
 .left {
-  background-color: var(--spider-red);
+  flex: 1;
+  background: linear-gradient(135deg, #e23636 0%, #a01a1a 100%);
+  @include flexbox(column);
+  padding: 3rem;
+  color: white;
+  text-align: center;
   position: relative;
-  width: 34%;
-  border-radius: 20px;
-  @include flexbox(row, start, start);
-  >img{
-    margin: 10px;
-    width: 50px;
-    height: 50px;
+  overflow: hidden;
+
+  h2 { font-size: 2.5rem; font-weight: 900; margin-bottom: 1rem; }
+  p { font-size: 1rem; opacity: 0.9; line-height: 1.6; }
+
+  .floatingIcon {
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    font-size: 15rem;
+    opacity: 0.1;
+    transform: rotate(15deg);
+  }
+
+  @media (max-width: $tablet) {
+    padding: 2rem;
+    h2 { font-size: 1.8rem; }
   }
 }
 
-.right{
-  @include flexbox(column);
-  width: 64%;
-  gap: 7.5px;
-  .heading{
-    width: 40%;
-    font-size: 4rem;
-    @include flexbox(column);
-    align-items: start;
-    >span:last-child{
-      font-size: 0.9rem;
-      >span{
-        text-decoration: underline;
-        cursor: pointer;
-        &:hover {
-          transform: scale(1.2);
-          transition: transform 0.3s ease;
-        }
-      } 
-    }
+.right {
+  flex: 1.2;
+  padding: 3rem 4rem;
+  @include flexbox(column, center, stretch);
+  gap: 1.5rem;
+
+  .heading {
+    h3 { font-size: 2rem; margin-bottom: 0.5rem; color: white; }
+    p { font-size: 0.9rem; color: var(--text-secondary); }
+    .link { color: #e23636; font-weight: 700; cursor: pointer; &:hover { text-decoration: underline; } }
   }
 
-  .infoContainer{
-    width: 40%;
-    height: 20%;
-    @include flexbox(column, start);
-    gap: 3%;
-    >div{
-      @include flexbox;
-      height: 30%;
+  @media (max-width: $tablet) {
+    padding: 2rem;
+  }
+}
+
+.infoContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
+  }
+
+  .inputGroup {
+    position: relative;
+    input {
       width: 100%;
-      background-color: var(--primary-color);
-      >input{
-        background-color: var(--primary-color);
-        color: var(--text-color);
-        height: 100%;
-        width:505%;
-        border-radius: 10px;
-        padding-left: 5%;
-        font-size: 1rem;
-        box-sizing: border-box;
-        border: 0.5px solid var(--text-color);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 15px;
+      border-radius: 12px;
+      color: white;
+      font-size: 0.95rem;
+      transition: 0.3s;
+      
+      &:focus {
+        outline: none;
+        border-color: #e23636;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 15px rgba(226, 54, 54, 0.2);
       }
     }
-
-    >input{
-      max-width: 100%;
-      min-width: 100%;
-      border: 0.5px solid var(--text-color);
-      background-color: var(--primary-color);
-      color: var(--text-color);
-      height: 30%;
-      border-radius: 10px;
-      padding-left: 5%;
-      font-size: 1rem;
-      box-sizing: border-box;
-
-    }
-    input:focus{
-      outline: none;
-    }
   }
+}
 
-  .submit{
-    width: 40%;
-    @include flexbox;
+.submit {
+  button {
+    width: 100%;
+    background: #e23636;
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(226, 54, 54, 0.3);
     
-    button{
-      width: 100%;
-      font-size: 1.1rem;
-      padding: 4% 0;
-      border: none;
-      background-color: var(--spider-red);
-      color: var(--text-color);
-      border-radius: 10px;
-    }
-    button:hover{
-      background-color: var(--text-color);
-      color: var(--spider-red);
-    }
-  }
-
-}
-
-@media (max-width: $tablet) {
-  .left{
-    width: 90%;
-    height: 53%;
-  }
-  .right{
-    width: 90%;
-    height: 43%;
-    .heading{
-      width: 100%;
-    }
-    .infoContainer{
-      height: 40%;
-      width: 100%;
-    }
-    .submit{
-      height: 15%;
-      width: 100%;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(226, 54, 54, 0.5);
     }
   }
 }
-

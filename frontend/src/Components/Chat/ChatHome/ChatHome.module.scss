@@ -1,20 +1,79 @@
 .main {
-  background-color: var(--primary-color);
-  width: 71%;
+  height: 100%;
+  flex: 1;
+  background: var(--chat-bg);
+  position: relative;
+  overflow: hidden;
+
+  // Separation from sidebar
+  border-left: 1px solid var(--border-color);
+  box-shadow: inset 15px 0 30px -15px rgba(0, 0, 0, 0.3);
+
+  // Immersive Web Background
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('../../../Assets/chatWeb.svg');
+    background-size: 85%;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    filter: var(--web-filter);
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+.activeChatWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+.emptyState {
+  width: 100%;
   height: 100%;
   @include flexbox(column);
-  justify-content: space-between;
+  gap: 1.5rem;
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
 
-  /* Diamond Gradient Effect */
-  background:
-    url('../../../Assets/chatWeb.svg') no-repeat center,
-    var(--home-gradient);
-  background-size: 150%, cover; /* Ensures all layers fit the container */
-  background-position: right, center; /* Aligns everything centrally */
-  @media (max-width: $desktop) {
-    width: 65%;
-  }
-  @media (max-width: $laptop) {
-    width: 100%;
-  }
+  h2 { font-size: 2.5rem; font-weight: 800; color: white; margin: 0; letter-spacing: 2px; }
+  p { font-size: 1.1rem; opacity: 0.6; max-width: 400px; }
+}
+
+.spiderSenseCircle {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  @include flexbox;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 50%;
+  
+  .spiderIcon { font-size: 4rem; z-index: 2; }
+}
+
+.pulse, .pulse2 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid var(--primary-color);
+  z-index: 1;
+  opacity: 0;
+  animation: spider-pulse 3s infinite;
+}
+
+.pulse2 {
+  animation-delay: 1.5s;
+}
+
+@keyframes spider-pulse {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(2); opacity: 0; }
 }

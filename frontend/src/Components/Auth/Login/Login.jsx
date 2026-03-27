@@ -1,73 +1,90 @@
-import React, { useEffect, useState } from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import styles from './Login.module.scss'
-import { login } from '../../../Redux/User/userActions'
+import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import spider from '../../../Assets/spiderMan1.png'
-import spiderSmall from '../../../Assets/spiderCursor.png'
+import { login } from '../../../Redux/User/userActions'
+import styles from './Login.module.scss'
 
 const Login = () => {
-  const {user} = useSelector(state=>state.userReducer);
-  const dispatch = useDispatch();
-  const navigate = useNavigate()
+    const { user } = useSelector(state => state.userReducer);
+    const [credentials, setCredentials] = useState({ email: "", password: "" })
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(user){
-      navigate('/home');
+    useEffect(() => {
+        if (user) navigate('/home');
+    }, [user]);
+
+    const handleChange = (e) => setCredentials({ ...credentials, [e.target.name]: e.target.value });
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        dispatch(login(credentials.email, credentials.password));
     }
-  },[user])
 
-  const [phone, setPhone] = useState("");
-  const [pass, setPass] = useState("");
+    return (
+        <div className={styles.main}>
+            <div className={styles.spiderPattern} />
+            
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                className={styles.authContainer}
+            >
+                <div className={styles.left}>
+                    <motion.h2 
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        Swing Back In!
+                    </motion.h2>
+                    <p>The Multiverse is waiting. Connect with your team and start swinging through the chat web.</p>
+                    <div className={styles.floatingIcon}>🕸️</div>
+                </div>
 
-  const handlePass = (e) => {
-    const text = e.target.value;
-    setPass(text);
-  };
+                <div className={styles.right}>
+                    <div className={styles.heading}>
+                        <h3>Login</h3>
+                        <p>Don't have an account? <span className={styles.link} onClick={() => navigate('/signup')}>Join the web</span></p>
+                    </div>
 
-  const handlePhone = (e) => {
-    const text = e.target.value;
-    setPhone(text);
-  };
-
-  const handleContinue = () => {
-    const regex = /^$/;
-    if (regex.test(phone) || regex.test(pass)) {
-      alert("Enter valid details");
-      return;
-    }
-    dispatch(login(phone, pass));
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleContinue(); // Trigger handleContinue when Enter is pressed
-    }
-  };
-
-  return (
-    <div className={styles.main} onKeyDown={handleKeyDown} tabIndex="0">
-      <div className={styles.authContainer} >
-        <div className={styles.left}>
-          <img src={spiderSmall} />
+                    <form className={styles.infoContainer} onSubmit={handleLogin}>
+                        <div className={styles.inputGroup}>
+                            <input 
+                                type="email" 
+                                name="email"
+                                value={credentials.email} 
+                                onChange={handleChange} 
+                                placeholder='Email Address'
+                                required
+                            />
+                        </div>
+                        <div className={styles.inputGroup}>
+                            <input 
+                                type="password" 
+                                name="password"
+                                value={credentials.password} 
+                                onChange={handleChange} 
+                                placeholder='Password'
+                                required
+                            />
+                        </div>
+                        
+                        <div className={styles.submit}>
+                            <motion.button 
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                type="submit"
+                            >
+                                Spider-Login
+                            </motion.button>
+                        </div>
+                    </form>
+                </div>
+            </motion.div>
         </div>
-        <div className={styles.right}>
-          <div className={styles.heading}>
-            <span>Login</span>
-            <span>New user? <span onClick={()=>navigate('/signup')}>Signup instead</span></span>
-          </div>
-          <div className={styles.infoContainer}>
-            <input type="text" placeholder='Enter your phone no...' onChange={handlePhone} value={phone}/>
-            <input type="password" placeholder='Enter your password...' onChange={handlePass} value={pass}/>
-          </div>
-          <div className={styles.submit}>
-            <button onClick={handleContinue}>Login</button>
-          </div>
-        </div>
-      </div>
-      <img className={styles.backimg} src={spider} />
-    </div>
-  )
+    )
 }
 
 export default Login

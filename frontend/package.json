@@ -10,6 +10,8 @@
     "@craco/craco": "^7.1.0",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^1.7.0",
     "mediasoup-client": "^3.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -23,6 +25,7 @@
   },
   "scripts": {
     "start": "craco start",
+    "dev": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "craco eject"

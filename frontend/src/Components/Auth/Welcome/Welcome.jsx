@@ -1,43 +1,83 @@
-import React, { useState, useEffect } from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import styles from './Welcome.module.scss'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import spider from '../../../Assets/spiderCursor.png'
+import { Shield, Zap, Heart } from 'lucide-react'
+import styles from './Welcome.module.scss'
 
 const Welcome = () => {
-  const {user} = useSelector(state=>state.userReducer);
-  const dispatch = useDispatch();
+  const { user } = useSelector(state => state.userReducer);
   const navigate = useNavigate()
 
-  useEffect(()=>{
-    if(user){
-      navigate('/home');
-    }
-  }, [user])
+  useEffect(() => {
+    if (user) navigate('/home');
+  }, [user]);
 
- 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.2, delayChildren: 0.3 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 }
+  };
 
   return (
     <div className={styles.main}>
-      <div className={styles.authContainer} >
-        <div className={styles.left}>
-          <span className={styles.heading}>Welcome!</span>
-          <span>Swing into action with our Spider-Man themed chat app! 🕸️ Experience the ultimate web-slinging adventure with three dynamic 
-            themes—OG Spider-Man, Miles Morales, and Spider-Gwen—while enjoying all the essential chat features, including personal chats, 
-            group conversations, and voice & video calls. Whether you're catching up with friends or making new connections, this app brings 
-            the thrill of the Spider-Verse to your fingertips. We hope you love it! If you have any feedback or suggestions, feel free to reach
-             out at hbareja.07@gmail.com. Now go on, web-head—start swinging! 🕷️💬
-          </span>
-          <div className={styles.submit}>
-            <button onClick={()=>navigate('/signup')}>Signup</button>
-            <button onClick={()=>navigate('/login')}>Login</button>
+      <div className={styles.spiderPattern} />
+      
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className={styles.content}
+      >
+        <motion.div variants={itemVariants} className={styles.hero}>
+          <div className={styles.logoBadge}>
+            <span className={styles.spiderIcon}>🕸️</span>
+            <h1>SPIDEY CHAT</h1>
           </div>
-        </div>
+          <h2 className={styles.tagline}>Connected Across the <span className={styles.accent}>Multiverse</span></h2>
+          <p className={styles.description}>
+            Swing into the ultimate chat experience. Whether you're an OG wall-crawler, 
+            a Miles Morales fan, or spinning webs with Gwen—your communication is now cinematic.
+          </p>
+        </motion.div>
 
-      </div>
-      <img className={styles.backimg} src={spider} />
+        <motion.div variants={itemVariants} className={styles.features}>
+          <div className={styles.featureItem}>
+            <Zap size={24} className={styles.neonIcon} />
+            <span>Instant Webs</span>
+          </div>
+          <div className={styles.featureItem}>
+            <Shield size={24} className={styles.neonIcon} />
+            <span>Spider-Security</span>
+          </div>
+          <div className={styles.featureItem}>
+            <Heart size={24} className={styles.neonIcon} />
+            <span>Versatile Suits</span>
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className={styles.actions}>
+          <button className={styles.primaryBtn} onClick={() => navigate('/login')}>
+            Enter the Spider-Verse
+          </button>
+          <button className={styles.secondaryBtn} onClick={() => navigate('/signup')}>
+            Join the Web-Heads
+          </button>
+        </motion.div>
+      </motion.div>
+
+      {/* Atmospheric web elements */}
+      <div className={styles.webTopLeft} />
+      <div className={styles.webBottomRight} />
     </div>
   )
 }
 
-export default Welcome
+export default Welcome

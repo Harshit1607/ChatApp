@@ -1,9 +1,68 @@
-// var(--primary-color): #181818;
-// var(--secondary-color): #232323;
-// var(--tertiary-color): #090909;
-// var(--nav-color): #151515;
-// var(--spider-red): #9D1F13;
-// var(--text-color): #E0E0E0;
+:root {
+  // OG Theme (Peter Parker)
+  &[data-theme='og'] {
+    --bg-color: #0b0d17;
+    --sidebar-bg: rgba(25, 27, 46, 0.85);
+    --nav-bg: #191b2e;
+    --primary-color: #e23636;
+    --secondary-color: #5048e5;
+    --accent-color: #ffffff;
+    --text-primary: #ffffff;
+    --text-secondary: #a0aec0;
+    --text-color: #ffffff;
+    --chat-bg: #0f111a;
+    --bubble-me: #e23636;
+    --bubble-other: #2d3748;
+    --spider-web: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --web-filter: brightness(2) contrast(1.1) opacity(0.3);
+  }
+
+  // Miles Morales Theme
+  &[data-theme='mm'] {
+    --bg-color: #050505;
+    --sidebar-bg: rgba(18, 18, 18, 0.9);
+    --nav-bg: #121212;
+    --primary-color: #b01e28;
+    --secondary-color: #00bcd4; // Bio-electric cyan
+    --accent-color: #ff0000;
+    --text-primary: #ffffff;
+    --text-secondary: #888888;
+    --text-color: #ffffff;
+    --chat-bg: #0a0a0a;
+    --bubble-me: #b01e28;
+    --bubble-other: #1f1f1f;
+    --spider-web: rgba(176, 30, 40, 0.08);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --web-filter: brightness(2) contrast(1.1) opacity(0.3);
+  }
+
+  // Gwen Stacy Theme (Ghost-Spider / White Mode)
+  &[data-theme='gw'] {
+    --bg-color: #f8faff;
+    --sidebar-bg: rgba(255, 255, 255, 0.85);
+    --nav-bg: #ffffff;
+    --primary-color: #f080a0; 
+    --secondary-color: #38b2ac; 
+    --accent-color: #f080a0;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --text-color: #1a202c;
+    --chat-bg: #ffffff;
+    --bubble-me: #f080a0;
+    --bubble-other: #edf2f7;
+    --spider-web: rgba(240, 128, 160, 0.1);
+    --border-color: rgba(0, 0, 0, 0.05);
+    --web-filter: invert(1) opacity(0.15);
+  }
+}
+
+@mixin glass {
+  background: var(--sidebar-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+}
 
 @mixin flexbox($direction: row, $justify: center, $align: center) {
   display: flex;
@@ -16,3 +75,14 @@ $mobile: 600px;
 $tablet: 800px;
 $laptop: 1024px;
 $desktop: 1280px;
+
+@keyframes spider-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes spider-sense {
+  0% { box-shadow: 0 0 0 0 rgba(226, 54, 54, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(226, 54, 54, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(226, 54, 54, 0); }
+}

@@ -1,62 +1,135 @@
-.main{
+.main {
   width: 100%;
-  height: 75px;
-  min-height: 80px;
-  @include flexbox;
-  justify-content: center;
-  background-color: var(--nav-color);
+  height: 80px;
+  background: var(--nav-bg);
+  @include glass;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 50;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-.pfp{
-  width: 6%;
-  @include flexbox;
-  justify-content: start;
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
-  >div{
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: var(--text-color);
-    overflow: hidden;
-    >img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+.pfpWrapper {
+  cursor: pointer;
+}
+
+.pfpContainer {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 2px solid var(--primary-color);
+  
+  .pfp {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
   }
-}
 
-.info{
-  @include flexbox(column, space-between, start);
-  width: 74%;
-  height: 50%;
-  font-size: x-small;
-  >span:first-child{
-    font-size: medium;
-  }
-}
-.callBox{
-  width: 10%;
-  @include flexbox;
-  justify-content: end;
-  gap: 5px;
-  >div{
-    width: 45px;
-    height: 40px;
+  .avatarPlaceholder {
+    width: 100%;
+    height: 100%;
     @include flexbox;
-    background-color: var(--spider-red);
-    border-radius: 10px;
-    &:last-child{
-      background-color: var(--nav-color);
-    }
+    background: var(--bg-color);
+    border-radius: 12px;
+    color: var(--text-secondary);
+  }
+
+  .onlineStatus {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 14px;
+    height: 14px;
+    background: #00ff88;
+    border: 3px solid var(--nav-bg);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
   }
 }
 
-@media (max-width: $tablet) {
-  .pfp{
-    width: 12%;
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.status {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+
+  &.online {
+    color: #a7f3d0;
   }
-  .info{
-    width: 68%;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actionBtn {
+  background: transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  @include flexbox;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 0.5rem;
+}
+
+.closeBtn {
+  background: transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  @include flexbox;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+  }
+}
+
+@media (max-width: $laptop) {
+  .main {
+    padding: 0 1rem;
+  }
+  
+  .actions {
+    gap: 0.25rem;
   }
 }

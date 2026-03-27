@@ -11,4 +11,4 @@ const groupSchema = new mongoose.Schema({
   mediaExpiresAt: { type: Date },
 }, { timestamps: true })
 
-export default  mongoose.model('Group', groupSchema);
+export default mongoose.models.Group || mongoose.model('Group', groupSchema);

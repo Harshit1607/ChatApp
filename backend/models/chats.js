@@ -14,4 +14,4 @@ const chatSchema = new mongoose.Schema({
   mediaExpiresAt: { type: Date },
 }, { timestamps: true })
 
-export default  mongoose.model('Chat', chatSchema);
+export default mongoose.models.Chat || mongoose.model('Chat', chatSchema);

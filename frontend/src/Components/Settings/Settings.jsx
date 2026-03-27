@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Camera, Trash2, LogOut, X, Edit3, Check, User as UserIcon } from 'lucide-react'
 import styles from './Settings.module.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -7,144 +9,156 @@ import { setTheme } from '../../Redux/Home/homeActions';
 import mm from '../../Assets/mmCursorBig.png'
 import gw from '../../Assets/gwcursorBig.png'
 import og from '../../Assets/ogcursorBig.png'
-import pencil from '../../Assets/pencil.svg'
-import done from '../../Assets/singleTickWhite.svg'
 
 const Settings = () => {
   const { user } = useSelector(state => state.userReducer);
-  const {theme } = useSelector(state=>state.homeReducer);
+  const { theme } = useSelector(state => state.homeReducer);
 
-  const themeValues = [{name: 'mm', bc: "radial-gradient(at center, #9D1F13,#090909 )", img: mm, spiderman: "Miles Morales", desc: "Red And Black"}
-                      ,{name: 'og', bc: "radial-gradient(at center, #9F0707,#03022A,#010011 )", img: og, spiderman: "Spiderman", desc: "Red And Blue"}, 
-                      {name: 'gw', bc: "radial-gradient(at center, #E26BA5,#FEFEFE )", img: gw, spiderman: "Gwen", desc: "Pink And White"}]
+  const themeValues = [
+    { name: 'og', img: og, spiderman: "Classic Spider-Man", desc: "The Legend", accent: "#e23636" },
+    { name: 'mm', img: mm, spiderman: "Miles Morales", desc: "Be Greater", accent: "#b01e28" },
+    { name: 'gw', img: gw, spiderman: "Ghost-Spider", desc: "Different Harmony", accent: "#f080a0" }
+  ];
   
-  const [userAbout, setuserAbout] = useState(user?.about);
+  const [userAbout, setuserAbout] = useState(user?.about || "");
   const [edit, setEdit] = useState(false);
-  const [preview, setPreview] = useState(null);
+  const [hoverTheme, setHoverTheme] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
-  const previewRef = useRef(null);
-
-  const handleOutsideClick = useCallback(
-      (event) => {
-        if (previewRef.current && !previewRef.current.contains(event.target)) {
-          setPreview(null);
-        }
-      },
-      [dispatch]
-    );
-
-  useEffect(()=>{
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, [handleOutsideClick])
-
-  const handleChangePhoto = ()=>{
-    fileInputRef.current.click(); // Programmatically trigger the input
-  }
 
   const handleNewImage = (e) => {
     const file = e.target.files[0];  
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64Image = reader.result; // Base64 encoded image
-        // Send image to backend
-        dispatch(changePhoto(base64Image, user._id));
+        dispatch(changePhoto(reader.result, user._id));
       };
-      reader.readAsDataURL(file); // Convert image to base64
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/');
-  };
-
-  const handleNewAbout = (e)=>{
-    const text = e.target.value;
-    setuserAbout(text);
-  }
-
   return (
-    <div className={styles.main}>
-      <div className={styles.info}>
-        <div className={styles.profile}>
-          <div className={styles.photo}>
-            {user.profile && <img src={user.profile} alt="Pfp" />}
-          </div>
-          <div>
-            <button onClick={handleChangePhoto}>Change Photo <input ref={fileInputRef} type='file'accept="image/*" onChange={handleNewImage}/></button>
-            <button onClick={()=>{dispatch(deletePhoto(user._id))}}>Delete Photo</button>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className={styles.main}
+    >
+      <div className={styles.overlay} onClick={() => navigate('/home')} />
+      
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        className={styles.content}
+      >
+        <button className={styles.closeBtn} onClick={() => navigate('/home')}>
+          <X size={24} />
+        </button>
+
+        <div className={styles.profileSection}>
+          <div className={styles.avatarWrapper}>
+            {user.profile ? (
+              <img src={user.profile} alt="Pfp" className={styles.avatar} />
+            ) : (
+              <div className={styles.avatarPlaceholder}><UserIcon size={64} /></div>
+            )}
+            <motion.button 
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className={styles.cameraBtn}
+              onClick={() => fileInputRef.current.click()}
+            >
+              <Camera size={20} />
+              <input ref={fileInputRef} type='file' accept="image/*" className={styles.hiddenInput} onChange={handleNewImage}/>
+            </motion.button>
           </div>
           
-        </div>
-        <div className={styles.userInfo}>
-          <div>
-            <span>Name</span>
-            <span>{user.name}</span>
-          </div>
-          <div>
-            <span>About me</span>
-            <div>
-              <textarea maxLength={50} value={userAbout} onChange={handleNewAbout} disabled={!edit}/>
-              <span className={styles.charCount}>{`${userAbout.length}/50`}</span>
-              {!edit ? <button onClick={()=>{setEdit(true)}}><img src={pencil}/></button> : <button onClick={()=>{
-                if(userAbout !== user.about){
-                  dispatch(newAboutme(user._id, userAbout))
-                } 
-                setEdit(false)}}><img src={done}/></button>}
-            </div>
-            
-          </div>
-          <div>
-            <span>Email</span>
-            <span>{user.email}</span>
-          </div>
-          <div>
-            <span>Phone</span>
-            <span>{user.phone}</span>
-          </div>
-        </div>
-        <div className={styles.logout}>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      </div>
-      <div className={styles.themes}>
-          {themeValues.map(each=>{
-            return(
-              <div className={styles.themeBox} >
-                <div className={styles.theme} style={{
-                  background: `url(${each.img})`,
-                  backgroundSize: "none",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                }} onClick={() => {
-                    setPreview(each.bc);
-                }}>
-                  <div><button style={{background: each.bc}} onClick={(e)=>{
-                    e.stopPropagation()
-                      if (theme !== each.name) {  
-                        dispatch(setTheme(each.name))
-                      }
-                      setPreview(null)
-                      
-                    }}></button></div>
+          <div className={styles.profileHeader}>
+            <h2>{user.name}</h2>
+            <div className={styles.aboutWrapper}>
+              {edit ? (
+                <div className={styles.editAbout}>
+                  <textarea 
+                    maxLength={50} 
+                    value={userAbout} 
+                    onChange={(e) => setuserAbout(e.target.value)}
+                    autoFocus
+                  />
+                  <button onClick={() => {
+                    if (userAbout !== user.about) dispatch(newAboutme(user._id, userAbout));
+                    setEdit(false);
+                  }}>
+                    <Check size={18} />
+                  </button>
                 </div>
-                <span>{each.spiderman}</span>
-                <span>{each.desc}</span>
-              </div>
-            )
-          })}
-      </div>
-      <div className={styles.cut} onClick={()=>navigate('/home')}>X</div>
-      {preview && <div className={styles.preview} ref={previewRef} style={{background: preview}} ></div>}
-    </div>
+              ) : (
+                <div className={styles.viewAbout} onClick={() => setEdit(true)}>
+                  <p>{userAbout || "Setting your spider-status..."}</p>
+                  <Edit3 size={14} className={styles.editIcon} />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.themeSection}>
+          <h3>Select Your Suit</h3>
+          <div className={styles.themeGrid}>
+            {themeValues.map((t) => (
+              <motion.div
+                key={t.name}
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                className={`${styles.themeCard} ${theme === t.name ? styles.active : ''}`}
+                onClick={() => dispatch(setTheme(t.name))}
+                style={{ '--accent': t.accent }}
+              >
+                <div className={styles.themeImage}>
+                  <img src={t.img} alt={t.spiderman} />
+                </div>
+                <div className={styles.themeInfo}>
+                  <h4>{t.spiderman}</h4>
+                  <p>{t.desc}</p>
+                </div>
+                {theme === t.name && (
+                  <motion.div layoutId="activeTheme" className={styles.activeIndicator}>
+                    <Check size={16} />
+                  </motion.div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.footer}>
+          <div className={styles.userStats}>
+            <div className={styles.statItem}>
+              <span>Email</span>
+              <p>{user.email}</p>
+            </div>
+            <div className={styles.statItem}>
+              <span>Phone</span>
+              <p>{user.phone || "Not linked"}</p>
+            </div>
+          </div>
+          
+          <motion.button 
+            whileHover={{ scale: 1.02, backgroundColor: '#ff4444' }}
+            whileTap={{ scale: 0.98 }}
+            className={styles.logoutBtn}
+            onClick={() => {
+              dispatch(logout());
+              navigate('/');
+            }}
+          >
+            <LogOut size={20} />
+            Logout
+          </motion.button>
+        </div>
+      </motion.div>
+    </motion.div>
   )
 }
 
-export default Settings
+export default Settings

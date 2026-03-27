@@ -1,152 +1,188 @@
-.main{
+.main {
   width: 100vw;
   height: 100vh;
-  background:
-    radial-gradient(
-      at center, /* Set ellipse shape and center position */
-      #70170F,          /* Starting color */
-      #090909           /* Ending color */
-    );
-  background-size: 100%;
-  background-position: center;
-  @include flexbox;
+  background: #000;
   position: relative;
-}
-.backimg{
-  width: 40%;
-  height: 70%;
-  position: fixed;
-  top:15%;
-  left:30%;
-  z-index: 1;
-  opacity: 0.6;
-}
+  overflow: hidden;
+  @include flexbox;
+  font-family: 'Outfit', sans-serif;
 
-.authContainer{
-  z-index: 2;
-  width: 95%;
-  height: 90%;
-  @include flexbox();
-  box-shadow: 
-    inset 0 0 15px 3px rgba(217,217,217,0.1) ,
-    0 0 15px 5px rgba(217,217,217,0.1),
-    0 0 30px 5px rgba(217,217,217,0.075),  
-    0 0 45px 5px rgba(217,217,217,0.05) ;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-
-
-.left {
-  height: 60%;
-  width: 80%;
-  @include flexbox(column, start, start);
-  color: var(--text-color);
-  gap: 11%;
-  .heading{
-    font-size: 7rem;
-    margin-bottom: -15px;
+  // Cinematic night sky
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 70% 20%, rgba(226, 54, 54, 0.15), transparent 40%),
+      radial-gradient(circle at 20% 80%, rgba(0, 50, 200, 0.1), transparent 40%);
+    z-index: 1;
   }
-  >span{
+}
+
+.spiderPattern {
+  position: absolute;
+  inset: 0;
+  background: 
+    linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),
+    url('../../../Assets/chatWeb.svg');
+  background-size: 800px;
+  background-position: center;
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  max-width: 800px;
+  padding: 2rem;
+  @include flexbox(column);
+  gap: 3rem;
+}
+
+.hero {
+  @include flexbox(column);
+  gap: 1.5rem;
+
+  .logoBadge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 24px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    
+    .spiderIcon { font-size: 2rem; }
+    h1 { font-size: 1.5rem; letter-spacing: 4px; font-weight: 800; color: #fff; margin:0; }
+  }
+
+  h2 {
+    font-size: 4rem;
+    font-weight: 900;
+    color: white;
+    line-height: 1.1;
+    margin: 0;
+    
+    .accent {
+      color: #e23636;
+      text-shadow: 0 0 20px rgba(226, 54, 54, 0.5);
+    }
+
+    @media (max-width: $mobile) {
+      font-size: 2.5rem;
+    }
+  }
+
+  .description {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+.features {
+  display: flex;
+  gap: 2rem;
+  
+  @media (max-width: $mobile) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: 0.3s;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
+  }
+
+  .neonIcon {
+    color: #e23636;
+    filter: drop-shadow(0 0 5px #e23636);
+  }
+
+  span {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1.5rem;
+
+  @media (max-width: $mobile) {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  button {
+    padding: 18px 40px;
+    border-radius: 16px;
     font-size: 1.1rem;
-    text-align:start;
-    max-width: 90%;
-  }
-  .submit{
-    width: 65%;
-    @include flexbox(row, start);
-    gap: 05%;
-    >button{
-      box-shadow: 0 0 5px var(--primary-color);
-      width: 35%;
-      font-size: 1.4rem;
-      padding: 18px 0;
+    font-weight: 800;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &.primaryBtn {
+      background: #e23636;
+      color: white;
+      box-shadow: 0 10px 25px rgba(226, 54, 54, 0.4);
       border: none;
-      background-color: var(--spider-red);
-      color: var(--text-color);
-      border-radius: 10px;
-      &:last-child{
-        background-color: var(--text-color);
-        color: var(--primary-color);
+      
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 35px rgba(226, 54, 54, 0.6);
       }
-      &:hover{
-        background-color: var(--primary-color);
-      color: var(--text-color);
+    }
+
+    &.secondaryBtn {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: scale(1.05);
       }
-    } 
-  }
-}
-
-@media (max-width: $laptop) {
-  .backimg{
-    width: 50%;
-    height: 60%;
-    top:20%;
-    left:25%;
-  }
-  .left{
-    .heading{
-      font-size: 6rem;
-    }
-    >span{
-      font-size: 1rem;
-    }
-  }
-  .submit{
-    >button{
-      width: 40%;
-      font-size: 1.3rem;
     }
   }
 }
 
-@media (max-width: $tablet) {
-  .backimg{
-    width: 54%;
-    height: 60%;
-    top:20%;
-    left:23%;
-  }
-  .left{
-    .heading{
-      font-size: 5rem;
-    }
-    >span{
-      font-size: 1rem;
-    }
-  }
-  .submit{
-    width: 70%;
-    >button{
-      width: 40%;
-      font-size: 1.2rem;
-    }
-  }
+// Atmospheric webs
+.webTopLeft {
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  width: 300px;
+  height: 300px;
+  background: url('../../../Assets/chatWeb.svg') no-repeat;
+  opacity: 0.1;
+  transform: rotate(45deg);
 }
 
-@media (max-width: $mobile) {
-  .backimg{
-    width: 60%;
-    height: 60%;
-    top:20%;
-    left:20%;
-  }
-  .left{
-    .heading{
-      font-size: 4.5rem;
-    }
-    >span{
-      font-size: 0.9rem;
-    }
-  }
-  .submit{
-    width: 80%;
-    >button{
-      width: 40%;
-      font-size: 1.2rem;
-    }
-  }
+.webBottomRight {
+  position: absolute;
+  bottom: -50px;
+  right: -50px;
+  width: 300px;
+  height: 300px;
+  background: url('../../../Assets/chatWeb.svg') no-repeat;
+  opacity: 0.1;
+  transform: rotate(225deg);
 }
-
-

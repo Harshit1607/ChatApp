@@ -1,183 +1,196 @@
 import React, { useEffect, useRef, useState } from 'react'
-import styles from './GroupProfile.module.scss'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import options from '../../../Assets/3Dots.png'
+import { Camera, X, Trash2, Edit2, Check, LogOut, User as UserIcon, MoreVertical, Shield } from 'lucide-react'
 import { changeGroupPhoto, deleteGroupPhoto, leaveGroup, makeAdmin, newDesc } from '../../../Redux/Group/groupActions';
-import pencil from '../../../Assets/pencil.svg'
-import done from '../../../Assets/singleTickWhite.svg'
-import exit from '../../../Assets/exit.svg'
 import { getSingleUser } from '../../../Redux/Home/homeActions';
 import Carousel from '../../../Utils/Carousel/Carousel';
+import styles from './GroupProfile.module.scss'
 
 const GroupProfile = () => {
-
-  const {groupChat} = useSelector(state=>state.groupReducer);
+  const { groupChat } = useSelector(state => state.groupReducer);
   const { user } = useSelector(state => state.userReducer);
-  const {chats} = useSelector(state=>state.chatReducer);
+  const { chats } = useSelector(state => state.chatReducer);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [image, setImage] = useState();
-  const [option, setOption] = useState(false);
-  const [adminOption, setAdminOption] = useState(null);
-  const [icon, setIcon] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [desc, setDesc] = useState(groupChat?.description)
-  const adminOptionRefs = useRef({});
-
-  const navigate = useNavigate()
-
-  useEffect(()=>{
-    if(!groupChat){
-      navigate('/home')
-    }
-  }, [groupChat])
+  const [desc, setDesc] = useState(groupChat?.description || "");
+  const [isEditing, setIsEditing] = useState(false);
+  const [adminMenu, setAdminMenu] = useState(null);
+  const [showFullPhoto, setShowFullPhoto] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
-    const handleCloseAdminOption = (event) => {
-      const clickedOutsideAll = Object.values(adminOptionRefs.current).every(
-        (ref) => ref && !ref.contains(event.target)
-      );
+    if (!groupChat) navigate('/home');
+  }, [groupChat, navigate]);
 
-      if (clickedOutsideAll) {
-        setAdminOption(null);
-      }
-    };
+  if (!groupChat) return null;
 
-    document.addEventListener('click', handleCloseAdminOption);
-    return () => {
-      document.removeEventListener('click', handleCloseAdminOption);
-    };
-  }, []);
-  const dispatch = useDispatch();
-
-  const fileInputRef = useRef(null);
-  const ProfileOptionRef = useRef(null);
-
-  const showOptions = ()=>{
-    setOption(!option);
-  }
-  const showImg = ()=>{
-    setIcon(!icon);
-  }
-
-  const handleGroupDescription = (e)=>{
-    const text = e.target.value;
-    setDesc(text);
-  }
-
-  const handleChangePhoto = ()=>{
-      fileInputRef.current.click(); // Programmatically trigger the input
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        dispatch(changeGroupPhoto(reader.result, groupChat._id));
+      };
+      reader.readAsDataURL(file);
     }
+  };
 
-    const handleNewImage = (e)=>{
-      const file = e.target.files[0];  // Get the file from input
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Image = reader.result; // This gives the base64 encoded image
-          setImage(base64Image); // Update the state with the base64 image
-          dispatch(changeGroupPhoto(base64Image, groupChat._id)); // Dispatch action to update the profile photo
-        };
-        reader.readAsDataURL(file); // Convert image to base64 string
-      }
+  const handleDescSave = () => {
+    if (desc !== groupChat.description) {
+      dispatch(newDesc(groupChat._id, desc, user._id));
     }
+    setIsEditing(false);
+  };
 
-    const handleLeaveGroup = (id)=>{
-      dispatch(leaveGroup(id, groupChat._id))
-    }
-    
-    if (!groupChat) {
-      return null; // or a loading spinner if necessary
-    }
-  
+  const mediaChats = chats?.filter(chat => 
+    chat.isMedia && 
+    chat.Group[0] === groupChat._id && 
+    chat.Users.includes(user._id)
+  ) || [];
+
+  const members = groupChat.UserDetails.filter(u => groupChat.Users.includes(u._id));
+
   return (
     <div className={styles.main}>
-      {groupChat.profile && <div className={styles.mainImg} style={{'visibility': icon? "" : "hidden"}}><span onClick={showImg}>X</span> <img  src={groupChat.profile} alt=""  /> </div>}
-      <div className={styles.left}>
-        <div className={styles.info}>
-            <div className={styles.profile}>
-              <div onClick={showOptions}>
-                {groupChat.profile && <img src={groupChat.profile} alt="" />}
-                <input ref={fileInputRef} type='file'accept="image/*" onChange={handleNewImage}/>
-                <div ref={ProfileOptionRef} className={styles.profileOptions} style={{'visibility': option? "" : "hidden"}}>
-                  {groupChat.profile && <button onClick={()=>dispatch(deleteGroupPhoto(groupChat._id))}>Delete Photo</button>}
-                  <button onClick={handleChangePhoto}>Change Photo</button>
-                  <button onClick={showImg}>View Photo</button>
-                </div>
-              </div>
-              <span>{groupChat.name}</span>
-            </div>
-            <div className={styles.description}>
-              <span>Group Description</span>
-              <textarea type="text" maxLength="200" value={desc} onChange={handleGroupDescription} disabled={!edit} />
-              <span className={styles.charCount}>{`${desc? desc.length : "0"}/200`}</span>
-              {!edit ? <button className={styles.descButton} onClick={()=>{setEdit(true)}}><img src={pencil}/></button>
-              : <button className={styles.descButton} onClick={()=>{
-                if(desc !== groupChat.description){
-                  dispatch(newDesc(groupChat._id, desc, user._id))
-                }
-                setEdit(false)
-                }}><img src={done}/></button>}
-            </div>
-        </div>
-        <div className={styles.leave}>
-          <button onClick={()=>handleLeaveGroup(user._id, groupChat._id)}><img src={exit}/></button>
-        </div>
-      </div>
-      <div className={styles.right}>
-        <div className={styles.media}>
-          <span>Media</span>
-          <Carousel length={5} >
-          {groupChat && chats && chats.length > 0
-          ? chats
-              .filter((chat) => chat.Group[0] === groupChat._id && chat.Users.includes(user._id) && chat.isMedia)
-              .map((chat, index) => (
-                  <img src={chat.message.message}/>
-              ))
-          : null}
-            
-          </Carousel>
-          
-        </div>
-        <div className={styles.members}>
-          <div>
-            <span>{groupChat.Users.length} Members</span>
-          </div>
-          <div>
-            {groupChat.UserDetails.filter(user => groupChat.Users.includes(user._id.toString())).map((each, index)=>{
-                return(
-                  <div className={styles.memberInfo} key={index}>
-                    <div>
-                      <div>{each.profile && <img src={each.profile} alt="" />}</div>
-                    </div>
-                    <div>
-                      <span>{each._id === user._id? "You":each.name}</span>
-                      <span>{each.about}</span>
-                    </div>
-                    <div ref={(el) => (adminOptionRefs.current[each._id] = el)}>
-                      {groupChat.Admin && groupChat.Admin.some(admin => admin === each._id)? <div className={styles.admin}>Group Admin</div>: null}
-                      <img src={options} alt="" onClick={()=>setAdminOption((prev)=>(prev === each._id)? null : each._id)}/>
+      <div className={styles.overlay} onClick={() => navigate('/home')} />
+      
+      <motion.div 
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className={styles.content}
+      >
+        <button className={styles.closeBtn} onClick={() => navigate('/home')}><X size={24} /></button>
 
-                      <div className={styles.adminOptions}  style={{'visibility': adminOption === each._id? "" : "hidden"}}>
-                        {groupChat.Admin.some(admin => admin === user._id) && each._id !== user._id?
-                        <>{<button onClick={()=>{dispatch(leaveGroup(user._id, groupChat._id, each._id))}} >Remove</button>}
-                        <button onClick={()=>{dispatch(makeAdmin(user._id, groupChat._id, each._id))}}>Make Admin</button></>: null}
-                        <button onClick={()=>{if (each._id === user._id) {
-                            navigate('/settings');
-                        } else {
-                            dispatch(getSingleUser(each._id));
-                            navigate('/userProfile');
-                        }}}>View</button>
-                      </div>
-                    </div>
-                  </div>
-              );
-            })}
+        <div className={styles.topSection}>
+          <div className={styles.profileBox}>
+            <div className={styles.avatarContainer}>
+              {groupChat.profile ? (
+                <img src={groupChat.profile} alt={groupChat.name} className={styles.avatar} onClick={() => setShowFullPhoto(true)} />
+              ) : (
+                <div className={styles.placeholder}><UserIcon size={48} /></div>
+              )}
+              <button className={styles.cameraBtn} onClick={() => fileInputRef.current.click()}><Camera size={18} /></button>
+              <input ref={fileInputRef} type="file" hidden onChange={handlePhotoChange} accept="image/*" />
+            </div>
+            <h2 className={styles.groupName}>{groupChat.name}</h2>
+            <div className={styles.adminBadges}>
+              {groupChat.Admin.map(adminId => (
+                <span key={adminId} className={styles.badge}>
+                  <Shield size={12} /> Admin
+                </span>
+              ))}
+            </div>
           </div>
-          
+
+          <div className={styles.descriptionBox}>
+            <div className={styles.boxHeader}>
+              <h3>Description</h3>
+              {isEditing ? (
+                <Check size={18} className={styles.saveIcon} onClick={handleDescSave} />
+              ) : (
+                <Edit2 size={18} className={styles.editIcon} onClick={() => setIsEditing(true)} />
+              )}
+            </div>
+            <textarea 
+              disabled={!isEditing} 
+              value={desc} 
+              onChange={(e) => setDesc(e.target.value)}
+              placeholder="What's this group about?"
+              maxLength="200"
+            />
+            <span className={styles.charCount}>{desc.length}/200</span>
+          </div>
         </div>
-      </div>
-      <div className={styles.cut} onClick={()=>navigate('/home')}>X</div>
+
+        <div className={styles.tabsSection}>
+          <div className={styles.mediaContainer}>
+            <div className={styles.header}>
+              <h3>Gallery</h3>
+              <span>{mediaChats.length} files</span>
+            </div>
+            <div className={styles.carouselWrapper}>
+              <Carousel length={mediaChats.length || 1}>
+                {mediaChats.length > 0 ? (
+                  mediaChats.map((c, i) => <img key={i} src={c.message.message} alt="" className={styles.mediaItem} />)
+                ) : (
+                  <div className={styles.emptyGallery}>No media yet.</div>
+                )}
+              </Carousel>
+            </div>
+          </div>
+
+          <div className={styles.memberContainer}>
+            <div className={styles.header}>
+              <h3>Allies ({members.length})</h3>
+            </div>
+            <div className={styles.memberList}>
+              {members.map((m) => (
+                <div key={m._id} className={styles.memberItem}>
+                  <div className={styles.mAvatar}>
+                    {m.profile ? <img src={m.profile} alt="" /> : <div className={styles.mPlaceholder}>{m.name[0]}</div>}
+                  </div>
+                  <div className={styles.mInfo}>
+                    <p className={styles.mName}>{m._id === user._id ? "You" : m.name}</p>
+                    <p className={styles.mAbout}>{m.about}</p>
+                  </div>
+                  <div className={styles.mActions}>
+                    <MoreVertical size={20} className={styles.moreIcon} onClick={() => setAdminMenu(adminMenu === m._id ? null : m._id)} />
+                    <AnimatePresence>
+                      {adminMenu === m._id && (
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.9, x: -20 }}
+                          animate={{ opacity: 1, scale: 1, x: 0 }}
+                          exit={{ opacity: 0, scale: 0.9 }}
+                          className={styles.dropdown}
+                        >
+                          <button onClick={() => {
+                            if (m._id === user._id) navigate('/settings');
+                            else { dispatch(getSingleUser(m._id)); navigate('/userProfile'); }
+                          }}>View Identity</button>
+                          
+                          {groupChat.Admin.includes(user._id) && m._id !== user._id && (
+                            <>
+                              <button onClick={() => dispatch(makeAdmin(user._id, groupChat._id, m._id))}>
+                                {groupChat.Admin.includes(m._id) ? "Revoke Admin" : "Make Admin"}
+                              </button>
+                              <button className={styles.remove} onClick={() => dispatch(leaveGroup(m._id, groupChat._id))}>Remove from Team</button>
+                            </>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.footer}>
+          <button className={styles.leaveBtn} onClick={() => dispatch(leaveGroup(user._id, groupChat._id))}>
+            <LogOut size={20} /> Leave Group
+          </button>
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {showFullPhoto && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className={styles.fullPhotoOverlay}
+            onClick={() => setShowFullPhoto(false)}
+          >
+            <img src={groupChat.profile} alt="" />
+            <div className={styles.photoControls}>
+              <button onClick={() => fileInputRef.current.click()}>Update</button>
+              <button onClick={() => dispatch(deleteGroupPhoto(groupChat._id))}>Remove</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

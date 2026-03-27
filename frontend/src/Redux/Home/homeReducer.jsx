@@ -1,13 +1,12 @@
-import { act } from "react";
-import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group, New_Group_Created, Removed_From_Group, Create_Group_Success, Get_User_Request, Get_User_Failure, Get_User_Success, Change_Theme, Get_Latest_Chat } from "../actionTypes";
-
+import { All_Friends_Failure, All_Friends_Request, All_Friends_Success, All_Users_Failure, All_Users_Request, All_Users_Success, Close_Search, New_Admin, Search_Users_Failure, Search_Users_Request, Search_Users_Success, Sort_Groups, Updated_Group, New_Group_Created, Removed_From_Group, Create_Group_Success, Get_User_Request, Get_User_Failure, Get_User_Success, Change_Theme, Get_Latest_Chat, Open_Group_Success, SET_SIDEBAR_TAB } from "../actionTypes";
 
 const initialState = {
-  allUsers: localStorage.getItem('allUsers') ? JSON.parse(localStorage.getItem('allUsers')) : '',
-  allFriends: localStorage.getItem('allFriends') ? JSON.parse(localStorage.getItem('allFriends')) : '',
-  searchUsers: localStorage.getItem('searchUsers') ? JSON.parse(localStorage.getItem('searchUsers')) : '',
+  allUsers: localStorage.getItem('allUsers') ? JSON.parse(localStorage.getItem('allUsers')) : [],
+  allFriends: localStorage.getItem('allFriends') ? JSON.parse(localStorage.getItem('allFriends')) : [],
+  searchUsers: localStorage.getItem('searchUsers') ? JSON.parse(localStorage.getItem('searchUsers')) : [],
   newUser: '',
   theme: localStorage.getItem('theme') ? localStorage.getItem("theme") : 'og',
+  activeTab: 'all', // Added for sidebar navigation
   latestChat: sessionStorage.getItem('latestChat')? JSON.parse(sessionStorage.getItem('latestChat')):[],
   loading: false,
   error: null,
@@ -48,6 +47,17 @@ function homeReducer(state=initialState,action){
         loading:false,
         error: null,
       }
+    case Open_Group_Success:
+        const existing = state.allFriends.find(f => f._id === action.payload.groupChat._id);
+        if (existing) return { ...state, loading: false };
+        const newFriendsList = [action.payload.groupChat, ...state.allFriends];
+        localStorage.setItem('allFriends', JSON.stringify(newFriendsList));
+        return {
+          ...state,
+          allFriends: newFriendsList,
+          loading: false,
+          error: null
+        }
     case Close_Search:
       localStorage.removeItem('searchUsers');
       return{
@@ -67,22 +77,17 @@ function homeReducer(state=initialState,action){
           ...state,
         }
       }else {
-       // Retrieve and parse chats from sessionStorage
           const chats = state.latestChat;
-
-          // Sort the chats by createdAt (most recent first)
           const sortedChats = [...chats].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-          // Map to find the latest chat for each group
           const groupLatestChats = {};
           sortedChats.forEach(chat => {
-            const groupId = chat.Group?.[0]?.toString(); // Assuming Group is an array
+            const groupId = chat.Group?.[0]?.toString();
             if (groupId && (!groupLatestChats[groupId] || new Date(chat.createdAt) > new Date(groupLatestChats[groupId].createdAt))) {
               groupLatestChats[groupId] = chat;
             }
           });
 
-          // Sort groups based on the latest chat's createdAt timestamp
           const sortedGroups = state.allFriends
             .map(group => {
               const groupId = group._id.toString();
@@ -92,17 +97,14 @@ function homeReducer(state=initialState,action){
             .sort((a, b) => {
               const dateA = new Date(a.latestChat?.createdAt || 0).getTime();
               const dateB = new Date(b.latestChat?.createdAt || 0).getTime();
-              return dateB - dateA; // Most recent first
+              return dateB - dateA;
             })
             .map(group => {
-              // Remove the latestChat field after sorting
               const { latestChat, ...rest } = group;
               return rest;
             });
 
-          // Store the sorted groups in localStorage
           localStorage.setItem('allFriends', JSON.stringify(sortedGroups));
-          // Return the updated state
           return {
             ...state,
             allFriends: [...sortedGroups],
@@ -114,14 +116,13 @@ function homeReducer(state=initialState,action){
           if (friend._id === action.payload.group) {
               return {
                   ...friend,
-                  Admin: action.payload.admins // Update the `Admin` field
+                  Admin: action.payload.admins
               };
           }
-          return friend; // Keep the rest of the objects unchanged
+          return friend;
       });
   
       localStorage.setItem('allFriends', JSON.stringify(updatedFriends));
-  
       return {
           ...state,
           allFriends: updatedFriends
@@ -139,7 +140,6 @@ function homeReducer(state=initialState,action){
         return friend;
       })
       localStorage.setItem('allFriends', JSON.stringify(newFriends));
-  
       return {
           ...state,
           allFriends: newFriends
@@ -179,11 +179,16 @@ function homeReducer(state=initialState,action){
         sessionStorage.setItem('latestChat', JSON.stringify([...updatedChats, newChat]));
         return {
           ...state,
-          latestChat: [...updatedChats, newChat], // Add the new chat after filtering out the old one
+          latestChat: [...updatedChats, newChat],
         };
       }
       return state;
       
+    case SET_SIDEBAR_TAB:
+      return {
+        ...state,
+        activeTab: action.payload
+      }
     case All_Users_Failure:
     case All_Friends_Failure:
     case Search_Users_Failure:

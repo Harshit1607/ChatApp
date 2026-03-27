@@ -144,3 +144,4 @@ export const End_Group_Call = 'End_Group_Call'
 export const Audio_GroupCall = 'Audio_GroupCall'
 
 export const Set_Call_Receiver = 'Set_Call_Receiver'
+export const SET_SIDEBAR_TAB = 'SET_SIDEBAR_TAB'

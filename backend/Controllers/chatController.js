@@ -1,6 +1,6 @@
 import Group from '../models/groups.js'
 import Chat from '../models/chats.js'
-import { getIo } from '../Socket/socket.js';
+import User from '../models/user.js'
 import { getBucket } from '../config/firebaseAdmin.js';
 import { v4 as uuidv4 } from "uuid";
 
@@ -15,7 +15,7 @@ export const getChats = async (req, res) => {
       { $addToSet: { 'message.viewedBy': user._id } }
     );
 
-    const chats = await Chat.find({ Group: group._id }).sort({ createdAt: -1 });
+    const chats = await Chat.find({ Group: group._id }).sort({ createdAt: 1 });
 
     const bucket = await getBucket();
     if (!bucket) {

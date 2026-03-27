@@ -1,113 +1,150 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import styles from './ChatBox.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadChats } from '../../../Redux/Chat/chatActions';
 import SingleChat from '../SingleChat/SingleChat';
-import { otherStopTyping, otherTyping, viewChat } from '../../../Socket/ChatSocket';
-import spider from '../../../Assets/redSpider.svg'
-import gwspider from '../../../Assets/blueSpider.svg'
+import { viewChat } from '../../../Socket/ChatSocket';
 import { closeTranslation, translateText } from '../../../Redux/Translation/translationActions';
+import { X } from 'lucide-react'
 
 const ChatBox = () => {
-  const {groupChat} = useSelector(state=>state.groupReducer);
-  const {user} = useSelector(state=>state.userReducer);
-  const {chats, typing} = useSelector(state=>state.chatReducer);
-  const {theme} = useSelector(state=>state.homeReducer);
-  const {languages, isTranslating, toTranslate, translatedText} = useSelector(state=>state.translationReducer);
+  const { groupChat } = useSelector(state => state.groupReducer);
+  const { user } = useSelector(state => state.userReducer);
+  const { chats, typing } = useSelector(state => state.chatReducer);
+  const { theme } = useSelector(state => state.homeReducer);
+  const { languages, isTranslating, toTranslate, translatedText } = useSelector(state => state.translationReducer);
 
-  const [selectedLang, setSelectedLang] = useState("");
-  const [visibleChatId, setVisibleChatId] = useState(null);
-  const [chatOptions, setChatOptions] = useState(null);
-
+  const scrollRef = useRef(null);
   const dispatch = useDispatch();
-  useEffect(()=>{
+
+  useEffect(() => {
     dispatch(loadChats(groupChat, user));
-  }, [groupChat])
-  useEffect(()=>{
-    viewChat(groupChat._id, user._id)
-  }, [chats?.length])
+  }, [groupChat]);
+
+  useEffect(() => {
+    if (groupChat) {
+      viewChat(groupChat._id, user._id)
+    }
+    // Scroll to bottom on new messages
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [chats?.length]);
 
   const isNewDay = (currentChat, previousChat) => {
+    if (!previousChat) return true;
     const currentDate = new Date(currentChat.createdAt).toDateString();
-    const previousDate = previousChat ? new Date(previousChat.createdAt).toDateString() : null;
+    const previousDate = new Date(previousChat.createdAt).toDateString();
     return currentDate !== previousDate;
   };
-  const handleTranslateLanguage = (e)=>{
-    const selectedCode = e.target.value; // Get the selected language code
-    const selectedLanguage = languages.find(lang => lang.code === selectedCode); // Find the corresponding language object
-    setSelectedLang(selectedLanguage); // Update the state with the language object
-  }
-  const submitTranslateLang = ()=>{
-    dispatch(translateText(toTranslate, selectedLang.code));
-  }
 
   return (
     <div className={styles.main}>
-      <div className={styles.chatbox}>
-      {groupChat && chats && chats.length > 0
-          ? chats
+      <div className={styles.chatScrollArea} ref={scrollRef}>
+        <div className={styles.chatContent}>
+          {groupChat && chats && chats.length > 0 ? (
+            chats
               .filter((chat) => chat.Group[0] === groupChat._id && chat.Users.includes(user._id))
-              .map((chat, index) => (
+              .map((chat, index, filteredChats) => (
                 <React.Fragment key={chat._id}>
-                  <SingleChat chat={chat} visible={visibleChatId === chat._id} // Check if this chat is currently visible
-                    setVisibleChatId={setVisibleChatId} index={index} chatOptions={chatOptions === chat._id}
-                    setChatOptions={setChatOptions}/>
-                  {isNewDay(chat, chats.filter((chat) => chat.Group[0] === groupChat._id && chat.Users.includes(user._id))[index + 1]) && (
+                  {isNewDay(chat, filteredChats[index - 1]) && (
                     <div className={styles.dateSeparator}>
-                      {new Date(chat.createdAt).toLocaleDateString(undefined, {
-                        weekday: 'long',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                      <span>
+                        {new Date(chat.createdAt).toLocaleDateString(undefined, {
+                          weekday: 'short',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </span>
                     </div>
                   )}
-                  
+                  <SingleChat 
+                    chat={chat} 
+                    index={index}
+                  />
                 </React.Fragment>
               ))
-          : null}
-      </div>
-      <div style={{"display": !typing? "none" : ""}} className={styles.typingIndicator}>
-          <img src={theme === 'gw'? gwspider: spider} alt="" />
-          <img src={theme === 'gw'? gwspider: spider} alt="" />
-          <img src={theme === 'gw'? gwspider: spider} alt="" />
-          <img src={theme === 'gw'? gwspider: spider} alt="" />
-      </div>
-      {isTranslating && languages && (
-        <div className={styles.translationBox}>
-          <div className={styles.cut} onClick={()=>dispatch(closeTranslation())}>X</div>
-          <select
-            value={selectedLang?.code || ""} // Use the code of the selected language or an empty string
-            onChange={handleTranslateLanguage}
-          >
-            <option value="" disabled>
-              Select an option
-            </option>
-            {languages.map((each) => (
-              <option key={each.code} value={each.code}>
-                {each.name}
-              </option>
-            ))}
-          </select>
-          <button onClick={submitTranslateLang}>Select</button>
-        </div>
-      )}
-      {
-        translatedText && 
-        <div className={styles.translatedBox} onClick={()=>dispatch(closeTranslation())}>
-          <div className={styles.cut}>X</div>
-          <div>
-            <span>Orignal: </span>
-            <span>{toTranslate}</span>
-          </div>
-          <div>
-            <span>{selectedLang.name}: </span>
-            <span>{translatedText}</span>
-          </div>
+          ) : (
+            <div className={styles.emptyChat}>
+              <motion.div 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className={styles.emptyIcon}
+              >
+                🕸️
+              </motion.div>
+              <p>No messages yet. Start the web!</p>
+            </div>
+          )}
           
+          <AnimatePresence>
+            {typing && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className={styles.typingIndicator}
+              >
+                <div className={styles.dots}>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span className={styles.typingText}>Someone is swinging...</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      }
+      </div>
+
+      <AnimatePresence>
+        {isTranslating && languages && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className={styles.translationOverlay}
+          >
+            <div className={styles.translationModal}>
+              <h3>Translate Message</h3>
+              <p>"{toTranslate}"</p>
+              <select onChange={(e) => {
+                const lang = languages.find(l => l.code === e.target.value);
+                if (lang) dispatch(translateText(toTranslate, lang.code));
+              }}>
+                <option value="">Select Target Language</option>
+                {languages.map((l) => (
+                  <option key={l.code} value={l.code}>{l.name}</option>
+                ))}
+              </select>
+              <button onClick={() => dispatch(closeTranslation())}>Cancel</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {translatedText && (
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 20, opacity: 0 }}
+            className={styles.translatedToast}
+          >
+            <div className={styles.toastHeader}>
+              <span>Translation</span>
+              <X size={16} onClick={() => dispatch(closeTranslation())} />
+            </div>
+            <div className={styles.toastBody}>
+              <p className={styles.original}>{toTranslate}</p>
+              <p className={styles.translated}>{translatedText}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
 
-export default ChatBox
+export default ChatBox

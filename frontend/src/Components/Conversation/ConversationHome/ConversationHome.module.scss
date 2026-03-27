@@ -1,89 +1,149 @@
-.main{
-  background-color: var(--primary-color);
-  width: 25%;
-  height: 100%;
-  @include flexbox(column, start, center);
+.main {
+  width: 380px;
+  height: 100vh;
+  background: var(--sidebar-bg);
+  @include glass;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow: hidden;
 
-  @media (max-width: $desktop) {
-    width: 30%;
-  }
   @media (max-width: $laptop) {
-    width: 90%;
-  }
-  @media (max-width: $tablet) {
-    width: 85%;
+    width: 100%;
+    margin-left: 0;
   }
 }
 
-.heading{
-  width: 90%;
-  height: 8%;
-  min-height: 50px;
-  @include flexbox;
-  justify-content: start;
-  > span{
-    font-size: 1.4rem;
-    font-weight: 500;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 
-.searchBar{
-  width: 90%;
-  height: 8%;
-  min-height: 50px;
+.addBtn {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  border-radius: 12px;
+  color: var(--primary-color);
   @include flexbox;
-  align-items: start;
-  position: relative;
-  gap: 5%;
-  > input{
-    width: 75%;
-    height: 70%;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.searchWrapper {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  height: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+
+  &.focused {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(var(--primary-color), 0.2);
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .searchIcon {
+    color: var(--text-secondary);
+    margin-right: 10px;
+  }
+
+  .searchInput {
+    flex: 1;
+    background: transparent;
     border: none;
-    border-radius: 10px;
-    padding:  0 10px;
-    font-size: 1rem;
-    background-color: var(--input-color);
-    color: var(--primary-color);
-    &:focus{
-      outline: none;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    outline: none;
+
+    &::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
     }
-    
-  }
-  >div{
-    width: 15%;
-    height: 70%;
-    @include flexbox;
-    >img{
-      width: 100%;
-      height: 100%;
-    }
-  }
-  .groupVisible{
-    position: absolute;
-    bottom: -50%;
-    right: 0;
-    padding: 2px 5px;
-    text-align: center;
-    border-radius: 10px;
-    background-color: #fff;
-    color: var(--primary-color);
   }
 }
 
-.covoContainer{
-  height: 84%;
-  @include flexbox(column, start);
-  width: 100%;
-  overflow-y: scroll;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
+.categoryTabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px;
+  border-radius: 14px;
+
+  .tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-secondary);
+
+    &.active {
+      background: var(--primary-color);
+      color: white;
+      box-shadow: 0 4px 15px rgba(var(--primary-color), 0.3);
+    }
+
+    &:not(.active):hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+  }
+}
+
+.convoContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+
   &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    width: 4px;
   }
-  > span:first-child{
-    width: 90%;
-    text-align: start;
-    margin-bottom: 10px;
-    font-size: small;
+
+  .sectionTitle {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    padding-left: 5px;
   }
+}
+
+.emptyState {
+  @include flexbox(column);
+  height: 200px;
+  gap: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  opacity: 0.5;
+  font-style: italic;
+  text-align: center;
+  padding: 2rem;
 }

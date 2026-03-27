@@ -1,129 +1,157 @@
-.main{
-  width: 60%;
-  height: 70%;
-  background:
-    url('../../Assets/chatWeb.svg') no-repeat center,
-    var(--home-gradient);
-  background-size: 150%, cover;
-  background-position: right, center;
-  @include flexbox(column, space-evenly);
+.overlay {
   position: fixed;
-  top: 15%;
-  left: 20%;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px white;
-}
-.name{
-  width: 100%;
-  height: 15%;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
   @include flexbox;
-  >input{
-    width: 50%;
-    padding: 0 10px;
-    height: 80%;
-    border-radius: 10px;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--text-color);
-    background-color: var(--primary-color);
-}}
-.Users{
-  width: 100%;
-  height: 70%;
+}
+
+.modal {
+  background: var(--nav-bg);
+  @include glass;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  border-radius: 32px;
+  padding: 2rem;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
   display: flex;
-  flex-wrap: wrap; /* Enables wrapping to the next row */
-  gap: 10px; /* Optional: Adds spacing between items */
-  
+  flex-direction: column;
+  gap: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
-.single{
-  border-radius: 15px;
-  flex: 1 1 calc(33.333% - 10px); /* 3 columns layout */
-  min-width: calc(33.333% - 10px); /* Ensures proper column size */
-  max-width: calc(33.333% - 10px); /* Avoids expanding too much */
-  height: 70px;
-  box-sizing: border-box;
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  @include flexbox
-}
-.include{
-  border-radius: 15px;
-  flex: 1 1 calc(33.333% - 10px); /* 3 columns layout */
-  min-width: calc(33.333% - 10px); /* Ensures proper column size */
-  max-width: calc(33.333% - 10px); /* Avoids expanding too much */
-  height: 70px;
-  box-sizing: border-box;
-  background-color: var(--secondary-color);
-  opacity: 0.8;
-  color: var(--text-color);
-  @include flexbox
-  
-}
-.pfp{
-  width: 25%;
-  height: 100%;
-  @include flexbox;
-  >div{
-    width: 40px;
-    height: 40px;
-    background-color: var(--text-color);
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .titleGroup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    h3 { font-size: 1.5rem; font-weight: 800; color: white; margin: 0; }
+    .titleIcon { color: var(--primary-color); }
+  }
+
+  .closeBtn {
+    background: transparent;
+    padding: 8px;
     border-radius: 50%;
-  }
-  
-}
-.info{
-  width: 75%;
-  height: 100%;
-  @include flexbox(column, space-evenly, start);
-}
-
-.make{
-  width: 100%;
-  height: 15%;
-  @include flexbox;
-  >button{
-    width: 20%;
-    height: 60%;
-    border-radius: 10px;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--text-color);
-    background-color: var(--primary-color);
+    color: var(--text-secondary);
+    &:hover { background: rgba(255, 255, 255, 0.05); color: #e23636; }
   }
 }
 
-@media (max-width: $laptop) {
-  
-  .single, .include{
-    flex: 1 1 calc(50% - 10px); /* 3 columns layout */
-    min-width: calc(50% - 10px); /* Ensures proper column size */
-    max-width: calc(50% - 10px); /* Avoids expanding too much */
+.inputArea {
+  input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px 20px;
+    border-radius: 16px;
+    color: white;
+    font-size: 1.1rem;
+    transition: 0.3s;
+    outline: none;
+
+    &:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 20px rgba(var(--primary-color), 0.2);
+    }
   }
 }
 
-@media (max-width: $tablet) {
-  .main{
-    width: 90%;
-    left: 5%;
+.userSection {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .label { 
+    font-size: 0.85rem; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    color: var(--text-secondary); 
+    font-weight: 700;
   }
-  .Users{
-    @include flexbox(column, start, start);
-    flex-wrap: nowrap;
-    .single{
-      min-width: 100%;
-      max-height: 20%;
-    }
+}
+
+.userList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  overflow-y: auto;
+  padding-right: 5px;
+
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr;
   }
-  .name{
-    >input{
-      width: 80%;
-    }
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(var(--primary-color), 0.2); border-radius: 20px; }
+}
+
+.userItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+
+  &:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); }
+  &.selected { background: rgba(var(--primary-color), 0.1); border-color: var(--primary-color); }
+}
+
+.avatar {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  overflow: visible;
+
+  img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+  .placeholder { width: 100%; height: 100%; @include flexbox; background: var(--bg-color); color: var(--text-secondary); border-radius: 12px; font-weight: 700; }
+
+  .checkBadge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--primary-color);
+    color: white;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    @include flexbox;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   }
-  .make{
-    >button{
-      width: 50%;
-    }
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  .name { font-weight: 700; color: white; font-size: 0.95rem; }
+  .phone { font-size: 0.7rem; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; opacity: 0.6; }
+}
+
+.footer {
+  .submitBtn {
+    width: 100%;
+    background: var(--primary-color);
+    color: white;
+    padding: 16px;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(var(--primary-color), 0.3);
   }
-  
 }

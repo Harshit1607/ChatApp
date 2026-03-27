@@ -28,7 +28,7 @@ function chatReducer(state=initialState,action){
         error: null,
       }
     case New_Chat_Success:
-      const newChats = [action.payload.newChat,...state.chats ]
+      const newChats = [...state.chats, action.payload.newChat]
       sessionStorage.setItem('chats',JSON.stringify(newChats));
       return{
         ...state,

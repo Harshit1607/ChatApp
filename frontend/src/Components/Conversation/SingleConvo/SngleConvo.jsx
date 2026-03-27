@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import styles from './SingleConvo.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { openGroup } from '../../../Redux/Group/groupActions'
 import { getLatestChat } from '../../../Socket/ChatSocket'
-import spidermanFace from '../../../Assets/spidermanFace.svg'
-import gwenFace from '../../../Assets/gwenFace.png'
 import { leaveGroup } from '../../../Socket/GroupSocket'
 import { getPhoto } from '../../../Redux/Home/homeActions'
+import { User, MessageCircle } from 'lucide-react'
 
-const SngleConvo = ({single}) => {
-  const {user} = useSelector(state=>state.userReducer);
-  const {groupChat} = useSelector(state=>state.groupReducer);
-  const {chats} = useSelector(state=>state.chatReducer);
-  const {latestChat, theme} = useSelector(state=>state.homeReducer);
+const SngleConvo = ({ single }) => {
+  const { user } = useSelector(state => state.userReducer);
+  const { groupChat } = useSelector(state => state.groupReducer);
+  const { chats } = useSelector(state => state.chatReducer);
+  const { latestChat, theme } = useSelector(state => state.homeReducer);
   const [message, setMessage] = useState("");
   const [profile, setProfile] = useState("");
   
@@ -21,105 +21,129 @@ const SngleConvo = ({single}) => {
   const findName = () => {
     let name;
     single.UserDetails.forEach(each => {
-      if (each._id != user._id) {
+      if (each._id !== user._id) {
         name = each.name;
       }
     });
-    return name; // returns the found name
+    return name;
   };
 
-  useEffect(()=>{
-    if(!profile){
-      if(!single.isGroup){
+  useEffect(() => {
+    if (!profile) {
+      if (!single.isGroup) {
         findProfile();
-      }else{
+      } else {
         setProfile(single.profile);
       }
     }
+  }, []);
 
-  }, [])
   const findProfile = () => {
     single.UserDetails.forEach(async (each) => {
-      if (each._id != user._id) {
+      if (each._id !== user._id) {
         const newProfile = await dispatch(getPhoto(each._id));
         setProfile(newProfile);
       }
     });
-    
   };
-
-  
 
   useEffect(() => {
     getLatestChat(single._id);
   }, [chats?.length]);
 
-  useEffect(()=>{
-    if(latestChat.length > 0){
-      const newChat = latestChat.find(each=>each.Group[0] === single._id);
-    if(newChat){
-      setMessage(newChat);
+  useEffect(() => {
+    if (latestChat.length > 0) {
+      const newChat = latestChat.find(each => each.Group[0] === single._id);
+      if (newChat) {
+        setMessage(newChat);
+      }
     }
-    }
-    
-  }, [latestChat])
+  }, [latestChat]);
 
-  const sentBy = (id) =>{
+  const sentBy = (id) => {
     const sent = single.UserDetails.find(each => each._id === id);
-  return sent ? sent.name : undefined;
+    return sent ? sent.name : undefined;
   }
+
   const name = !single.isGroup && single.name === "" ? findName() : single.name;
   
-  const handleClick = () =>{
-    if(groupChat){
+  const isActive = groupChat?._id === single._id;
+
+  const handleClick = () => {
+    if (groupChat) {
       leaveGroup(groupChat._id)
     }
     dispatch(openGroup(user, null, single));
   }
 
   const formatDateTime = (timestamp) => {
-    const dateObj = new Date(timestamp); // Convert ISO 8601 string to Date object
-    const now = new Date(); // Current time as Date object
-
-    const elapsed = now - dateObj; // Difference in milliseconds
-    const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    const dateObj = new Date(timestamp);
+    const now = new Date();
+    const elapsed = now - dateObj;
+    const oneDay = 24 * 60 * 60 * 1000;
 
     if (elapsed > oneDay) {
-        // If more than 24 hours, return date in "DD/MM/YYYY" format
-        return dateObj.toLocaleDateString(undefined, {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
+      return dateObj.toLocaleDateString(undefined, {
+        day: '2-digit',
+        month: '2-digit'
+      });
     } else {
-        // If less than 24 hours, return time in "hh:mm AM/PM" format
-        return dateObj.toLocaleTimeString(undefined, {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
+      return dateObj.toLocaleTimeString(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
     }
-};
+  };
+
+  const isUnread = message && !message.message.viewedBy.includes(user._id) && (groupChat ? (message.Group !== groupChat._id) : true);
 
   return (
-    <div className={styles.main} onClick={handleClick} >
-      <div className={styles.pfp}>
-        <div>
-          {profile && <img src={profile} alt ="" />}
+    <motion.div 
+      whileHover={{ scale: 1.02, x: 5 }}
+      whileTap={{ scale: 0.98 }}
+      className={`${styles.main} ${isActive ? styles.active : ''}`} 
+      onClick={handleClick} 
+    >
+      <div className={styles.pfpWrapper}>
+        <div className={styles.pfpContainer}>
+          {profile ? (
+            <img src={profile} alt={name} className={styles.pfp} />
+          ) : (
+            <div className={styles.avatarPlaceholder}><User size={20} /></div>
+          )}
         </div>
+        {isUnread && (
+          <motion.div 
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+            className={styles.unreadBadge}
+          />
+        )}
       </div>
+
       <div className={styles.info}>
-        <span>{name}</span>
-        <span>{message ? `${message.message.sentBy[0]===user._id ? "You": (single.isGroup? sentBy(message.message.sentBy[0]): name)} : ${message.isMedia? "Image": message.message.message}`  : null}</span>
-      </div>
-      <div className={styles.others}>
-        <div>
-          {message && !message.message.viewedBy.includes(user._id) && (groupChat ? (message.Group !== groupChat._id) : true) ? <img src={theme === 'gw'? gwenFace: spidermanFace} /> : null}
+        <div className={styles.topInfo}>
+          <span className={styles.name}>{name}</span>
+          <span className={styles.time}>
+            {message && message.createdAt ? formatDateTime(message.createdAt) : ""}
+          </span>
         </div>
-        <span>{message && message.createdAt ? formatDateTime(message.createdAt) : ""}</span>
+        <div className={styles.bottomInfo}>
+          <span className={styles.preview}>
+            {message ? (
+              <>
+                <span className={styles.sender}>
+                  {message.message.sentBy[0] === user._id ? "You" : (single.isGroup ? sentBy(message.message.sentBy[0]) : name)}
+                </span>: {message.isMedia ? "Sent an image" : message.message.message}
+              </>
+            ) : "No messages yet"}
+          </span>
+          {isUnread && <MessageCircle size={14} className={styles.unreadIcon} />}
+        </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
-export default SngleConvo
+export default SngleConvo

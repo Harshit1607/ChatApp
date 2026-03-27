@@ -1,154 +1,128 @@
-.main{
+.main {
   width: 100%;
-  @include flexbox(row-reverse);
-  justify-content: start;
-  align-items: end;
-  .otherProfile{
-    height: 100%;
-    @include flexbox;
-  }
-}
-.userMain{
-  width: 100%;
-  @include flexbox;
-  justify-content: end;
-  align-items: start;
-}
-.chat{
-  padding: 2px 30px 15px 5px;
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  @include flexbox;
-  justify-content:start;
-  border-radius: 10px;
-  border-bottom-left-radius: 0px;
-  position: relative;
-  >img{
-    height: 225px;
-    width: 250px;
-    object-fit: cover;
-  }
-  >span{
-    padding: 5px;
-  }
-  >div{
-    @include flexbox;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    font-size: 0.7rem;
-  }
-  .chatOption{
-    width: 200px;
-    height: fit-content;
-    position: absolute;
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    @include flexbox(column, start, start);
-    >button{
-      width: 100%;
-      height: 50px;
-      @include flexbox;
-      background-color: var(--primary-color);
-      color: var(--text-color);
-      border: none;
-    }
-  }
-}
-.userChat{
-  padding: 2px 45px 15px 5px;
-  background-color: var(--secondary-color);
-  color: var(--text-color);
-  @include flexbox;
-  justify-content: start;
-  border-radius: 10px;
-  border-top-right-radius: 0px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
   
-  >img{
-    height: 225px;
-    width: 250px;
-    object-fit: cover;
-  }
-  >span{
-    padding: 5px;
-  }
-  >div{
-    @include flexbox;
-    gap: 5px;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    font-size: 0.7rem;
-    color: var(--text-color);
-    
-    img{
-      cursor: pointer;
-      width: 20px;
-      height: 20px;
-      color: var(--text-color);
+  &.me {
+    align-items: flex-end;
+    .bubble {
+      background: var(--bubble-me);
+      color: white;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 4px 15px rgba(var(--primary-color), 0.2);
     }
   }
-  .viewDetails{
-    width: 200px;
-    height: fit-content;
-    position: absolute;
-    left: -200px;
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    @include flexbox(column, space-between, start);
-    transition: visibility 0.3s ease-in-out; /* Smooth transition */
-    >div{
-      width: 100%;
-      @include flexbox(column, start, start);
-      >span{
-        &:first-child{
-          font-size: 1.2rem;
-        }
-      }
-    }
-  }
-  .chatOption{
-    width: 200px;
-    height: fit-content;
-    position: absolute;
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    @include flexbox(column, start, start);
-    >button{
-      width: 100%;
-      height: 50px;
-      @include flexbox;
-      background-color: var(--primary-color);
-      color: var(--text-color);
-      border: none;
+
+  &.other {
+    align-items: flex-start;
+    .bubble {
+      background: var(--bubble-other);
+      color: var(--text-primary);
+      border-bottom-left-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
   }
 }
 
-
-
-.triangle{
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-bottom: 10px solid var(--primary-color);
+.senderName {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 4px;
+  margin-left: 12px;
 }
 
-.usertriangle{
-  width: 0;
-  height: 0;
-  border-right: 10px solid transparent;
-  border-top: 10px solid var(--secondary-color);
+.bubbleWrapper {
+  position: relative;
+  max-width: 70%;
 }
 
-@media (max-width: $tablet) {
-  .userChat > img {
-    height: 150px;
-    width: 175px;
+.bubble {
+  padding: 10px 14px;
+  border-radius: 20px;
+  position: relative;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.1);
   }
-  .chat > img {
-    height: 150px;
-    width: 175px;
+}
+
+.textContent {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.mediaContent {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-bottom: 4px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.time {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.tick {
+  display: flex;
+  color: rgba(255, 255, 255, 0.6);
+  
+  &.read {
+    color: var(--secondary-color);
+  }
+}
+
+.optionsMenu {
+  position: absolute;
+  top: 100%;
+  z-index: 100;
+  background: var(--nav-bg);
+  @include glass;
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 150px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  margin-top: 8px;
+
+  .me & { right: 0; }
+  .other & { left: 0; }
+
+  button {
+    background: transparent;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--primary-color);
+    }
+
+    &.deleteAll {
+      color: #ff4444;
+      &:hover { background: rgba(255, 68, 68, 0.1); }
+    }
   }
 }

@@ -1,123 +1,122 @@
 import React, { useState, useRef, useEffect } from 'react'
-import styles from'./SingleChat.module.scss'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Check, CheckCheck, MoreVertical, Languages, Trash2, Heart } from 'lucide-react'
+import styles from './SingleChat.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import singleTick from '../../../Assets/singleTick.svg'
-import doubleTick from '../../../Assets/doubleTick.svg'
-import singleTickWhite from '../../../Assets/singleTickWhite.svg'
-import doubleTickWhite from '../../../Assets/doubleTickWhite.svg'
 import { getLanguages } from '../../../Redux/Translation/translationActions'
 import { deleteForAll, deleteForMe } from '../../../Redux/Chat/chatActions'
 
-const SingleChat = ({chat, visible, setVisibleChatId, index, chatOptions, setChatOptions }) => {
-  const {user} = useSelector(state=>state.userReducer);
-  const {groupChat} = useSelector(state=>state.groupReducer);
-  const {theme} = useSelector(state=>state.homeReducer);
+const SingleChat = ({ chat, index }) => {
+  const { user } = useSelector(state => state.userReducer);
+  const { groupChat } = useSelector(state => state.groupReducer);
+  const { theme } = useSelector(state => state.homeReducer);
   const dispatch = useDispatch();
-  const {isTranslating} = useSelector(state=>state.translationReducer);
-  
-  function convertTo24HourFormat(dateString) {
-    const date = new Date(dateString);
 
-    // Get hours and minutes in 24-hour format
-    const hours = date.getHours();  // 0-23
-    const minutes = date.getMinutes();  // 0-59
+  const [showOptions, setShowOptions] = useState(false);
+  const isMe = user._id === chat.message.sentBy[0];
+  const optionsRef = useRef(null);
 
-    // Pad minutes with a leading zero if needed
-    return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-}
-
-const viewDetailsRef = useRef(null);
-const chatOptionRef = useRef(null);
-
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      viewDetailsRef.current &&
-      !viewDetailsRef.current.contains(event.target)
-    ) {
-      setVisibleChatId(null); // Close viewDetails
-    }
-
-    if (
-      chatOptions !== null && // Only check when chatOptions is open
-      chatOptionRef.current &&
-      !chatOptionRef.current.contains(event.target)
-    ) {
-      setChatOptions(null); // Close chatOptions
-    }
+  const formatTime = (dateInfo) => {
+    const d = new Date(dateInfo);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Attach event listener
-  window.addEventListener("click", handleClickOutside);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (optionsRef.current && !optionsRef.current.contains(e.target)) {
+        setShowOptions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-  // Cleanup event listener on unmount
-  return () => {
-    window.removeEventListener("click", handleClickOutside);
+  const variants = {
+    initial: { opacity: 0, x: isMe ? 20 : -20, scale: 0.9 },
+    animate: { opacity: 1, x: 0, scale: 1 },
+    exit: { opacity: 0, scale: 0.8 }
   };
-}, [chatOptions, visible]);
 
-const handleToggle = (e) => {
-  e.stopPropagation();
-  setVisibleChatId(visible ? null : chat._id); // Toggle visibility for this chat
-};
-const handleOptions = (e)=>{
-  e.preventDefault();
-  e.stopPropagation();
-  setChatOptions(chatOptions ? null : chat._id)
-}
+  const isRead = chat.message.viewedBy.length === chat.Users.length;
 
   return (
-    <div className={user._id  === chat.message.sentBy[0] ? styles.userMain :  styles.main}>
-      <div className={user._id  === chat.message.sentBy[0] ? styles.userChat :  styles.chat} onContextMenu={handleOptions}>
-        {chat.isMedia ? <img src={chat.message.message}/>:<span>{chat.message.message}</span>}
-        <div>
-          <span>{convertTo24HourFormat(chat.createdAt)}</span>
-          <div onClick={handleToggle}>
-            {user._id === chat.message.sentBy[0]
-              ? chat.message.viewedBy.length === chat.Users.length
-                ? <img src={theme === 'gw'?doubleTick: doubleTickWhite} alt="" />
-                : <img src={theme === 'gw'?singleTick: singleTickWhite} alt="" />
-              : null}
-          </div>
-        </div>
-        <div className={styles.viewDetails} ref={viewDetailsRef} style={{visibility: visible? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%"}}>
-          <div>
-            <span>Viewed By</span>
-            {
-              chat.message.viewedBy.filter(each=>each !== user._id).map(each=>{
-                return(
-                  <span key={each}>{groupChat.UserDetails.find(e => e._id === each).name}</span>
-                )
-                })
-            }
-          </div>
-          <div>
-            <span>Sent to</span>
-            {
-              chat.Users.filter(each=> !chat.message.viewedBy.includes(each)).map(each=>{ 
-                return(
-                  <span key={each}>{groupChat.UserDetails.find(e => e._id === each).name}</span>
-                )
-                })
-            }
-          </div>
-      </div>
-      <div className={styles.chatOption} ref={chatOptionRef} style={{visibility: chatOptions ? "" : "hidden", bottom: index === 0? "0": "auto", top: index === 0? "auto": "20%", left: user._id === chat.message.sentBy[0] ? "-200px": "auto", right: user._id === chat.message.sentBy[0]? "auto": "-200px"}}>
-        <button style={{display: user._id !== chat.message.sentBy[0] ? "" : "none"}}  onClick={()=>{dispatch(getLanguages(chat.message.message))
-                              setChatOptions(chatOptions ? null : chat._id)
-        }}>Translate</button>
-        <button onClick={()=>dispatch(deleteForMe(chat._id, user._id))}>Delete for me</button>
-        <button style={{display: user._id === chat.message.sentBy[0] ? "" : "none"}}  onClick={()=>dispatch(deleteForAll(chat._id, user._id))}>Delete For All</button>
-      </div>
-      </div>
-      <div className={user._id  === chat.message.sentBy[0] ? styles.usertriangle :  styles.triangle}></div>
-      {groupChat.isGroup && user._id !== chat.message.sentBy[0] && (
-        <div className={styles.otherProfile}>
-          {groupChat.UserDetails.find(each => each._id === chat.message.sentBy[0])?.name}
-        </div>
+    <motion.div 
+      variants={variants}
+      initial="initial"
+      animate="animate"
+      className={`${styles.main} ${isMe ? styles.me : styles.other}`}
+    >
+      {!isMe && groupChat.isGroup && (
+        <span className={styles.senderName}>
+          {groupChat.UserDetails.find(u => u._id === chat.message.sentBy[0])?.name}
+        </span>
       )}
-    </div>
+
+      <div className={styles.bubbleWrapper}>
+        <motion.div 
+          layout
+          className={styles.bubble}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setShowOptions(true);
+          }}
+        >
+          {chat.isMedia ? (
+            <img src={chat.message.message} alt="Media" className={styles.mediaContent} />
+          ) : (
+            <p className={styles.textContent}>{chat.message.message}</p>
+          )}
+
+          <div className={styles.meta}>
+            <span className={styles.time}>{formatTime(chat.createdAt)}</span>
+            {isMe && (
+              <span className={`${styles.tick} ${isRead ? styles.read : ''}`}>
+                {isRead ? <CheckCheck size={14} /> : <Check size={14} />}
+              </span>
+            )}
+          </div>
+        </motion.div>
+
+        <AnimatePresence>
+          {showOptions && (
+            <motion.div 
+              ref={optionsRef}
+              initial={{ opacity: 0, scale: 0.8, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className={styles.optionsMenu}
+            >
+              {!isMe && (
+                <button onClick={() => {
+                  dispatch(getLanguages(chat.message.message));
+                  setShowOptions(false);
+                }}>
+                  <Languages size={14} /> Translate
+                </button>
+              )}
+              <button onClick={() => {
+                dispatch(deleteForMe(chat._id, user._id));
+                setShowOptions(false);
+              }}>
+                <Trash2 size={14} /> Delete for me
+              </button>
+              {isMe && (
+                <button 
+                  className={styles.deleteAll}
+                  onClick={() => {
+                    dispatch(deleteForAll(chat._id, user._id));
+                    setShowOptions(false);
+                  }}
+                >
+                  <Trash2 size={14} /> Delete for all
+                </button>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
   )
 }
 
-export default SingleChat
+export default SingleChat

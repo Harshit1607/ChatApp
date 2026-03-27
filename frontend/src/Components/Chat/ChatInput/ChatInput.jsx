@@ -1,92 +1,139 @@
 import React, { useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Send, Paperclip, Smile, Image as ImageIcon } from 'lucide-react'
 import styles from './ChatInput.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { newChat } from '../../../Redux/Chat/chatActions'
-import send from '../../../Assets/send.svg'
-import { Debouncing } from '../../../Utils/Debouncing'
 import { stopTyping, typingIndi } from '../../../Socket/ChatSocket'
-import sendGw from '../../../Assets/sendGw.svg'
-import attachDark from '../../../Assets/attachDark.svg'
-import attachLight from '../../../Assets/attachLight.svg'
-
 
 const ChatInput = () => {
-  const {user} = useSelector(state=>state.userReducer);
-  const {groupChat} = useSelector(state=>state.groupReducer);
-  const {theme} = useSelector(state=>state.homeReducer);
+  const { user } = useSelector(state => state.userReducer);
+  const { groupChat } = useSelector(state => state.groupReducer);
   const [text, setText] = useState("")
-  const [typing, setTyping] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
   const dispatch = useDispatch();
-
   const fileInputRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
 
-  const handleInput = (e)=>{
-    const value = e.target.value
-    setText(value)
+  const handleInput = (e) => {
+    const value = e.target.value;
+    setText(value);
 
-    
-    
-    if(!typing){
-      setTyping(true);
-      // call socket.emit(typing) here
-      typingIndi(groupChat._id, user._id)
+    if (!isTyping && value.length > 0) {
+      setIsTyping(true);
+      typingIndi(groupChat._id, user._id);
     }
-    const debouncedStopTyping = Debouncing(() => {
-      setTyping(false); // Update typing state
-      stopTyping(groupChat._id, user._id); // Emit 'stop typing' event
-    }, 3000); // Shortened timeout to 2000ms (2 seconds)
-  
-    // Call debounced function
-    debouncedStopTyping();
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+      stopTyping(groupChat._id, user._id);
+    }, 2000);
   }
 
-  const handleClick = ()=>{
-    if (text.trim()) { // Prevent sending an empty message
+  const handleSend = () => {
+    if (text.trim()) {
       dispatch(newChat(text, user._id, groupChat._id));
-      setText(""); // Clear the input after sending
+      setText("");
+      setIsTyping(false);
+      stopTyping(groupChat._id, user._id);
     }
   }
 
-  const handleKeyDown = (e) =>{
-    if (e.key === "Enter" && !e.shiftKey) { // If Enter is pressed without Shift
-      e.preventDefault(); // Prevent form submission or newline
-      handleClick(); // Trigger handleClick function
-    } else if (e.key === "Enter" && e.shiftKey) { // If Shift + Enter is pressed
-      // Allow newline
-      setText(prev => prev + '\n'); // Add a newline to the text
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   }
 
-  const handleChangePhoto = ()=>{
-      fileInputRef.current.click(); // Programmatically trigger the input
-    }
-  
-    const handleNewImage = (e) => {
-      const file = e.target.files[0];  
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Image = reader.result; // Base64 encoded image
-          // Send image to backend
-          dispatch(newChat(base64Image, user._id, groupChat._id, true));
-        };
-        reader.readAsDataURL(file); // Convert image to base64
-      }
-    };
+  const handleFileClick = () => fileInputRef.current.click();
 
-  
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        dispatch(newChat(reader.result, user._id, groupChat._id, true));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
-    <div className={styles.main}>
-      <input type="text" value={text} onChange={(e)=>handleInput(e)} onKeyDown={handleKeyDown} placeholder='Enter you message...'/>
-      <div onClick={handleChangePhoto}>
-        <input ref={fileInputRef} type='file'accept="image/*" onChange={handleNewImage}/>
-        <img src={theme === 'gw'? attachDark:attachLight}/>
-      </div>
-      <div onClick={handleClick}>
-        <img src={theme === 'gw'? sendGw:send} />
-      </div>
+    <div className={styles.container}>
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className={styles.main}
+      >
+        <div className={styles.inputWrapper}>
+          <motion.button 
+            whileHover={{ scale: 1.1, color: 'var(--primary-color)' }}
+            whileTap={{ scale: 0.9 }}
+            className={styles.attachBtn}
+            onClick={handleFileClick}
+          >
+            <Paperclip size={20} />
+            <input 
+              ref={fileInputRef} 
+              type='file' 
+              accept="image/*" 
+              className={styles.hiddenInput}
+              onChange={handleFileChange}
+            />
+          </motion.button>
+
+          <textarea 
+            rows="1"
+            value={text} 
+            onChange={handleInput} 
+            onKeyDown={handleKeyDown} 
+            placeholder='Type a message...'
+            className={styles.inputField}
+          />
+
+          <motion.button 
+            whileHover={{ scale: 1.1, color: 'var(--primary-color)' }}
+            whileTap={{ scale: 0.9 }}
+            className={styles.emojiBtn}
+          >
+            <Smile size={20} />
+          </motion.button>
+        </div>
+
+        <AnimatePresence mode="wait">
+          {text.trim() ? (
+            <motion.button
+              key="send"
+              initial={{ scale: 0, rotate: -45 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0, rotate: 45 }}
+              whileHover={{ scale: 1.1, boxShadow: '0 0 15px var(--primary-color)' }}
+              whileTap={{ scale: 0.9 }}
+              className={styles.sendBtn}
+              onClick={handleSend}
+            >
+              <Send size={20} />
+            </motion.button>
+          ) : (
+            <motion.button
+              key="mic"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className={styles.micBtn}
+            >
+              <ImageIcon size={20} onClick={handleFileClick} />
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   )
 }
 
-export default ChatInput
+export default ChatInput
