@@ -45,16 +45,16 @@ const Home = () => {
             <ChatHome />
           </>
         ) : (
-          <>
-            {!groupChat ? (
-              <div className={styles.mobileLayout}>
-                <Navbar />
+          <div className={styles.mobileLayout}>
+            <Navbar />
+            <div className={styles.contentArea}>
+              {!groupChat ? (
                 <ConversationHome />
-              </div>
-            ) : (
-              <ChatHome />
-            )}
-          </>
+              ) : (
+                <ChatHome />
+              )}
+            </div>
+          </div>
         )}
         
         {searchUsers && searchUsers.length > 0 && <Search />}

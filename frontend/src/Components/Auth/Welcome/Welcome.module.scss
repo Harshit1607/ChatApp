@@ -1,9 +1,10 @@
 .main {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background: #000;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   @include flexbox;
   font-family: 'Outfit', sans-serif;
 
@@ -39,6 +40,11 @@
   padding: 2rem;
   @include flexbox(column);
   gap: 3rem;
+
+  @media (max-width: $mobile) {
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
 }
 
 .hero {
@@ -82,6 +88,10 @@
     max-width: 600px;
     line-height: 1.6;
     margin: 0;
+
+    @media (max-width: $mobile) {
+      font-size: 1rem;
+    }
   }
 }
 
@@ -137,6 +147,11 @@
     font-size: 1.1rem;
     font-weight: 800;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @media (max-width: $mobile) {
+      padding: 14px 24px;
+      font-size: 1rem;
+    }
     
     &.primaryBtn {
       background: #e23636;
@@ -154,7 +169,7 @@
       background: rgba(255, 255, 255, 0.05);
       color: white;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(100px);
 
       &:hover {
         background: rgba(255, 255, 255, 0.1);

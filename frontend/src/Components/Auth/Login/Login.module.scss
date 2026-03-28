@@ -1,9 +1,10 @@
 .main {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background: #000;
   @include flexbox;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
 
   &::before {
@@ -41,7 +42,9 @@
   @media (max-width: $tablet) {
     flex-direction: column;
     height: auto;
+    width: 95%;
     padding-bottom: 2rem;
+    border-radius: 20px;
   }
 }
 
@@ -68,8 +71,9 @@
   }
 
   @media (max-width: $tablet) {
-    padding: 2rem;
-    h2 { font-size: 2rem; }
+    padding: 2.5rem 1.5rem;
+    h2 { font-size: 1.8rem; }
+    p { font-size: 1rem; }
   }
 }
 
@@ -86,7 +90,7 @@
   }
 
   @media (max-width: $tablet) {
-    padding: 2rem;
+    padding: 2rem 1.5rem;
   }
 }
 

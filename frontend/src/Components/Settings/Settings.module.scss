@@ -33,6 +33,13 @@
   gap: 2.5rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 
+  @media (max-width: $mobile) {
+    width: 95%;
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+    border-radius: 20px;
+  }
+
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -104,6 +111,10 @@
 .profileHeader {
   flex: 1;
   h2 { font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, white, #aaa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+  @media (max-width: $mobile) {
+    h2 { font-size: 1.5rem; }
+  }
 }
 
 .aboutWrapper {

@@ -10,7 +10,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-color);
   color: var(--text-primary);
-  overflow: hidden;
+  overflow-x: hidden;
   transition: background-color 0.5s ease-in-out;
 }
 

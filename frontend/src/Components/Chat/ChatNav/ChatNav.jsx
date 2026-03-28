@@ -93,7 +93,7 @@ const ChatNav = () => {
           <span className={`${styles.status} ${status === "online" ? styles.online : ''}`}>
             {groupChat.isGroup ? (
               groupChat.UserDetails.filter(u => groupChat.Users.includes(u._id.toString()))
-                .map(u => u.name).join(", ").substring(0, 40) + "..."
+                .map(u => u.name).join(", ").substring(0, 30) + (groupChat.UserDetails.length > 5 ? "..." : "")
             ) : (
               status === "online" ? "Online" : lastSeen ? `Last seen: ${lastSeen}` : "Offline"
             )}
