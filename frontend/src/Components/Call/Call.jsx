@@ -42,8 +42,8 @@ const Call = () => {
     const handleEndCall = () => handleCallEnd(peerConnection, localVideoRef, remoteVideoRef, dispatch);
     const handleCallRejected = () => handleRejection();
     const handleOffer = (data) => handleReceiveOffer(data, dispatch, setVid);
-    const handleAnswer = (data) => handleReceiveAnswer(data, peerConnection, groupChat, user, dispatch);
-    const handleCandidate = (data) => handleReceiveCandidate(data, peerConnection, pendingCandidates, dispatch);
+    const handleAnswer = (data) => handleReceiveAnswer(data, peerConnection, groupChat, user, dispatch, pendingCandidates);
+    const handleCandidate = (data) => handleReceiveCandidate(data, peerConnection, pendingCandidates);
   
     socket.on('audioMute', handleAudioMute);
     socket.on('videoStop', handleVideoStop);
@@ -194,7 +194,7 @@ const Call = () => {
           </div>
           <div className={styles.acceptReject}>
             <button onClick={()=>handleReject(sender, dispatch)}><img src={callIcon}/></button>
-            <button onClick={()=>handleAccept(offer, remoteVideoRef, sender, audio, localVideoRef, dispatch)}><img src={callIcon}/></button>
+            <button onClick={()=>handleAccept(offer, remoteVideoRef, sender, audio, localVideoRef, dispatch, pendingCandidates)}><img src={callIcon}/></button>
           </div>
         </div>
       ) : null}

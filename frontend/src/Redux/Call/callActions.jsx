@@ -71,7 +71,7 @@ export const startCall = async (groupChat, localVideoRef, remoteVideoRef, user, 
   }
 };
 
-export const handleAccept = async (offer, remoteVideoRef, sender, audio, localVideoRef, dispatch) => {
+export const handleAccept = async (offer, remoteVideoRef, sender, audio, localVideoRef, dispatch, pendingCandidates) => {
   try {
     dispatch(makeCall());
     const peerConnection = new RTCPeerConnection({
@@ -110,6 +110,19 @@ export const handleAccept = async (offer, remoteVideoRef, sender, audio, localVi
     };
 
     await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+    
+    // Process buffered candidates after setting remote description
+    if (pendingCandidates?.current) {
+        while (pendingCandidates.current.length > 0) {
+            const candidate = pendingCandidates.current.shift();
+            try {
+                await peerConnection.addIceCandidate(candidate);
+            } catch (e) {
+                console.error("Error processing buffered candidate:", e);
+            }
+        }
+    }
+
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
 
@@ -120,11 +133,15 @@ export const handleAccept = async (offer, remoteVideoRef, sender, audio, localVi
   }
 };
 
-export const handleReceiveCandidate = async ({ candidate }, peerConnection) => {
-  console.log("candidateee")
+export const handleReceiveCandidate = async ({ candidate }, peerConnection, pendingCandidates) => {
   if (peerConnection) {
     try {
-      await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        if (peerConnection.remoteDescription && peerConnection.remoteDescription.type) {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        } else {
+            console.log("Buffering ICE candidate as remoteDescription is not yet set");
+            pendingCandidates.current.push(new RTCIceCandidate(candidate));
+        }
     } catch (error) {
       console.error('Error adding ICE candidate:', error);
     }
@@ -144,8 +161,6 @@ export const handleCallEnd = (peerConnection, localVideoRef, remoteVideoRef, dis
   }
 
   dispatch(clearOffer());
-
-  
 };
 
 export const handleRejection = () => {
@@ -168,8 +183,21 @@ export const handleReceiveOffer = ({ offer, sender, audioOnly }, dispatch, setVi
   }
 };
 
-export const handleReceiveAnswer = async ({answer, offer}, peerConnection, groupChat, user, dispatch)=>{
+export const handleReceiveAnswer = async ({answer, offer}, peerConnection, groupChat, user, dispatch, pendingCandidates)=>{
   await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+  
+  // Process buffered candidates after setting remote description
+  if (pendingCandidates?.current) {
+    while (pendingCandidates.current.length > 0) {
+        const candidate = pendingCandidates.current.shift();
+        try {
+            await peerConnection.addIceCandidate(candidate);
+        } catch (e) {
+            console.error("Error processing buffered candidate:", e);
+        }
+    }
+  }
+
   const recipient = groupChat.Users.find((each) => each !== user._id);
   console.log("recieved answer")
   
@@ -313,6 +341,4 @@ export const handleStopVideo = (localVideoRef, sender, groupChat, user) => {
           isMuted: isMuted, // True if muted, false if unmuted
         });
       }
-    
   }};
-  

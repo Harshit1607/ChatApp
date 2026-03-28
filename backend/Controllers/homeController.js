@@ -1,6 +1,6 @@
-import User from '../Models/user.js'
-import Group from '../Models/groups.js'
-import Chat from '../Models/chats.js'
+import User from '../models/user.js'
+import Group from '../models/groups.js'
+import Chat from '../models/chats.js'
 import {getBucket} from '../config/firebaseAdmin.js';
 import { v4 as uuidv4 } from "uuid";
 

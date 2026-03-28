@@ -76,18 +76,14 @@ const GroupProfile = () => {
               <input ref={fileInputRef} type="file" hidden onChange={handlePhotoChange} accept="image/*" />
             </div>
             <h2 className={styles.groupName}>{groupChat.name}</h2>
-            <div className={styles.adminBadges}>
-              {groupChat.Admin.map(adminId => (
-                <span key={adminId} className={styles.badge}>
-                  <Shield size={12} /> Admin
-                </span>
-              ))}
+            <div className={styles.groupMeta}>
+              <span className={styles.memberCount}>{groupChat.Users.length} Allies Active</span>
             </div>
           </div>
 
           <div className={styles.descriptionBox}>
             <div className={styles.boxHeader}>
-              <h3>Description</h3>
+              <h3>Mission Briefing</h3>
               {isEditing ? (
                 <Check size={18} className={styles.saveIcon} onClick={handleDescSave} />
               ) : (
@@ -98,7 +94,7 @@ const GroupProfile = () => {
               disabled={!isEditing} 
               value={desc} 
               onChange={(e) => setDesc(e.target.value)}
-              placeholder="What's this group about?"
+              placeholder="What's this mission about?"
               maxLength="200"
             />
             <span className={styles.charCount}>{desc.length}/200</span>
@@ -108,7 +104,7 @@ const GroupProfile = () => {
         <div className={styles.tabsSection}>
           <div className={styles.mediaContainer}>
             <div className={styles.header}>
-              <h3>Gallery</h3>
+              <h3>Captured Intel</h3>
               <span>{mediaChats.length} files</span>
             </div>
             <div className={styles.carouselWrapper}>
@@ -116,7 +112,7 @@ const GroupProfile = () => {
                 {mediaChats.length > 0 ? (
                   mediaChats.map((c, i) => <img key={i} src={c.message.message} alt="" className={styles.mediaItem} />)
                 ) : (
-                  <div className={styles.emptyGallery}>No media yet.</div>
+                  <div className={styles.emptyGallery}>No intel recovered yet.</div>
                 )}
               </Carousel>
             </div>
@@ -124,7 +120,7 @@ const GroupProfile = () => {
 
           <div className={styles.memberContainer}>
             <div className={styles.header}>
-              <h3>Allies ({members.length})</h3>
+              <h3>Team Members ({members.length})</h3>
             </div>
             <div className={styles.memberList}>
               {members.map((m) => (
@@ -133,7 +129,15 @@ const GroupProfile = () => {
                     {m.profile ? <img src={m.profile} alt="" /> : <div className={styles.mPlaceholder}>{m.name[0]}</div>}
                   </div>
                   <div className={styles.mInfo}>
-                    <p className={styles.mName}>{m._id === user._id ? "You" : m.name}</p>
+                    <div className={styles.mNameLine}>
+                      <span className={styles.mName}>{m._id === user._id ? "You" : m.name}</span>
+                      {groupChat.Admin.includes(m._id) && (
+                        <span className={styles.adminBadge}>
+                          <Shield size={10} /> 
+                          Admin
+                        </span>
+                      )}
+                    </div>
                     <p className={styles.mAbout}>{m.about}</p>
                   </div>
                   <div className={styles.mActions}>

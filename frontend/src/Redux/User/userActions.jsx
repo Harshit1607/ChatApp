@@ -21,6 +21,7 @@ export const signup = (formData) => async (dispatch) =>{
     dispatch({type: User_Signup_Success, payload: result.data});
   } catch (error) {
     dispatch({type: User_Signup_Failure, error: error.message});
+    alert("Signup Error: " + error.message);
   }
 }
 
@@ -36,6 +37,7 @@ export const login = (email, password) => async (dispatch) =>{
     dispatch({type: User_Login_Success, payload: result.data});
   } catch (error) {
     dispatch({type: User_Login_Failure, error: error.message});
+    alert("Login Error: " + error.message);
   }
 }
 

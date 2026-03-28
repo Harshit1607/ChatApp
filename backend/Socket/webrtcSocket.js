@@ -36,7 +36,7 @@ export const webrtcSocket = (io) => {
         return;
       }
       console.log(`Call rejected by recipient, notifying ${sender}`);
-      socket.to(sender._id).emit('callRejected');
+      socket.to(sender).emit('callRejected');
     });
 
 
