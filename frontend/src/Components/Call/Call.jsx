@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styles from './Call.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import socket from '../../Socket/Socket';
-import { startCall, makeCall, handleRejection, handleReceiveOffer, handleReceiveAnswer, handleReceiveCandidate, handleCallEnd, handleRecievedAudio, handleRecievedVideo, handleAccept, handleReject, handleMuteAudio, handleEndCall, handleStopVideo, setReciever } from '../../Redux/Call/callActions';
+import { startCall, makeCall, handleRejection, handleReceiveOffer, handleReceiveAnswer, handleReceiveCandidate, handleCallEnd, handleRecievedAudio, handleRecievedVideo, handleAccept, handleReject, handleMuteAudio, handleEndCall, handleStopVideo, setReceiver } from '../../Redux/Call/callActions';
 import mic from '../../Assets/mic.svg';
 import video1 from '../../Assets/video1.svg';
 import micCut from '../../Assets/micCut.svg';
@@ -12,7 +12,7 @@ import callIcon from '../../Assets/call.svg';
 const Call = () => {
   const { groupChat } = useSelector((state) => state.groupReducer);
   const { user } = useSelector((state) => state.userReducer);
-  const { call, incoming, peerConnection, offer, sender, audio, reciever } = useSelector(
+  const { call, incoming, peerConnection, offer, sender, audio, receiver } = useSelector(
     (state) => state.callReducer
   );
 
@@ -32,7 +32,7 @@ const Call = () => {
       }
       const otherUser = groupChat.UserDetails.find((each) => each._id !== user._id);
       if (otherUser) {
-        dispatch(setReciever(otherUser.name));
+        dispatch(setReceiver(otherUser.name));
       }
       startCall(groupChat, localVideoRef, remoteVideoRef, user, audio, dispatch);
     }
@@ -50,7 +50,7 @@ const Call = () => {
     const handleAudioMute = (data) => handleRecievedAudio(data, remoteVideoRef);
     const handleVideoStop = (data) => handleRecievedVideo(data, remoteVideoRef);
     const handleEndCallLocal = () => handleCallEnd(peerConnection, localVideoRef, remoteVideoRef, dispatch);
-    const handleCallRejected = () => handleRejection();
+    const handleCallRejected = () => dispatch(handleRejection());
     const handleOffer = (data) => handleReceiveOffer(data, dispatch, setVid);
     const handleAnswer = (data) => handleReceiveAnswer(data, peerConnection, groupChat, user, dispatch, pendingCandidates);
     const handleCandidate = (data) => handleReceiveCandidate(data, peerConnection, pendingCandidates);
@@ -155,11 +155,11 @@ const Call = () => {
               <div className={styles.avatarContainer}>
                 <div className={styles.ripple} />
                 <div className={styles.avatar}>
-                  {reciever?.[0]?.toUpperCase() || sender?.name?.[0]?.toUpperCase() || "?"}
+                  {receiver?.[0]?.toUpperCase() || sender?.name?.[0]?.toUpperCase() || "?"}
                 </div>
               </div>
               <div className={styles.callerInfo}>
-                <h2>{reciever || sender?.name || "Unknown"}</h2>
+                <h2>{receiver || sender?.name || "Unknown"}</h2>
                 <span>Spider-Signal Active...</span>
               </div>
               <audio ref={localVideoRef} autoPlay muted />

@@ -1,20 +1,20 @@
-import { Auido_Only, Call_Rejected, Clear_Offer, ICE_Candidate_Received, Make__Call, Make__Incoming, Recieved_Answer, Recieved_Offer, Set_Call_Receiver, Sotre_Candidate, Sotre_Peer } from "../actionTypes"
+import { Audio_Only, Call_Rejected, Clear_Offer, ICE_Candidate_Received, Make__Call, Make__Incoming, Received_Answer, Received_Offer, Set_Call_Receiver, Store_Candidate, Store_Peer } from "../actionTypes"
 
 const initialState = {
   call: false,
-  incoming: true,
+  incoming: false,
   peerConnection: null, 
   offer: null,
   sender: null,
   answer: null, 
   candidate: null,
   audio: false,
-  reciever: null,
+  receiver: null,
 }
 
 function callReducer(state=initialState, action){
   switch(action.type){
-    case Auido_Only:
+    case Audio_Only:
       return{
         ...state,
         audio: true
@@ -29,18 +29,18 @@ function callReducer(state=initialState, action){
         ...state,
         incoming: true,
       }
-    case Sotre_Peer:
+    case Store_Peer:
       return{
         ...state,
         peerConnection: action.payload,
       }
-    case Recieved_Offer:
+    case Received_Offer:
       return{
         ...state,
         offer: action.payload.offer,
         sender: action.payload.sender
       }
-    case Recieved_Answer:
+    case Received_Answer:
       return{
         ...state,
         answer: action.payload.answer
@@ -50,7 +50,7 @@ function callReducer(state=initialState, action){
         ...state,
         candidate: action.payload.candidate
       }
-    case Sotre_Candidate:
+    case Store_Candidate:
       return{
         ...state,
         candidate: action.payload
@@ -58,7 +58,7 @@ function callReducer(state=initialState, action){
     case Set_Call_Receiver: 
       return{
         ...state,
-        reciever: action.payload,
+        receiver: action.payload,
     }
     case Clear_Offer:
       return {
@@ -71,7 +71,7 @@ function callReducer(state=initialState, action){
         answer: null, 
         candidate: null,
         audio: false,
-        reciever: null,
+        receiver: null,
       }
     case Call_Rejected: 
       return{

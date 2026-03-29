@@ -50,11 +50,11 @@ export const Stop_Typing = "Stop_Typing"
 
 export const Sort_Groups = "Sort_Groups"
 
-export const Recieved_Offer  = 'Recieved_Offer'
+export const Received_Offer  = 'Received_Offer'
 
-export const Sotre_Peer = "Sotre_Peer"
+export const Store_Peer = "Store_Peer"
 
-export const Recieved_Answer = 'Recieved_Answer'
+export const Received_Answer = 'Received_Answer'
 
 export const Call_Rejected = 'Call_Rejected'
 
@@ -64,10 +64,10 @@ export const Make__Call = 'Make__Call'
 
 export const Make__Incoming = 'Make__Incoming'
 
-export const Sotre_Candidate = "Sotre_Candidate"
+export const Store_Candidate = "Store_Candidate"
 
 export const Clear_Offer = "Clear_Offer"
-export const Auido_Only = 'Auido_Only'
+export const Audio_Only = 'Audio_Only'
 
 export const Make_Group_Call = 'Make_Group_Call'
 

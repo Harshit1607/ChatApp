@@ -1,11 +1,11 @@
 import axios from 'axios'
 import socket from '../../Socket/Socket';
-import { Auido_Only, Call_Rejected, Clear_Offer, Make__Call, Make__Incoming, Recieved_Offer, Recieved_Answer, Set_Call_Receiver, Sotre_Candidate, Sotre_Peer } from '../actionTypes';
+import { Audio_Only, Call_Rejected, Clear_Offer, Make__Call, Make__Incoming, Received_Offer, Received_Answer, Set_Call_Receiver, Store_Candidate, Store_Peer } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
 export const storePeer = (peerConnection)=>{
-  return {type: Sotre_Peer, payload: peerConnection}
+  return {type: Store_Peer, payload: peerConnection}
 }
 
 export const makeCall = ()=>{
@@ -17,24 +17,31 @@ export const makeIncoming = ()=>{
 }
 
 export const storeCandidate = (candidate)=>{
-  return {type: Sotre_Candidate, payload: candidate}
+  return {type: Store_Candidate, payload: candidate}
 }
 
 export const clearOffer = ()=>{
   return{type: Clear_Offer}
 }
 
-export const setReciever = (name)=>{
+export const setReceiver = (name)=>{
   return{type: Set_Call_Receiver, payload: name}
 }
 
 export const onlyAudio = ()=>{
-  return{type: Auido_Only}
+  return{type: Audio_Only}
 }
 
 export const startCall = async (groupChat, localVideoRef, remoteVideoRef, user, audio, dispatch) => {
   try {
-    const recipient = groupChat.Users.find((each) => each !== user._id);
+    const userId = user._id.toString();
+    const recipient = groupChat.Users.find((each) => each.toString() !== userId);
+    
+    if (!recipient) {
+      console.error('Recipient not found in group users');
+      return;
+    }
+
     const peerConnection = new RTCPeerConnection({
       iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
     });
@@ -45,14 +52,18 @@ export const startCall = async (groupChat, localVideoRef, remoteVideoRef, user, 
       : { video: { width: 1280, height: 720 }, audio: true };
 
     const localStream = await navigator.mediaDevices.getUserMedia(constraints);
-    localVideoRef.current.srcObject = localStream;
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = localStream;
+    }
 
     localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream));
 
     const remoteStream = new MediaStream();
     peerConnection.ontrack = (event) => {
       remoteStream.addTrack(event.track);
-      remoteVideoRef.current.srcObject = remoteStream;
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = remoteStream;
+      }
     };
 
     peerConnection.onicecandidate = (event) => {
@@ -82,36 +93,33 @@ export const handleAccept = async (offer, remoteVideoRef, sender, audio, localVi
       ? { audio: true }
       : { video: { width: 1280, height: 720 }, audio: true };
 
-      const localStream = await navigator.mediaDevices.getUserMedia(constraints);
+    const localStream = await navigator.mediaDevices.getUserMedia(constraints);
 
-      // Check if localVideoRef is valid
-      if (localVideoRef?.current) {
-        localVideoRef.current.srcObject = localStream;
-      } else {
-        console.error('localVideoRef is not properly assigned.');
-        return;
-      }
+    if (localVideoRef?.current) {
+      localVideoRef.current.srcObject = localStream;
+    } else {
+      console.warn('localVideoRef.current is not yet available, stream set to srcObject may fail later');
+    }
 
     localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream));
 
     const remoteStream = new MediaStream();
     peerConnection.ontrack = (event) => {
       remoteStream.addTrack(event.track);
-      remoteVideoRef.current.srcObject = remoteStream;
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = remoteStream;
+      }
     };
 
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        console.log("Sending candidate:", event.candidate);
         socket.emit('sendCandidate', { candidate: event.candidate, recipient: sender.id });
-      } else {
-        console.log("All ICE candidates have been sent.");
       }
     };
 
     await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
     
-    // Process buffered candidates after setting remote description
+    // Process buffered candidates
     if (pendingCandidates?.current) {
         while (pendingCandidates.current.length > 0) {
             const candidate = pendingCandidates.current.shift();
@@ -134,17 +142,17 @@ export const handleAccept = async (offer, remoteVideoRef, sender, audio, localVi
 };
 
 export const handleReceiveCandidate = async ({ candidate }, peerConnection, pendingCandidates) => {
-  if (peerConnection) {
-    try {
-        if (peerConnection.remoteDescription && peerConnection.remoteDescription.type) {
-            await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-        } else {
-            console.log("Buffering ICE candidate as remoteDescription is not yet set");
-            pendingCandidates.current.push(new RTCIceCandidate(candidate));
+  try {
+    const iceCandidate = new RTCIceCandidate(candidate);
+    if (peerConnection && peerConnection.remoteDescription && peerConnection.remoteDescription.type) {
+        await peerConnection.addIceCandidate(iceCandidate);
+    } else {
+        if (pendingCandidates?.current) {
+            pendingCandidates.current.push(iceCandidate);
         }
-    } catch (error) {
-      console.error('Error adding ICE candidate:', error);
     }
+  } catch (error) {
+    console.error('Error adding ICE candidate:', error);
   }
 };
 
@@ -169,122 +177,86 @@ export const handleRejection = () => {
 
 export const handleReceiveOffer = ({ offer, sender, audioOnly }, dispatch, setVid) => {
   if (offer && offer.sdp && (offer.type === 'offer' || offer.type === 'answer')) {
-    console.log("offer received");
     if(audioOnly) {
       setVid(true);
       dispatch(onlyAudio());
     }
-    // Dispatch makeIncoming action
     dispatch(makeIncoming());
-    // Dispatch received offer action
-    dispatch({ type: Recieved_Offer, payload: { offer, sender }});
+    dispatch({ type: Received_Offer, payload: { offer, sender }});
   } else {
     console.error('Received invalid offer:', offer);
   }
 };
 
-export const handleReceiveAnswer = async ({answer, offer}, peerConnection, groupChat, user, dispatch, pendingCandidates)=>{
-  dispatch({ type: Recieved_Answer, payload: { answer } });
-  await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+export const handleReceiveAnswer = async ({answer}, peerConnection, groupChat, user, dispatch, pendingCandidates)=>{
+  dispatch({ type: Received_Answer, payload: { answer } });
   
-  // Process buffered candidates after setting remote description
-  if (pendingCandidates?.current) {
-    while (pendingCandidates.current.length > 0) {
-        const candidate = pendingCandidates.current.shift();
-        try {
-            await peerConnection.addIceCandidate(candidate);
-        } catch (e) {
-            console.error("Error processing buffered candidate:", e);
-        }
+  if (peerConnection) {
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    
+    // Process buffered candidates
+    if (pendingCandidates?.current) {
+      while (pendingCandidates.current.length > 0) {
+          const candidate = pendingCandidates.current.shift();
+          try {
+              await peerConnection.addIceCandidate(candidate);
+          } catch (e) {
+              console.error("Error processing buffered candidate:", e);
+          }
+      }
     }
   }
-
-  const recipient = groupChat.Users.find((each) => each !== user._id);
-  console.log("recieved answer")
-  
-  peerConnection.onicecandidate = (event) => {
-    if (event.candidate) {
-      console.log("Sending candidate:", event.candidate);
-      socket.emit('sendCandidate', { candidate: event.candidate, recipient });
-    } else {
-      console.log("All ICE candidates have been sent.");
-    }
-  };
-  dispatch(storePeer(peerConnection));
 }
 
 export const handleEndCall = (peerConnection, localVideoRef, remoteVideoRef, sender, groupChat, user, dispatch) => {
   try {
-    // Close the peer connection
     if (peerConnection) {
       peerConnection.close();
-      dispatch(clearOffer())
     }
 
-    // Stop all local media tracks
     if (localVideoRef.current && localVideoRef.current.srcObject) {
       const stream = localVideoRef.current.srcObject;
       stream.getTracks().forEach((track) => track.stop());
       localVideoRef.current.srcObject = null;
     }
 
-    // Stop the remote video
     if (remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = null;
     }
 
-    // Notify the other party
     if(sender) {
       socket.emit('endCall', { recipient: sender.id });
-    } else {
-      const recipient = groupChat.Users.find((each) => each !== user._id);
-      socket.emit('endCall', { recipient });
+    } else if (groupChat && groupChat.Users) {
+      const userId = user._id.toString();
+      const recipient = groupChat.Users.find((each) => each.toString() !== userId);
+      if (recipient) {
+        socket.emit('endCall', { recipient });
+      }
     }
     
-    dispatch({ type: Clear_Offer }); 
-    dispatch({ type: Call_Rejected }); 
+    dispatch(clearOffer()); 
   } catch (error) {
     console.error('Error ending the call:', error);
   }
 };
 
 export const handleRecievedAudio = (data, remoteVideoRef) => {
-  console.log(`Sender audio mute state: ${data.isMuted}`);
-
-  // Use remoteVideoRef to access the remote stream
   if (remoteVideoRef.current && remoteVideoRef.current.srcObject) {
     const remoteStream = remoteVideoRef.current.srcObject;
-    const audioTrack = remoteStream.getAudioTracks()[0]; // Get the audio track of the remote stream
+    const audioTrack = remoteStream.getAudioTracks()[0];
     if (audioTrack) {
-      audioTrack.enabled = data.isMuted; // Mute/Unmute the audio track based on sender's action
+      audioTrack.enabled = !data.isMuted;
     }
-  }
-
-  // Update UI to reflect mute status
-  if (data.isMuted) {
-    console.log('Sender muted their audio');
-  } else {
-    console.log('Sender unmuted their audio');
   }
 }
 
 export const handleRecievedVideo =  (data, remoteVideoRef) => {
-  console.log(`Sender video stop state: ${data.isStopped}`);
-
-  // Use remoteVideoRef to access the remote stream
   if (remoteVideoRef.current && remoteVideoRef.current.srcObject) {
     const remoteStream = remoteVideoRef.current.srcObject;
-    const videoTrack = remoteStream.getVideoTracks()[0]; // Get the video track of the remote stream
+    const videoTrack = remoteStream.getVideoTracks()[0];
     if (videoTrack) {
-      videoTrack.enabled = data.isStopped; // Stop/Start the video track based on sender's action
+      videoTrack.enabled = !data.isStopped;
     }
-  }
-
-  // Update UI to reflect video state
-  if (data.isStopped) {
-    console.log('Sender stopped their video');
-  } else {
-    console.log('Sender started their video');
   }
 }
 
@@ -294,53 +266,45 @@ export const handleReject = (sender, dispatch) => {
 };
 
 export const handleStopVideo = (localVideoRef, sender, groupChat, user) => {
-  if (localVideoRef.current && localVideoRef.current.srcObject) {  // Check if localVideoRef is valid
-    const stream = localVideoRef.current.srcObject; // Access the local media stream
-    const videoTrack = stream.getVideoTracks()[0]; // Get the video track of the stream
+  if (localVideoRef.current && localVideoRef.current.srcObject) {
+    const stream = localVideoRef.current.srcObject;
+    const videoTrack = stream.getVideoTracks()[0];
 
     if (videoTrack) {
-      const isStopped = !videoTrack.enabled; // Toggle the current state
-      videoTrack.enabled = isStopped; // Stop/Start the video track
+      videoTrack.enabled = !videoTrack.enabled;
+      const isStopped = !videoTrack.enabled;
 
-      // Notify the receiver about the video state
       if (sender) {
-        socket.emit('videoStop', {
-          recipient: sender.id,
-          isStopped: isStopped, // True if stopped, false if started
-        });
-      } else {
-        const recipient = groupChat.Users.find((each) => each !== user._id);
-        socket.emit('videoStop', {
-          recipient,
-          isStopped: isStopped, // True if stopped, false if started
-        });
+        socket.emit('videoStop', { recipient: sender.id, isStopped });
+      } else if (groupChat && groupChat.Users) {
+        const userId = user._id.toString();
+        const recipient = groupChat.Users.find((each) => each.toString() !== userId);
+        if (recipient) {
+          socket.emit('videoStop', { recipient, isStopped });
+        }
       }
     }
-  } else {
-    console.error('Local video ref or stream is not available.');
   }
 };
 
-  
- export const handleMuteAudio = (localVideoRef, sender, groupChat, user)=>{
-    const stream = localVideoRef.current.srcObject; // Access the local media stream
-    const audioTrack = stream.getAudioTracks()[0]; // Get the audio track of the stream
+export const handleMuteAudio = (localVideoRef, sender, groupChat, user)=>{
+    if (localVideoRef.current && localVideoRef.current.srcObject) {
+      const stream = localVideoRef.current.srcObject;
+      const audioTrack = stream.getAudioTracks()[0];
 
-    if (audioTrack) {
-      const isMuted = !audioTrack.enabled; // Toggle the current state
-      audioTrack.enabled = isMuted; // Mute/Unmute the audio track
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        const isMuted = !audioTrack.enabled;
 
-      // Notify the receiver about the mute/unmute state
-      if(sender){
-        socket.emit('audioMute', {
-          recipient: sender.id,
-          isMuted: isMuted, // True if muted, false if unmuted
-        });
-      }else{
-        const recipient = groupChat.Users.find((each) => each !== user._id);
-        socket.emit('audioMute', {
-          recipient,
-          isMuted: isMuted, // True if muted, false if unmuted
-        });
+        if(sender){
+          socket.emit('audioMute', { recipient: sender.id, isMuted });
+        } else if (groupChat && groupChat.Users) {
+          const userId = user._id.toString();
+          const recipient = groupChat.Users.find((each) => each.toString() !== userId);
+          if (recipient) {
+            socket.emit('audioMute', { recipient, isMuted });
+          }
+        }
       }
-  }};
+    }
+};
