@@ -1,81 +1,219 @@
-.main{
+.main {
   position: absolute;
-  width: 40%;
-  height: 60%;
-  @include flexbox(column, space-between);
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  .avBox{
-    width: 90%;
-    height: 40%;
-    border-radius: 10px;
-    @include flexbox(column, space-between);
-    >video{
+  width: 320px;
+  height: 480px;
+  z-index: 2000;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+  backdrop-filter: blur(20px);
+  @include flexbox(column);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('../../Assets/chatWeb.svg');
+    background-size: 400px;
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  // Video Layouts
+  .videoDisplay {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+
+    .remoteVideo {
       width: 100%;
-      height: 90%;
+      height: 100%;
       object-fit: cover;
     }
+
+    .localVideoPIP {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 100px;
+      height: 140px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--primary-color);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+      z-index: 10;
+      background: #111;
+
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scaleX(-1);
+      }
+    }
   }
-  > div{
+
+  // Audio Call Layout
+  .audioDisplay {
     width: 100%;
-    height: 10%;
-    @include flexbox;
-    justify-content: space-evenly;
-    >button{
-      background-color: var(--spider-red);
-      color: white;
-      border: none;
-      height: 80%;
+    height: 100%;
+    @include flexbox(column);
+    gap: 2rem;
+    background: radial-gradient(circle at center, var(--sidebar-bg), #000);
+
+    .avatarContainer {
+      position: relative;
+      
+      .ripple {
+        position: absolute;
+        inset: -20px;
+        border-radius: 50%;
+        border: 2px solid var(--primary-color);
+        opacity: 0;
+        animation: pulse-ripple 2s infinite;
+      }
+
+      .avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        @include flexbox;
+        font-size: 3rem;
+        font-weight: 800;
+        color: white;
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 0 30px rgba(var(--primary-color), 0.3);
+      }
+    }
+
+    .callerInfo {
+      text-align: center;
+      h2 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+      span { color: var(--primary-color); font-weight: 600; font-size: 0.9rem; opacity: 0.8; }
+    }
+  }
+
+  // Universal Controls
+  .controlBar {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    @include glass;
+    padding: 8px;
+    border-radius: 100px;
+    display: flex;
+    gap: 12px;
+    z-index: 20;
+
+    button {
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      >img{
-        width: 90%;
-        height: 90%;
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      @include flexbox;
+      transition: 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: scale(1.1);
+      }
+
+      img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+      }
+
+      &.muteActive { color: #ff4444; background: rgba(255, 68, 68, 0.1); }
+      &.endCall { 
+        background: #ff4444; 
+        width: auto;
+        padding: 0 18px;
+        border-radius: 100px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        &:hover { background: #ff2222; box-shadow: 0 0 20px rgba(255, 68, 68, 0.4); }
       }
     }
   }
 }
 
-.incoming{
+.incoming {
   position: absolute;
-  width: 40%;
-  height: 30%;
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border-radius: 10%;
-  @include flexbox(column, end);
-  .acceptReject{
+  width: 340px;
+  height: 200px;
+  z-index: 2100;
+  @include glass;
+  border-radius: 24px;
+  padding: 24px;
+  @include flexbox(column, space-between);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  animation: spider-sense-shake 0.5s infinite alternate;
+
+  .callerDetails {
+    text-align: center;
+    h3 { margin: 0; font-size: 1.4rem; }
+    p { color: var(--primary-color); font-weight: 700; margin-top: 4px; }
+  }
+
+  .actions {
     width: 100%;
-    height: 20%;
-    @include flexbox;
-    justify-content: space-evenly;
-    >button{
-      width: 40px;
-      height: 40px;
-      background-color: red;
-      color: white;
-      border: none;
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+
+    button {
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
       @include flexbox;
-      &:last-child{
-        background-color: greenyellow;
+      transition: 0.3s;
+      
+      &.reject {
+        background: #ff4444;
+        box-shadow: 0 8px 20px rgba(255, 68, 68, 0.3);
+        &:hover { transform: scale(1.1) rotate(-15deg); }
+        img { filter: invert(1); transform: rotate(135deg); height: 24px; width: 24px; object-fit: contain; }
       }
-      >img{
-        height: 80%;
+
+      &.accept {
+        background: #2ecc71;
+        box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+        &:hover { transform: scale(1.1) rotate(15deg); }
+        img { filter: invert(1); height: 24px; width: 24px; object-fit: contain; }
       }
     }
   }
-  .info{
-    width: 100%;
-    height: 80%;
-    @include flexbox(column);
-  }
+}
+
+@keyframes pulse-ripple {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes spider-sense-shake {
+  0% { transform: rotate(-1deg); box-shadow: 0 0 20px rgba(var(--primary-color), 0.3); }
+  100% { transform: rotate(1deg); box-shadow: 0 0 40px rgba(var(--primary-color), 0.6); }
 }
 
 @media (max-width: $tablet) {
-  .main{
-    width: 90%;
-    height: 90%;
-    top: 5% !important;
-    left: 5% !important;
+  .main {
+    width: 100%;
+    height: 100%;
+    top: 0 !important;
+    left: 0 !important;
+    border-radius: 0;
   }
-}
+}

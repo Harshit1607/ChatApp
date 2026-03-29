@@ -3,131 +3,180 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70%;
-  height: 70%;
-  padding: 20px;
+  width: 85%;
+  height: 85%;
+  background: var(--bg-color);
+  backdrop-filter: blur(25px);
+  border-radius: 32px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-  z-index: 999;
+  z-index: 3000;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('../../Assets/chatWeb.svg');
+    background-size: 600px;
+    opacity: 0.03;
+    pointer-events: none;
+  }
 
   .videoWrapper {
-    width: 100%;
-    height: 90%;
+    flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    grid-gap: 15px;
-    padding: 10px;
-    overflow: auto;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+    padding-bottom: 100px; // Space for floating controls
+    overflow-y: auto;
+    align-content: start;
     
+    &::-webkit-scrollbar { width: 0; }
+
     .videoContainer {
       position: relative;
-      width: 100%;
-      height: 0;
-      padding-bottom: 75%;
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
       overflow: hidden;
-      
+      aspect-ratio: 16/9;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: 0.3s;
+
+      &:hover { border-color: var(--primary-color); transform: scale(1.02); }
+
       .video {
-        position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
-        
-        video {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        
-        .avatarFallback {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background-color: #555;
-          color: white;
-          font-size: 2.5rem;
-          font-weight: bold;
-        }
+        video { width: 100%; height: 100%; object-fit: cover; }
       }
-      
-      span {
+
+      .noVideo {
+        width: 100%;
+        height: 100%;
+        @include flexbox(column);
+        background: radial-gradient(circle at center, var(--sidebar-bg), #000);
+        gap: 1rem;
+
+        .avatarCircle {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          background: var(--primary-color);
+          @include flexbox;
+          font-size: 2rem;
+          font-weight: 800;
+          color: white;
+          position: relative;
+          box-shadow: 0 0 30px rgba(var(--primary-color), 0.3);
+
+          &::after {
+            content: "";
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            opacity: 0.3;
+            animation: pulse-ring 2s infinite;
+          }
+        }
+
+        span { color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; }
+      }
+
+      .peerName {
         position: absolute;
-        bottom: 10px;
-        left: 10px;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 0.9rem;
+        bottom: 12px;
+        left: 12px;
+        @include glass;
+        padding: 4px 12px;
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        z-index: 5;
       }
     }
   }
 
   .controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    @include glass;
+    padding: 12px 24px;
+    border-radius: 100px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    width: 100%;
-    padding: 15px 0;
-    gap: 20px;
+    gap: 24px;
+    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 
     button {
-      width: 50px;
-      height: 50px;
-      font-size: 16px;
-      color: white;
-      border: none;
-      cursor: pointer;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: all 0.2s ease;
-      background-color: rgba(255, 255, 255, 0.2);
-      
-      img {
-        width: 24px;
-        height: 24px;
-      }
-      
-      &:hover {
-        transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.05);
+      @include flexbox;
+      transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+      img { 
+        width: 22px; 
+        height: 22px; 
+        object-fit: contain;
       }
 
-      &:active {
-        transform: scale(0.95);
+      &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-5px) scale(1.1);
       }
-      
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+
+      &:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      &.endCall {
+        background: #ff4444;
+        width: auto;
+        padding: 0 24px;
+        border-radius: 100px;
+        font-weight: 800;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        
+        &:hover { background: #ff2222; box-shadow: 0 0 30px rgba(255, 68, 68, 0.4); }
       }
     }
-    
-    .endCallBtn {
-      background-color: #e74c3c;
-      padding: 0 20px;
-      border-radius: 25px;
-      width: auto;
-      height: 50px;
-      
-      &:hover {
-        background-color: #c0392b;
-      }
+  }
+
+  .callInfo {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    padding: 10px 20px;
+    @include glass;
+    border-radius: 100px;
+    color: var(--primary-color);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: #2ecc71;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #2ecc71;
+      animation: blink 2s infinite;
     }
   }
 }
@@ -137,120 +186,94 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 350px;
-  height: 220px;
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  z-index: 999;
+  width: 400px;
+  height: 240px;
+  @include glass;
+  border-radius: 32px;
+  background: var(--bg-color);
+  @include flexbox(column, space-between);
+  padding: 32px;
+  z-index: 3100;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+  animation: spider-sense-shake 0.5s infinite alternate;
 
   .info {
-    margin-bottom: 30px;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    
-    span:first-child {
-      font-size: 1.4rem;
-      font-weight: bold;
+    span:first-child { 
+      display: block; 
+      font-size: 0.85rem; 
+      color: var(--primary-color); 
+      font-weight: 800; 
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
     }
-    
     span:last-child {
-      font-size: 1.2rem;
+      font-size: 2rem;
+      font-weight: 900;
+      color: white;
     }
   }
 
   .acceptReject {
     display: flex;
-    justify-content: space-around;
-    width: 100%;
-    
+    gap: 4rem;
+
     button {
-      width: 70px;
-      height: 70px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      transition: all 0.2s ease;
+      @include flexbox;
+      transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       
-      img {
-        height: 30px;
-        width: 30px;
-        margin-bottom: 5px;
+      &.reject {
+        background: #ff4444;
+        box-shadow: 0 10px 25px rgba(255, 68, 68, 0.3);
+        &:hover { transform: scale(1.1) rotate(-15deg); }
+        img { width: 28px; height: 28px; filter: invert(1); transform: rotate(135deg); object-fit: contain; }
       }
-      
-      span {
-        font-size: 0.8rem;
-      }
-      
-      &:hover {
-        transform: scale(1.1);
-      }
-      
-      &:active {
-        transform: scale(0.95);
-      }
-    }
-    
-    .rejectBtn {
-      background-color: #e74c3c;
-      
-      &:hover {
-        background-color: #c0392b;
-      }
-    }
-    
-    .acceptBtn {
-      background-color: #2ecc71;
-      
-      &:hover {
-        background-color: #27ae60;
+
+      &.accept {
+        background: #2ecc71;
+        box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
+        &:hover { transform: scale(1.1) rotate(15deg); }
+        img { width: 28px; height: 28px; filter: invert(1); object-fit: contain; }
       }
     }
   }
 }
 
-@media (max-width: 768px) {
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.3; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes spider-sense-shake {
+  0% { transform: rotate(-1deg); box-shadow: 0 0 20px rgba(var(--primary-color), 0.3); }
+  100% { transform: rotate(1deg); box-shadow: 0 0 40px rgba(var(--primary-color), 0.6); }
+}
+
+@media (max-width: $tablet) {
   .main {
-    width: 90%;
-    height: 80%;
-    padding: 15px;
-    left: 4% !important;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
     
     .videoWrapper {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: 1fr;
+      padding: 1rem;
     }
     
     .controls {
-      padding: 10px 0;
+      width: 90%;
       gap: 15px;
-      
-      button {
-        width: 45px;
-        height: 45px;
-      }
-      
-      .endCallBtn {
-        height: 45px;
-      }
+      padding: 10px;
+      button { width: 44px; height: 44px; &.endCall { padding: 0 16px; } }
     }
   }
-  
-  .incoming {
-    width: 300px;
-    height: 200px;
-    padding: 15px;
-  }
-}
+}

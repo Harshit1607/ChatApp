@@ -1,6 +1,6 @@
 import axios from 'axios'
 import socket from '../../Socket/Socket';
-import { Auido_Only, Call_Rejected, Clear_Offer, Make__Call, Make__Incoming, Recieved_Offer, Set_Call_Receiver, Sotre_Candidate, Sotre_Peer } from '../actionTypes';
+import { Auido_Only, Call_Rejected, Clear_Offer, Make__Call, Make__Incoming, Recieved_Offer, Recieved_Answer, Set_Call_Receiver, Sotre_Candidate, Sotre_Peer } from '../actionTypes';
 
 const API_URL = process.env.REACT_APP_SERVER_URL;
 
@@ -184,6 +184,7 @@ export const handleReceiveOffer = ({ offer, sender, audioOnly }, dispatch, setVi
 };
 
 export const handleReceiveAnswer = async ({answer, offer}, peerConnection, groupChat, user, dispatch, pendingCandidates)=>{
+  dispatch({ type: Recieved_Answer, payload: { answer } });
   await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
   
   // Process buffered candidates after setting remote description
@@ -240,7 +241,8 @@ export const handleEndCall = (peerConnection, localVideoRef, remoteVideoRef, sen
       socket.emit('endCall', { recipient });
     }
     
-    dispatch({ type: Call_Rejected }); // Fixed: Use dispatch instead of return
+    dispatch({ type: Clear_Offer }); 
+    dispatch({ type: Call_Rejected }); 
   } catch (error) {
     console.error('Error ending the call:', error);
   }

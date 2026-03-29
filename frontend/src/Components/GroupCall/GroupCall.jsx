@@ -27,7 +27,7 @@ import videoCut from '../../Assets/videoCut.svg';
 import callIcon from '../../Assets/call.svg';
 
 // Video tile component using HMS React hooks
-const VideoTile = ({ peer, isLocal = false }) => {
+const VideoTile = ({ peer, isLocal = false, groupAudio = false }) => {
   const hmsActions = useHMSActions();
   const audioTrack = useHMSStore(selectAudioTrackByPeerID(peer.id));
   
@@ -94,7 +94,7 @@ const VideoTile = ({ peer, isLocal = false }) => {
       )}
       
       {/* Video element - HMS handles attachment automatically */}
-      {peer.videoTrack ? (
+      {!groupAudio && peer.videoTrack ? (
         <video
           ref={videoRef}
           autoPlay
@@ -111,8 +111,10 @@ const VideoTile = ({ peer, isLocal = false }) => {
         />
       ) : (
         <div className={styles.noVideo}>
-          <span>{peer.name}</span>
-          <span>No Video</span>
+          <div className={styles.avatarCircle}>
+             <span>{peer.name[0]?.toUpperCase()}</span>
+          </div>
+          {groupAudio ? <span>Audio Call</span> : <span>No Video</span>}
         </div>
       )}
       
@@ -153,15 +155,56 @@ const CallInterface = () => {
   const [joinAttempted, setJoinAttempted] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
 
-  // Position management for draggable window
+  const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({
-    x: window.innerWidth / 2 - 125,
-    y: window.innerHeight / 2 - 225,
+    x: window.innerWidth * 0.075, // Center it roughly
+    y: window.innerHeight * 0.075,
   });
+  const dragStartPos = useRef({ x: 0, y: 0 });
 
   // Refs to prevent duplicate operations
   const joinInProgressRef = useRef(false);
   const callStartedRef = useRef(false);
+
+  const handleMouseDown = (e) => {
+    // Only drag from container/wrapper, not buttons
+    if (e.target.tagName.toLowerCase() === 'button' || e.target.closest('button')) return;
+    
+    setIsDragging(true);
+    dragStartPos.current = {
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    };
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+
+      const newX = e.clientX - dragStartPos.current.x;
+      const newY = e.clientY - dragStartPos.current.y;
+
+      // Keep within reasonable bounds
+      const boundedX = Math.max(0, Math.min(newX, window.innerWidth - 100));
+      const boundedY = Math.max(0, Math.min(newY, window.innerHeight - 100));
+
+      setPosition({ x: boundedX, y: boundedY });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
 
   // Register user with socket
   useEffect(() => {
@@ -484,60 +527,28 @@ const CallInterface = () => {
     };
   }, []);
 
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setPosition((prevPosition) => ({
-        x: Math.min(prevPosition.x, window.innerWidth - 250),
-        y: Math.min(prevPosition.y, window.innerHeight - 450),
-      }));
-    };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Drag handlers
-  const onDragStart = (e) => {
-    const { clientX, clientY } = e;
-    setPosition({ x: clientX, y: clientY });
-  };
-
-  const onDrag = (e) => {
-    if (e.clientX && e.clientY) {
-      setPosition((prev) => ({
-        x: prev.x + e.movementX,
-        y: prev.y + e.movementY,
-      }));
-    }
-  };
-
-  const onDragEnd = (e) => {
-    const { clientX, clientY } = e;
-    setPosition({ x: clientX, y: clientY });
-  };
 
   // Show incoming call UI
   if (groupCallIncoming && !groupCall) {
     return (
       <div 
-        className={styles.incoming}
-        draggable
-        onDragStart={onDragStart}
-        onDrag={onDrag}
-        onDragEnd={onDragEnd}
+        className={`${styles.incoming} ${isDragging ? styles.dragging : ""}`}
+        onMouseDown={handleMouseDown}
         style={{
-          position: "absolute",
+          position: "fixed",
           top: position.y,
           left: position.x,
+          transform: "none",
+          cursor: isDragging ? "grabbing" : "grab",
         }}
       >
         <div className={styles.info}>
-          <span>Incoming {groupAudio ? 'Audio' : 'Video'} Call</span>
+          <span>Spider-Signal Detected</span>
           <span>{sender}</span>
         </div>
         <div className={styles.acceptReject}>
-          <button onClick={handleReject} className={styles.reject} title="Reject">
+           <button onClick={handleReject} className={styles.reject} title="Reject">
             <img src={callIcon} alt="reject" />
           </button>
           <button onClick={handleAccept} className={styles.accept} title="Accept">
@@ -551,26 +562,29 @@ const CallInterface = () => {
   // Show call UI
   if (groupCall) {
     return (
-      <div
-        className={styles.main}
-        draggable
-        onDragStart={onDragStart}
-        onDrag={onDrag}
-        onDragEnd={onDragEnd}
+      <div 
+        className={`${styles.main} ${isDragging ? styles.dragging : ""}`}
+        onMouseDown={handleMouseDown}
         style={{
-          position: "absolute",
+          position: "fixed",
           top: position.y,
           left: position.x,
+          transform: "none", // Override the center transform
+          cursor: isDragging ? "grabbing" : "grab",
         }}
       >
+        <div className={styles.callInfo}>
+           {isConnected ? "Connection Secure" : "Establishing Link..."}
+        </div>
+
         <div className={styles.videoWrapper}>
           {isJoining || (!isConnected && !isLeaving) ? (
             <div className={styles.loading}>
-              <span>{isJoining ? 'Joining...' : 'Connecting...'}</span>
+              <span>Joining the Society...</span>
             </div>
           ) : peers.length === 0 ? (
             <div className={styles.loading}>
-              <span>Waiting for participants...</span>
+              <span>Scanning for local signals...</span>
             </div>
           ) : (
             peers.map((peer) => (
@@ -578,6 +592,7 @@ const CallInterface = () => {
                 key={peer.id} 
                 peer={peer} 
                 isLocal={peer.isLocal}
+                groupAudio={groupAudio}
               />
             ))
           )}
@@ -609,17 +624,8 @@ const CallInterface = () => {
             className={styles.endCall}
             disabled={isLeaving}
           >
-            {isLeaving ? 'Ending...' : 'End Call'}
+            {isLeaving ? 'Cutting Line...' : 'End Call'}
           </button>
-        </div>
-        
-        <div className={styles.callInfo}>
-          <span>
-            {isConnected 
-              ? `Connected: ${peers.length} participant${peers.length !== 1 ? 's' : ''}`
-              : 'Connecting...'
-            }
-          </span>
         </div>
       </div>
     );
@@ -627,6 +633,7 @@ const CallInterface = () => {
 
   return null;
 };
+
 
 // Main GroupCall component with HMS Provider
 const GroupCall = () => {

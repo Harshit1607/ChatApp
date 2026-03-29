@@ -14,7 +14,7 @@
     position: absolute;
     inset: 0;
     background: 
-      radial-gradient(circle at 70% 20%, rgba(226, 54, 54, 0.15), transparent 40%),
+      radial-gradient(circle at 70% 20%, rgba(209, 16, 19, 0.15), transparent 40%),
       radial-gradient(circle at 20% 80%, rgba(0, 50, 200, 0.1), transparent 40%);
     z-index: 1;
   }
@@ -73,8 +73,8 @@
     margin: 0;
     
     .accent {
-      color: #e23636;
-      text-shadow: 0 0 20px rgba(226, 54, 54, 0.5);
+      color: var(--primary-color, #d11013);
+      text-shadow: 0 0 20px rgba(209, 16, 19, 0.5);
     }
 
     @media (max-width: $mobile) {
@@ -121,8 +121,8 @@
   }
 
   .neonIcon {
-    color: #e23636;
-    filter: drop-shadow(0 0 5px #e23636);
+    color: var(--primary-color, #d11013);
+    filter: drop-shadow(0 0 5px var(--primary-color, #d11013));
   }
 
   span {
@@ -154,14 +154,14 @@
     }
     
     &.primaryBtn {
-      background: #e23636;
+      background: var(--primary-color, #d11013);
       color: white;
-      box-shadow: 0 10px 25px rgba(226, 54, 54, 0.4);
+      box-shadow: 0 10px 25px rgba(209, 16, 19, 0.4);
       border: none;
       
       &:hover {
         transform: scale(1.05);
-        box-shadow: 0 15px 35px rgba(226, 54, 54, 0.6);
+        box-shadow: 0 15px 35px rgba(209, 16, 19, 0.6);
       }
     }
 

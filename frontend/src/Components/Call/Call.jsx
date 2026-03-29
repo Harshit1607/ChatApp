@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styles from './Call.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import socket from '../../Socket/Socket';
-import { startCall, handleRejection, handleReceiveOffer, handleReceiveAnswer, handleReceiveCandidate, handleCallEnd, handleRecievedAudio, handleRecievedVideo, handleAccept, handleReject, handleMuteAudio, handleEndCall, handleStopVideo, setReciever } from '../../Redux/Call/callActions';
+import { startCall, makeCall, handleRejection, handleReceiveOffer, handleReceiveAnswer, handleReceiveCandidate, handleCallEnd, handleRecievedAudio, handleRecievedVideo, handleAccept, handleReject, handleMuteAudio, handleEndCall, handleStopVideo, setReciever } from '../../Redux/Call/callActions';
 import mic from '../../Assets/mic.svg';
 import video1 from '../../Assets/video1.svg';
 import micCut from '../../Assets/micCut.svg';
@@ -24,22 +24,32 @@ const Call = () => {
   const [mute, setMute] = useState(false);
   const [vid, setVid] = useState(false);
 
+  // Handle starting outgoing call
   useEffect(() => {
-    console.log(incoming)
-    if (call && !offer) {
+    if (call && !offer && !peerConnection && localVideoRef.current) {
       if(audio){
         setVid(true);
       }
-      dispatch(setReciever(groupChat.UserDetails.find((each) => each !== user._id).name))
+      const otherUser = groupChat.UserDetails.find((each) => each._id !== user._id);
+      if (otherUser) {
+        dispatch(setReciever(otherUser.name));
+      }
       startCall(groupChat, localVideoRef, remoteVideoRef, user, audio, dispatch);
     }
-  }, [call, incoming]);
+  }, [call, offer, peerConnection, groupChat, user, audio, dispatch]);
 
+  // Handle accepting incoming call
   useEffect(() => {
-    
+    if (call && offer && !peerConnection && localVideoRef.current) {
+      handleAccept(offer, remoteVideoRef, sender, audio, localVideoRef, dispatch, pendingCandidates);
+    }
+  }, [call, offer, peerConnection, sender, audio, dispatch]);
+
+  // Socket event listeners
+  useEffect(() => {
     const handleAudioMute = (data) => handleRecievedAudio(data, remoteVideoRef);
     const handleVideoStop = (data) => handleRecievedVideo(data, remoteVideoRef);
-    const handleEndCall = () => handleCallEnd(peerConnection, localVideoRef, remoteVideoRef, dispatch);
+    const handleEndCallLocal = () => handleCallEnd(peerConnection, localVideoRef, remoteVideoRef, dispatch);
     const handleCallRejected = () => handleRejection();
     const handleOffer = (data) => handleReceiveOffer(data, dispatch, setVid);
     const handleAnswer = (data) => handleReceiveAnswer(data, peerConnection, groupChat, user, dispatch, pendingCandidates);
@@ -47,7 +57,7 @@ const Call = () => {
   
     socket.on('audioMute', handleAudioMute);
     socket.on('videoStop', handleVideoStop);
-    socket.on('endCall', handleEndCall);
+    socket.on('endCall', handleEndCallLocal);
     socket.on('callRejected', handleCallRejected);
     socket.on('receiveOffer', handleOffer);
     socket.on('receiveAnswer', handleAnswer);
@@ -56,13 +66,13 @@ const Call = () => {
     return () => {
       socket.off('audioMute', handleAudioMute);
       socket.off('videoStop', handleVideoStop);
-      socket.off('endCall', handleEndCall);
+      socket.off('endCall', handleEndCallLocal);
       socket.off('callRejected', handleCallRejected);
       socket.off('receiveOffer', handleOffer);
       socket.off('receiveAnswer', handleAnswer);
       socket.off('receiveCandidate', handleCandidate);
     };
-  });
+  }, [peerConnection, groupChat, user, dispatch]);
 
 
 
@@ -80,121 +90,136 @@ const Call = () => {
   }, [peerConnection]);
 
 
+  const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({
-    x: window.innerWidth / 2 - 125,
-    y: window.innerHeight / 2 - 225,
+    x: window.innerWidth - 350,
+    y: 80,
   });
-  
-  useEffect(() => {
-    const handleResize = () => {
-      setPosition((prevPosition) => ({
-        x: Math.min(prevPosition.x, window.innerWidth - 250),
-        y: Math.min(prevPosition.y, window.innerHeight - 450),
-      }));
+  const dragStartPos = useRef({ x: 0, y: 0 });
+
+  const handleMouseDown = (e) => {
+    // Only allow dragging from the main container, not buttons
+    if (e.target.tagName.toLowerCase() === 'button' || e.target.closest('button')) return;
+    
+    setIsDragging(true);
+    dragStartPos.current = {
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
     };
-  
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  const onDragStart = (e) => {
-    const { clientX, clientY } = e;
-    setPosition({ x: clientX, y: clientY });
   };
-  
-  const onDrag = (e) => {
-    if (e.clientX === 0 && e.clientY === 0) return;
-    const { clientX, clientY } = e;
-  
-    const windowHeight = window.innerHeight;
-    const windowWidth = window.innerWidth;
-  
-    const element = e.target;
-    const rect = element.getBoundingClientRect();
-  
-    const newX = Math.min(
-      Math.max(clientX - rect.width / 2, 0),
-      windowWidth - rect.width
-    );
-    const newY = Math.min(
-      Math.max(clientY - rect.height / 2, 0),
-      windowHeight - rect.height
-    );
-  
-    setPosition({ x: newX, y: newY });
-  };
-  
-  const onDragEnd = (e) => {
-    const { clientX, clientY } = e;
-    setPosition({ x: clientX, y: clientY });
-  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+
+      const newX = e.clientX - dragStartPos.current.x;
+      const newY = e.clientY - dragStartPos.current.y;
+
+      // Keep within bounds
+      const boundedX = Math.max(0, Math.min(newX, window.innerWidth - 320));
+      const boundedY = Math.max(0, Math.min(newY, window.innerHeight - 480));
+
+      setPosition({ x: boundedX, y: boundedY });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
 
   return (
     <>
       {call ? (
         <div
-          className={styles.main}
-          draggable
-          onDragStart={onDragStart}
-          onDrag={onDrag}
-          onDragEnd={onDragEnd}
+          className={`${styles.main} ${isDragging ? styles.dragging : ""}`}
+          onMouseDown={handleMouseDown}
           style={{
-            position: "absolute",
+            position: "fixed",
             top: position.y,
             left: position.x,
+            cursor: isDragging ? "grabbing" : "grab",
           }}
-        > {
-          audio?
-          <>
-            <div className={styles.avBox}>
-              {console.log(localVideoRef)}
-              <span>{user.name}</span>
-              <audio ref={localVideoRef} autoPlay muted ></audio>
+        >
+          {audio ? (
+            <div className={styles.audioDisplay}>
+              <div className={styles.avatarContainer}>
+                <div className={styles.ripple} />
+                <div className={styles.avatar}>
+                  {reciever?.[0]?.toUpperCase() || sender?.name?.[0]?.toUpperCase() || "?"}
+                </div>
+              </div>
+              <div className={styles.callerInfo}>
+                <h2>{reciever || sender?.name || "Unknown"}</h2>
+                <span>Spider-Signal Active...</span>
+              </div>
+              <audio ref={localVideoRef} autoPlay muted />
+              <audio ref={remoteVideoRef} autoPlay />
             </div>
-            <div className={styles.avBox}>
-              {/* <span>{sender.name}</span> */}
-              <audio ref={remoteVideoRef} autoPlay></audio>
+          ) : (
+            <div className={styles.videoDisplay}>
+              <video ref={remoteVideoRef} autoPlay playsInline className={styles.remoteVideo} />
+              <div className={styles.localVideoPIP}>
+                 <video ref={localVideoRef} autoPlay playsInline muted />
+              </div>
             </div>
-          </>
-          :
-          <>
-          <div className={styles.avBox}>
-            {console.log(reciever)}
-          <span>{user.name}</span>
-          <video ref={localVideoRef} autoPlay playsInline muted ></video>
-          </div>
-          <div className={styles.avBox}>
-          <span>{reciever? reciever : sender && sender.name}</span>
-          <video ref={remoteVideoRef} autoPlay playsInline ></video>
-          </div>
-          </>
-        }
+          )}
           
-          <div className={styles.control}>
-            <button onClick={()=>{setMute(!mute);handleMuteAudio(localVideoRef, sender, groupChat, user)}} style={{ opacity: mute ? '0.5' : '1' }}  ><img src={mute? micCut: mic} /></button>
-            <button onClick={()=>handleEndCall(peerConnection, localVideoRef, remoteVideoRef, sender, groupChat, user, dispatch)}>End</button>
-            <button onClick={()=>{setVid(!vid);handleStopVideo(localVideoRef, sender, groupChat, user)}} style={{ opacity: vid ? '0.5' : '1' }} ><img src={vid? videoCut:video1} /></button>
+          <div className={styles.controlBar}>
+            <button 
+              onClick={() => { setMute(!mute); handleMuteAudio(localVideoRef, sender, groupChat, user) }} 
+              className={mute ? styles.muteActive : ""}
+              title={mute ? "Unmute" : "Mute"}
+            >
+              <img src={mute ? micCut : mic} alt="mic" />
+            </button>
+            <button 
+              onClick={() => { setVid(!vid); handleStopVideo(localVideoRef, sender, groupChat, user) }} 
+              className={vid ? styles.muteActive : ""}
+              title={vid ? "Start Video" : "Stop Video"}
+            >
+              <img src={vid ? videoCut : video1} alt="video" />
+            </button>
+            <button 
+              onClick={() => handleEndCall(peerConnection, localVideoRef, remoteVideoRef, sender, groupChat, user, dispatch)} 
+              className={styles.endCall}
+              title="End Call"
+            >
+              End
+            </button>
           </div>
         </div>
       ) : incoming && offer ? (
         <div
-          className={styles.incoming}
-          draggable
-          onDragStart={onDragStart}
-          onDrag={onDrag}
-          onDragEnd={onDragEnd}
+          className={`${styles.incoming} ${isDragging ? styles.dragging : ""}`}
+          onMouseDown={handleMouseDown}
           style={{
-            position: "absolute",
+            position: "fixed",
             top: position.y,
             left: position.x,
+            cursor: isDragging ? "grabbing" : "grab",
           }}
         >
-          <div className={styles.info}>
-            <span>{sender? sender.name : null}</span>
+          <div className={styles.callerDetails}>
+            <h3>{sender?.name || "Unknown Spider"}</h3>
+            <p>Incoming {audio ? "Audio" : "Video"} Signal</p>
           </div>
-          <div className={styles.acceptReject}>
-            <button onClick={()=>handleReject(sender, dispatch)}><img src={callIcon}/></button>
-            <button onClick={()=>handleAccept(offer, remoteVideoRef, sender, audio, localVideoRef, dispatch, pendingCandidates)}><img src={callIcon}/></button>
+          <div className={styles.actions}>
+            <button className={styles.reject} onClick={() => handleReject(sender, dispatch)}>
+              <img src={callIcon} alt="reject" />
+            </button>
+            <button className={styles.accept} onClick={() => dispatch(makeCall())}>
+              <img src={callIcon} alt="accept" />
+            </button>
           </div>
         </div>
       ) : null}
@@ -203,3 +228,4 @@ const Call = () => {
 };
 
 export default Call;
+

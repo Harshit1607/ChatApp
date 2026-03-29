@@ -15,9 +15,9 @@ const Settings = () => {
   const { theme } = useSelector(state => state.homeReducer);
 
   const themeValues = [
-    { name: 'og', img: og, spiderman: "Classic Spider-Man", desc: "The Legend", accent: "#e23636" },
-    { name: 'mm', img: mm, spiderman: "Miles Morales", desc: "Be Greater", accent: "#b01e28" },
-    { name: 'gw', img: gw, spiderman: "Spider-Gwen", desc: "Different Harmony", accent: "#f080a0" }
+    { name: 'og', img: og, spiderman: "Classic Spider-Man", desc: "The Legend", accent: "#d11013" },
+    { name: 'mm', img: mm, spiderman: "Miles Morales", desc: "Be Greater", accent: "#c92026" },
+    { name: 'gw', img: gw, spiderman: "Spider-Gwen", desc: "Different Harmony", accent: "#ee4b8d" }
   ];
   
   const [userAbout, setuserAbout] = useState(user?.about || "");
