@@ -11,8 +11,26 @@
   border: 1px solid transparent;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--primary-color);
+    transform: scale(1.02) translateX(5px);
+    box-shadow: -5px 0 15px var(--shadow-color);
+    
+    &::before {
+      opacity: 0.1;
+    }
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--suit-texture);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
   }
 
   &.active {

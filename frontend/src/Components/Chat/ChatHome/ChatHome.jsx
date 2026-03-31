@@ -6,6 +6,7 @@ import ChatBox from '../ChatBox/ChatBox.jsx';
 import ChatNav from '../ChatNav/ChatNav.jsx';
 import ChatInput from '../ChatInput/ChatInput.jsx';
 import { checkUser } from '../../../Socket/ChatSocket.jsx';
+import spiderImg from '../../../Assets/spiderMan1.png';
 
 const ChatHome = () => {
   const { groupChat } = useSelector(state => state.groupReducer);
@@ -43,10 +44,12 @@ const ChatHome = () => {
             exit={{ opacity: 0 }}
             className={styles.emptyState}
           >
-            <div className={styles.spiderSenseCircle}>
-              <div className={styles.pulse} />
-              <div className={styles.pulse2} />
-              <span className={styles.spiderIcon}>🕸️</span>
+            <div className={styles.spiderContainer}>
+              <div className={styles.spiderSenseCircle}>
+                <div className={styles.pulse} />
+                <div className={styles.pulse2} />
+              </div>
+              <img src={spiderImg} alt="Spider-Man" className={styles.heroImg} />
             </div>
             <h2>The Multiverse Awaits</h2>
             <p>Sync your Spider-Sense and select a contact to start swinging through the web.</p>

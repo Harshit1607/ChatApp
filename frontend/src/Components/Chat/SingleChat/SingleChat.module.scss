@@ -2,15 +2,32 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   
   &.me {
     align-items: flex-end;
     .bubble {
       background: var(--bubble-me);
       color: white;
-      border-bottom-right-radius: 4px;
-      box-shadow: 0 4px 15px rgba(var(--primary-color), 0.2);
+      border-radius: 12px 12px 2px 12px; // Asymmetric sharp corner
+      box-shadow: 0 10px 25px rgba(201, 32, 38, 0.25);
+      animation: thwip 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: var(--suit-texture);
+        opacity: 0.1;
+        border-radius: inherit;
+        pointer-events: none;
+      }
+
+      &:hover {
+        transform: scale(1.02);
+        box-shadow: 0 15px 35px rgba(201, 32, 38, 0.35);
+      }
     }
   }
 
@@ -19,23 +36,44 @@
     .bubble {
       background: var(--bubble-other);
       color: var(--text-primary);
-      border-bottom-left-radius: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px 12px 12px 2px; // Asymmetric sharp corner
+      border: 1px solid var(--border-color);
+      animation: thwip 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: var(--suit-texture);
+        opacity: 0.05;
+        border-radius: inherit;
+        pointer-events: none;
+      }
+
+      &:hover {
+        transform: scale(1.02);
+        border-color: var(--highlight-cyan);
+        box-shadow: 0 12px 30px rgba(56, 178, 172, 0.2);
+      }
     }
   }
 }
 
 .senderName {
   font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin-bottom: 4px;
+  font-weight: 800;
+  color: var(--highlight-cyan);
+  margin-bottom: 6px;
   margin-left: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-family: 'Outfit', sans-serif;
 }
 
 .bubbleWrapper {
   position: relative;
-  max-width: 70%;
+  max-width: 75%;
 
   @media (max-width: $mobile) {
     max-width: 90%;
@@ -43,49 +81,53 @@
 }
 
 .bubble {
-  padding: 10px 14px;
-  border-radius: 20px;
+  padding: 14px 20px;
   position: relative;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
-
-  &:hover {
-    filter: brightness(1.1);
-  }
+  z-index: 1;
 }
 
 .textContent {
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
   word-wrap: break-word;
+  font-family: 'Inter', sans-serif;
 }
 
 .mediaContent {
   max-width: 100%;
-  border-radius: 12px;
-  margin-bottom: 4px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  display: block;
+  border: 1px solid var(--border-color);
 }
 
 .meta {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 8px;
+  margin-top: 6px;
 }
 
 .time {
   font-size: 0.7rem;
-  opacity: 0.7;
+  font-weight: 700;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .tick {
   display: flex;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   
   &.read {
-    color: var(--secondary-color);
+    color: var(--highlight-cyan);
+    filter: drop-shadow(0 0 5px var(--highlight-cyan));
   }
 }
 
@@ -93,40 +135,44 @@
   position: absolute;
   top: 100%;
   z-index: 100;
-  background: var(--nav-bg);
+  background: var(--miles-surface);
   @include glass;
-  border-radius: 12px;
-  padding: 6px;
+  border-radius: 8px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 150px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-  margin-top: 8px;
+  gap: 4px;
+  min-width: 180px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  margin-top: 10px;
+  border: 1.5px solid var(--accent-color);
 
   .me & { right: 0; }
   .other & { left: 0; }
 
   button {
     background: transparent;
-    padding: 10px 12px;
-    border-radius: 8px;
+    padding: 12px 15px;
+    border-radius: 4px;
     color: var(--text-primary);
     font-size: 0.85rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     width: 100%;
     text-align: left;
+    transition: all 0.2s ease;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--primary-color);
+      background: rgba(238, 75, 141, 0.1);
+      color: var(--accent-color);
     }
 
     &.deleteAll {
-      color: #ff4444;
-      &:hover { background: rgba(255, 68, 68, 0.1); }
+      color: #ff5555;
+      &:hover { background: rgba(255, 68, 68, 0.15); }
     }
   }
 }
+

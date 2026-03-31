@@ -70,7 +70,7 @@ const ChatInput = () => {
       >
         <div className={styles.inputWrapper}>
           <motion.button 
-            whileHover={{ scale: 1.1, color: 'var(--primary-color)' }}
+            whileHover={{ scale: 1.1, color: 'var(--accent-color)' }}
             whileTap={{ scale: 0.9 }}
             className={styles.attachBtn}
             onClick={handleFileClick}
@@ -95,7 +95,7 @@ const ChatInput = () => {
           />
 
           <motion.button 
-            whileHover={{ scale: 1.1, color: 'var(--primary-color)' }}
+            whileHover={{ scale: 1.1, color: 'var(--accent-color)' }}
             whileTap={{ scale: 0.9 }}
             className={styles.emojiBtn}
           >
@@ -110,7 +110,7 @@ const ChatInput = () => {
               initial={{ scale: 0, rotate: -45 }}
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0, rotate: 45 }}
-              whileHover={{ scale: 1.1, boxShadow: '0 0 15px var(--primary-color)' }}
+              whileHover={{ scale: 1.1, boxShadow: '0 0 15px var(--classic-red-glow)' }}
               whileTap={{ scale: 0.9 }}
               className={styles.sendBtn}
               onClick={handleSend}
@@ -119,15 +119,16 @@ const ChatInput = () => {
             </motion.button>
           ) : (
             <motion.button
-              key="mic"
+              key="attachment"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className={styles.micBtn}
+              className={styles.attachmentBtn}
+              onClick={handleFileClick}
             >
-              <ImageIcon size={20} onClick={handleFileClick} />
+              <ImageIcon size={20} />
             </motion.button>
           )}
         </AnimatePresence>
@@ -135,5 +136,6 @@ const ChatInput = () => {
     </div>
   )
 }
+
 
 export default ChatInput

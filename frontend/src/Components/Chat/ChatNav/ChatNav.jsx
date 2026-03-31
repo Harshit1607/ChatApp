@@ -133,7 +133,7 @@ const ChatNav = () => {
         <div className={styles.divider} />
 
         <motion.button 
-          whileHover={{ scale: 1.1, color: '#ff4444' }}
+          whileHover={{ scale: 1.1, color: 'var(--primary-color)' }}
           whileTap={{ scale: 0.9 }}
           className={styles.closeBtn}
           onClick={() => dispatch(closeChat())}

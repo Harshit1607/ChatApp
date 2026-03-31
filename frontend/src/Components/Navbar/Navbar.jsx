@@ -91,7 +91,7 @@ const Navbar = () => {
           </motion.div>
           
           <motion.button 
-            whileHover={{ scale: 1.1, color: '#ff4444' }}
+            whileHover={{ scale: 1.1, color: 'var(--primary-color)' }}
             onClick={handleLogout}
             className={styles.logoutBtn}
             title="Log Out"
